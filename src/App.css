@@ -1,0 +1,28 @@
+
+#root {
+  min-height: 100vh;
+}
+
+main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  text-align: center;
+  background: #101014;
+  color: #f1e9dc;
+}
+
+h1 {
+  margin: 0;
+  color: #b69056;
+  font-size: clamp(3rem, 10vw, 6rem);
+  letter-spacing: 0.08em;
+}
+
+p {
+  color: #f1e9dc;
+  line-height: 1.6;
+}
