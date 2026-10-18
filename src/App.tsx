@@ -1,10 +1,14 @@
+import Navbar from './components/Navbar';
 
 function App() {
   return (
-    <main>
-      <h1>CINERO’26</h1>
-      <p>J’Pura Voice · University of Sri Jayewardenepura</p>
-    </main>
+    <>
+      <Navbar />
+      <main id="home">
+        <h1>CINERO’26</h1>
+        <p>J’Pura Voice · University of Sri Jayewardenepura</p>
+      </main>
+    </>
   );
 }
 
