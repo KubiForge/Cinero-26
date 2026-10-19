@@ -12,7 +12,11 @@ const NAV_LINKS = [
   { label: "Contact", href: "#contact" },
 ];
 
-export default function Navbar() {
+interface NavbarProps {
+  onNavigate?: (href: string) => void;
+}
+
+export default function Navbar({ onNavigate }: NavbarProps = {}) {
   const [active, setActive] = useState("#home");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -27,6 +31,9 @@ export default function Navbar() {
   const handleNav = (href: string) => {
     setActive(href);
     setOpen(false);
+    if (onNavigate) {
+      onNavigate(href);
+    }
   };
 
   return (

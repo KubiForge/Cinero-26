@@ -1,0 +1,692 @@
+/* ==========================================================================
+   CINERO'26 GUIDELINES DETAIL PAGE
+   ========================================================================== */
+
+.guidelines-page {
+  min-height: 100vh;
+  min-height: 100svh;
+  background-color: #0d0c10;
+  color: var(--color-ivory, #e9ded0);
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  position: relative;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Nav Header */
+.guidelines-page__nav {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  background: rgba(16, 14, 18, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(213, 164, 62, 0.2);
+  padding: 14px 0;
+}
+
+.guidelines-page__nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Back Button */
+.guidelines-page__back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(26, 24, 28, 0.85);
+  border: 1.5px solid rgba(213, 164, 62, 0.45);
+  border-radius: 999px;
+  padding: 8px 20px;
+  color: #f1e9dc;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.guidelines-page__back-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.guidelines-page__back-btn:hover {
+  background: rgba(213, 164, 62, 0.18);
+  border-color: #d5a43e;
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(213, 164, 62, 0.3);
+}
+
+.guidelines-page__back-btn:hover svg {
+  transform: translateX(-4px);
+}
+
+.back-text-full {
+  display: inline;
+}
+
+.back-text-short {
+  display: none;
+}
+
+/* Brand Logo */
+.guidelines-page__brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.guidelines-page__brand-logo {
+  height: 32px;
+  width: auto;
+  max-width: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+/* Register Button */
+.guidelines-page__actions {
+  flex-shrink: 0;
+}
+
+.guidelines-page__register-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 22px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #e6b755 0%, #d5a43e 50%, #b88628 100%);
+  color: #121010;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.guidelines-page__register-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(213, 164, 62, 0.45);
+}
+
+/* Category Hero Banner */
+.guidelines-page__hero {
+  position: relative;
+  min-height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 70px 24px 50px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.guidelines-page__hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+  filter: brightness(0.65);
+  transition: background-image 0.4s ease;
+}
+
+.guidelines-page__hero-bg--university {
+  background-image: url('/images/guidline section-university card-background.png');
+}
+
+.guidelines-page__hero-bg--school {
+  background-image: url('/images/guidline section-school card-background.png');
+}
+
+.guidelines-page__hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(13, 12, 16, 0.72) 0%,
+    rgba(13, 12, 16, 0.88) 65%,
+    #0d0c10 100%
+  );
+  z-index: 2;
+}
+
+.guidelines-page__hero-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.guidelines-page__eyebrow {
+  margin-bottom: 12px;
+}
+
+.eyebrow-accent-text {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: #d5a43e;
+  text-transform: uppercase;
+}
+
+.guidelines-page__title {
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: clamp(1.6rem, 5vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1.25;
+  color: #f7ede1;
+  margin: 0 0 14px 0;
+  word-break: break-word;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+}
+
+.guidelines-page__lead {
+  font-size: clamp(13.5px, 2.2vw, 15.5px);
+  line-height: 1.6;
+  color: #b8aba0;
+  max-width: 650px;
+  margin: 0 0 28px 0;
+}
+
+/* Category Switcher Tabs */
+.guidelines-page__tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(22, 20, 26, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  max-width: 100%;
+}
+
+.guidelines-page__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #b8aba0;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+}
+
+.guidelines-page__tab .tab-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.guidelines-page__tab:hover {
+  color: #f1e9dc;
+}
+
+/* Active tab states */
+.guidelines-page__tab--university.is-active {
+  background: rgba(197, 41, 42, 0.35);
+  color: #ffffff;
+  border-color: rgba(220, 50, 50, 0.6);
+  box-shadow: 0 0 16px rgba(197, 41, 42, 0.4);
+}
+
+.guidelines-page__tab--school.is-active {
+  background: rgba(213, 164, 62, 0.3);
+  color: #ffffff;
+  border-color: rgba(213, 164, 62, 0.6);
+  box-shadow: 0 0 16px rgba(213, 164, 62, 0.4);
+}
+
+/* Main Body */
+.guidelines-page__body {
+  padding: 30px 0 90px;
+  width: 100%;
+}
+
+.guidelines-page__container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 28px;
+  width: 100%;
+}
+
+/* Notice Card */
+.guidelines-notice-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(213, 164, 62, 0.08);
+  border-left: 3px solid #d5a43e;
+  border-radius: 0 12px 12px 0;
+  padding: 18px 22px;
+  margin-bottom: 32px;
+}
+
+.notice-icon {
+  flex-shrink: 0;
+  color: #d5a43e;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+}
+
+.notice-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.notice-text strong {
+  display: block;
+  font-size: 14.5px;
+  color: #f4ede3;
+  margin-bottom: 4px;
+}
+
+.notice-text p {
+  margin: 0;
+  font-size: 13px;
+  color: #b8aba0;
+  line-height: 1.5;
+}
+
+/* Guidelines Content Blocks */
+.guidelines-block {
+  background: rgba(22, 20, 26, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.guidelines-page--university .guidelines-block:hover {
+  border-color: rgba(197, 41, 42, 0.4);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(197, 41, 42, 0.1);
+}
+
+.guidelines-page--school .guidelines-block:hover {
+  border-color: rgba(213, 164, 62, 0.4);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(213, 164, 62, 0.1);
+}
+
+.guidelines-block__header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 14px;
+}
+
+.guidelines-block__number {
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #d5a43e;
+  opacity: 0.9;
+  flex-shrink: 0;
+}
+
+.guidelines-page--university .guidelines-block__number {
+  color: #e04b4b;
+}
+
+.guidelines-block__title {
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 1.25rem;
+  color: #f7ede1;
+  margin: 0 0 4px 0;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+.guidelines-block__sub {
+  font-size: 12.5px;
+  color: #b8aba0;
+}
+
+.guidelines-list {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.guidelines-list li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #dfd5c8;
+}
+
+.guidelines-list li strong {
+  color: #ffffff;
+}
+
+/* Bottom Footer Bar */
+.guidelines-page__footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 16px;
+}
+
+.guidelines-page__back-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1.5px solid rgba(213, 164, 62, 0.45);
+  border-radius: 999px;
+  padding: 12px 26px;
+  color: #f1e9dc;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+}
+
+.guidelines-page__back-btn-secondary svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.guidelines-page__back-btn-secondary:hover {
+  background: rgba(213, 164, 62, 0.15);
+  border-color: #d5a43e;
+  color: #ffffff;
+}
+
+.guidelines-page__back-btn-secondary:hover svg {
+  transform: translateX(-4px);
+}
+
+.guidelines-page__submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 32px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #e6b755 0%, #d5a43e 50%, #b88628 100%);
+  color: #121010;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 8px 25px rgba(213, 164, 62, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.guidelines-page__submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(213, 164, 62, 0.55);
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVENESS (< 768px and < 480px)
+   ========================================================================== */
+
+/* Tablets / Medium Phones */
+@media (max-width: 768px) {
+  .guidelines-page__nav {
+    padding: 12px 0;
+  }
+
+  .guidelines-page__nav-inner {
+    padding: 0 18px;
+    gap: 12px;
+  }
+
+  .guidelines-page__brand-logo {
+    height: 26px;
+  }
+
+  .guidelines-page__hero {
+    padding: 50px 18px 36px;
+    min-height: auto;
+  }
+
+  .guidelines-page__lead {
+    font-size: 13.5px;
+    margin-bottom: 22px;
+  }
+
+  .guidelines-page__container {
+    padding: 0 18px;
+  }
+
+  .guidelines-block {
+    padding: 22px 20px;
+    margin-bottom: 18px;
+  }
+
+  .guidelines-block__header {
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+  }
+
+  .guidelines-block__number {
+    font-size: 1.35rem;
+  }
+
+  .guidelines-block__title {
+    font-size: 1.15rem;
+  }
+}
+
+/* Mobile Screens (<= 580px) */
+@media (max-width: 580px) {
+  .guidelines-page__nav-inner {
+    padding: 0 14px;
+    gap: 8px;
+  }
+
+  .back-text-full {
+    display: none;
+  }
+
+  .back-text-short {
+    display: inline;
+  }
+
+  .guidelines-page__back-btn {
+    padding: 7px 14px;
+    font-size: 13px;
+    gap: 6px;
+  }
+
+  .guidelines-page__brand-logo {
+    height: 22px;
+    max-width: 95px;
+  }
+
+  .guidelines-page__register-btn {
+    padding: 7px 15px;
+    font-size: 12px;
+  }
+
+  .guidelines-page__hero {
+    padding: 40px 14px 28px;
+  }
+
+  .eyebrow-accent-text {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+  }
+
+  .guidelines-page__title {
+    font-size: clamp(1.4rem, 6.2vw, 1.85rem);
+    margin-bottom: 10px;
+  }
+
+  .guidelines-page__lead {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  /* Full width fluid responsive category tabs */
+  .guidelines-page__tabs {
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .guidelines-page__tab {
+    flex: 1;
+    padding: 9px 8px;
+    font-size: 12px;
+    gap: 6px;
+    letter-spacing: 0.01em;
+  }
+
+  .guidelines-page__tab .tab-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .guidelines-page__body {
+    padding: 24px 0 60px;
+  }
+
+  .guidelines-page__container {
+    padding: 0 14px;
+  }
+
+  .guidelines-notice-card {
+    padding: 14px 14px;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-radius: 0 10px 10px 0;
+  }
+
+  .notice-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .notice-text strong {
+    font-size: 13.5px;
+  }
+
+  .notice-text p {
+    font-size: 12px;
+  }
+
+  .guidelines-block {
+    padding: 18px 16px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+  }
+
+  .guidelines-block__header {
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+
+  .guidelines-block__number {
+    font-size: 1.2rem;
+  }
+
+  .guidelines-block__title {
+    font-size: 1.05rem;
+  }
+
+  .guidelines-block__sub {
+    font-size: 11.5px;
+  }
+
+  .guidelines-list {
+    padding-left: 16px;
+    gap: 10px;
+  }
+
+  .guidelines-list li {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  /* Footer action buttons: full width stacked for effortless thumb tap */
+  .guidelines-page__footer-bar {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 20px;
+  }
+
+  .guidelines-page__back-btn-secondary,
+  .guidelines-page__submit-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 13px 20px;
+    font-size: 13.5px;
+    min-height: 46px;
+  }
+}
+
+/* Very Small Mobile Screens (<= 360px) */
+@media (max-width: 360px) {
+  .guidelines-page__nav-inner {
+    padding: 0 10px;
+  }
+
+  .guidelines-page__back-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .guidelines-page__brand-logo {
+    display: none; /* Hide center logo on extremely small screens to prevent overlap */
+  }
+
+  .guidelines-page__tabs {
+    flex-direction: column;
+    border-radius: 14px;
+  }
+
+  .guidelines-page__tab {
+    width: 100%;
+    border-radius: 10px;
+  }
+}

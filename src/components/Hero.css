@@ -1,0 +1,487 @@
+/* ==========================================================================
+   CINERO'26 HERO COMPONENT STYLES
+   ========================================================================== */
+
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background-color: #101014;
+  overflow: hidden;
+  padding-top: 100px;
+  padding-bottom: 60px;
+}
+
+/* Background layers */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/images/hero-bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: right 18% center;
+  z-index: 1;
+}
+
+/* Gradients to blend artwork and elevate typography readability */
+.hero__overlay-linear {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(16, 16, 20, 0.96) 0%,
+    rgba(16, 16, 20, 0.88) 32%,
+    rgba(16, 16, 20, 0.5) 60%,
+    rgba(16, 16, 20, 0.08) 85%,
+    rgba(16, 16, 20, 0) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero__overlay-radial {
+  position: absolute;
+  top: 15%;
+  left: 5%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(213, 164, 62, 0.12) 0%, rgba(213, 164, 62, 0) 70%);
+  filter: blur(40px);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero__overlay-bottom {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(to top, #101014 0%, rgba(16, 16, 20, 0) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Container */
+.hero__container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+.hero__content {
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  animation: heroFadeIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Presenter Eyebrow */
+.hero__presenter {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 22px;
+}
+
+.hero__presenter-org {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  color: #d5a43e;
+  text-transform: uppercase;
+}
+
+.hero__presenter-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  color: #e9ded0;
+  opacity: 0.85;
+  text-transform: uppercase;
+}
+
+/* Brand / Logo + Subtitle */
+.hero__brand {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.hero__logo-image {
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 6px 20px rgba(213, 164, 62, 0.3));
+  transition: transform 0.4s ease;
+}
+
+.hero__logo-image:hover {
+  transform: scale(1.015);
+}
+
+.hero__title-text {
+  margin: 10px 0 0 0;
+  line-height: 1.1;
+}
+
+.hero__subtitle {
+  font-family: var(--font-display, 'Cinzel', Georgia, serif);
+  font-size: clamp(1.35rem, 3vw, 2.15rem);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  background: linear-gradient(135deg, #ffffff 0%, #e9ded0 45%, #d5a43e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  text-transform: capitalize;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+}
+
+/* Decorative Divider */
+.hero__divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+  margin: 16px 0 20px 0;
+}
+
+.hero__divider-line {
+  flex: 1;
+  height: 1.5px;
+  background: linear-gradient(
+    90deg,
+    rgba(213, 164, 62, 0.9),
+    rgba(213, 164, 62, 0.2)
+  );
+  border-radius: 2px;
+}
+
+.hero__divider-accent {
+  width: 6px;
+  height: 6px;
+  background: #d5a43e;
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px rgba(213, 164, 62, 0.8);
+}
+
+/* Pillar Keywords */
+.hero__pillars {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  color: #d5a43e;
+  margin-bottom: 22px;
+}
+
+.hero__pillar-item {
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.hero__pillar-item:hover {
+  color: #f7e096;
+  text-shadow: 0 0 10px rgba(213, 164, 62, 0.6);
+}
+
+.hero__pillar-separator {
+  color: #b8aba0;
+  opacity: 0.6;
+  font-size: 14px;
+}
+
+/* Tagline */
+.hero__tagline {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  color: #f3efe8;
+  text-transform: uppercase;
+  margin: 0 0 34px 0;
+  max-width: 520px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
+}
+
+/* Action Buttons (Strictly without arrows) */
+.hero__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 34px;
+  width: 100%;
+}
+
+.hero__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 32px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              background 0.25s ease,
+              border-color 0.25s ease,
+              color 0.25s ease;
+}
+
+/* Primary Button (Gold Filled) */
+.hero__btn--primary {
+  background: linear-gradient(135deg, #e6b755 0%, #d5a43e 50%, #b88628 100%);
+  color: #121010;
+  border: 1.5px solid #f2cb74;
+  box-shadow: 0 8px 24px rgba(213, 164, 62, 0.35);
+}
+
+.hero__btn--primary:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #f5cb6e 0%, #e2b449 50%, #c49232 100%);
+  box-shadow: 0 12px 30px rgba(213, 164, 62, 0.55);
+  color: #0b0a0d;
+}
+
+.hero__btn--primary:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 14px rgba(213, 164, 62, 0.3);
+}
+
+/* Secondary Button (Dark Outlined Pill) */
+.hero__btn--secondary {
+  background: rgba(22, 20, 24, 0.7);
+  color: #e9ded0;
+  border: 1.5px solid rgba(213, 164, 62, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.hero__btn--secondary:hover {
+  background: rgba(213, 164, 62, 0.16);
+  border-color: #d5a43e;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(213, 164, 62, 0.25);
+}
+
+.hero__btn--secondary:active {
+  transform: translateY(0);
+}
+
+/* Meta Footer Info */
+.hero__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 12px;
+  color: #b8aba0;
+  letter-spacing: 0.04em;
+}
+
+.hero__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero__meta-bullet {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #d5a43e;
+  box-shadow: 0 0 6px rgba(213, 164, 62, 0.7);
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+
+/* Large Tablets / Small Laptops */
+@media (max-width: 1024px) {
+  .hero-section {
+    padding-top: 90px;
+    padding-bottom: 50px;
+  }
+
+  .hero__container {
+    padding: 0 28px;
+  }
+
+  .hero__content {
+    max-width: 540px;
+  }
+
+  .hero__bg {
+    background-position: right 12% center;
+  }
+
+  .hero__logo-image {
+    max-width: 400px;
+  }
+}
+
+/* Tablets & Mobile Devices */
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: 100svh;
+    min-height: 100vh;
+    padding-top: 86px;
+    padding-bottom: 40px;
+    align-items: flex-end;
+  }
+
+  /* Swap to mobile background artwork with center composition */
+  .hero__bg {
+    background-image: url('/images/hero-mobile.png');
+    background-position: center top;
+    background-size: cover;
+  }
+
+  /* Vertical gradient overlay to keep text ultra-crisp while spotlight shines */
+  .hero__overlay-linear {
+    background: linear-gradient(
+      180deg,
+      rgba(16, 16, 20, 0.75) 0%,
+      rgba(16, 16, 20, 0.4) 30%,
+      rgba(16, 16, 20, 0.85) 60%,
+      rgba(16, 16, 20, 0.98) 85%,
+      #101014 100%
+    );
+  }
+
+  .hero__overlay-radial {
+    width: 320px;
+    height: 320px;
+    top: 50%;
+    left: 10%;
+  }
+
+  .hero__container {
+    padding: 0 20px;
+  }
+
+  .hero__content {
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+    padding-top: 180px; /* Let the spotlight character breathe above */
+  }
+
+  .hero__presenter {
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .hero__brand {
+    align-items: center;
+  }
+
+  .hero__logo-image {
+    max-width: clamp(230px, 72vw, 360px);
+    margin: 0 auto;
+  }
+
+  .hero__divider {
+    justify-content: center;
+    max-width: 260px;
+    margin: 14px auto 18px;
+  }
+
+  .hero__pillars {
+    justify-content: center;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    gap: 6px 10px;
+    margin-bottom: 18px;
+  }
+
+  .hero__tagline {
+    font-size: 14px;
+    margin-bottom: 28px;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95);
+  }
+
+  .hero__actions {
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+
+  .hero__btn {
+    flex: 1;
+    max-width: 200px;
+    height: 46px;
+    padding: 0 20px;
+    font-size: 13.5px;
+  }
+
+  .hero__meta {
+    justify-content: center;
+    font-size: 11px;
+    gap: 14px;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .hero-section {
+    padding-top: 76px;
+    padding-bottom: 32px;
+  }
+
+  .hero__content {
+    padding-top: 140px;
+  }
+
+  .hero__actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .hero__btn {
+    width: 100%;
+    max-width: 100%;
+    height: 46px;
+  }
+
+  .hero__meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

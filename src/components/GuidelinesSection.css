@@ -1,0 +1,470 @@
+/* ==========================================================================
+   GUIDELINES SECTION STYLES (HOME PAGE)
+   ========================================================================== */
+
+.guidelines-section {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  background-color: #101014;
+  overflow: hidden;
+  padding: 110px 0;
+  border-top: 1px solid rgba(213, 164, 62, 0.18);
+  border-bottom: 1px solid rgba(213, 164, 62, 0.18);
+}
+
+/* Background layers */
+.guidelines-section__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/images/guidline-section-backgound.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: right 10% center;
+  z-index: 1;
+}
+
+.guidelines-section__overlay-linear {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(16, 16, 20, 0.97) 0%,
+    rgba(16, 16, 20, 0.92) 35%,
+    rgba(16, 16, 20, 0.72) 65%,
+    rgba(16, 16, 20, 0.25) 85%,
+    rgba(16, 16, 20, 0) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+.guidelines-section__overlay-radial {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(197, 41, 42, 0.12) 0%, transparent 70%);
+  filter: blur(50px);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Container */
+.guidelines-section__container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+/* Header */
+.guidelines-section__header {
+  max-width: 680px;
+  margin-bottom: 44px;
+}
+
+.guidelines-section__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.eyebrow-text {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  color: #e9ded0;
+  text-transform: uppercase;
+}
+
+.eyebrow-line {
+  display: inline-block;
+  width: 48px;
+  height: 2px;
+  background: #c5292a;
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(197, 41, 42, 0.8);
+}
+
+.guidelines-section__title {
+  font-family: var(--font-display, 'Cinzel', Georgia, serif);
+  font-size: clamp(2.3rem, 4.8vw, 3.8rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  margin: 6px 0 14px 0;
+  background: linear-gradient(135deg, #ffffff 0%, #fae2b1 30%, #e0b457 65%, #b98829 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+}
+
+.guidelines-section__desc {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 15px;
+  line-height: 1.65;
+  color: #b8aba0;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+/* Cards Wrapper */
+.guidelines-section__cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 350px));
+  gap: 28px;
+}
+
+/* Individual Card */
+.guideline-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 34px 28px 24px;
+  cursor: pointer;
+  background: rgba(18, 16, 20, 0.7);
+  outline: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s ease,
+              border-color 0.35s ease;
+}
+
+/* University Card Theme */
+.guideline-card--university {
+  border: 1.5px solid rgba(197, 41, 42, 0.45);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(197, 41, 42, 0.12);
+}
+
+.guideline-card--university:hover,
+.guideline-card--university:focus-visible {
+  transform: translateY(-8px);
+  border-color: rgba(225, 45, 45, 0.85);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7), 0 0 28px rgba(220, 40, 40, 0.35);
+}
+
+/* School Card Theme */
+.guideline-card--school {
+  border: 1.5px solid rgba(213, 164, 62, 0.45);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 16px rgba(213, 164, 62, 0.12);
+}
+
+.guideline-card--school:hover,
+.guideline-card--school:focus-visible {
+  transform: translateY(-8px);
+  border-color: rgba(240, 195, 85, 0.85);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7), 0 0 28px rgba(213, 164, 62, 0.35);
+}
+
+/* Card Background Artwork */
+.guideline-card__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: right center;
+  z-index: 1;
+  transition: transform 0.5s ease;
+}
+
+.guideline-card:hover .guideline-card__bg {
+  transform: scale(1.05);
+}
+
+.guideline-card__bg--university {
+  background-image: url('/images/guidline section-university card-background.png');
+}
+
+.guideline-card__bg--school {
+  background-image: url('/images/guidline section-school card-background.png');
+}
+
+/* Overlay for text legibility */
+.guideline-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(16, 14, 18, 0.94) 0%,
+    rgba(16, 14, 18, 0.86) 55%,
+    rgba(16, 14, 18, 0.45) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Card Content */
+.guideline-card__content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+.guideline-card__icon-wrap {
+  margin-bottom: 20px;
+}
+
+.guideline-card__icon {
+  width: 36px;
+  height: 36px;
+  color: #e0b457;
+  filter: drop-shadow(0 2px 8px rgba(213, 164, 62, 0.5));
+}
+
+.guideline-card__badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.guideline-card__badge--university {
+  color: #e04b4b;
+}
+
+.guideline-card__badge--school {
+  color: #e0b457;
+}
+
+.guideline-card__title {
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: #f7f1e7;
+  margin: 0 0 12px 0;
+  letter-spacing: 0.03em;
+}
+
+.guideline-card__text {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #b8aba0;
+  margin: 0 0 30px 0;
+  min-height: 44px;
+}
+
+/* Card Footer */
+.guideline-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  padding-top: 18px;
+}
+
+.guideline-card__action-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #e9ded0;
+  transition: color 0.25s ease;
+}
+
+.guideline-card:hover .guideline-card__action-text {
+  color: #ffffff;
+}
+
+.guideline-card__arrow-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.guideline-card__arrow-btn svg {
+  width: 17px;
+  height: 17px;
+  transition: transform 0.25s ease;
+}
+
+.guideline-card:hover .guideline-card__arrow-btn svg {
+  transform: translateX(3px);
+}
+
+.guideline-card__arrow-btn--university {
+  border: 1.5px solid rgba(220, 50, 50, 0.7);
+  color: #f5f5f5;
+  box-shadow: 0 0 12px rgba(220, 50, 50, 0.3);
+  background: rgba(220, 50, 50, 0.08);
+}
+
+.guideline-card:hover .guideline-card__arrow-btn--university {
+  border-color: #ff5555;
+  background: rgba(220, 50, 50, 0.25);
+  box-shadow: 0 0 18px rgba(220, 50, 50, 0.6);
+}
+
+.guideline-card__arrow-btn--school {
+  border: 1.5px solid rgba(213, 164, 62, 0.7);
+  color: #f5f5f5;
+  box-shadow: 0 0 12px rgba(213, 164, 62, 0.3);
+  background: rgba(213, 164, 62, 0.08);
+}
+
+.guideline-card:hover .guideline-card__arrow-btn--school {
+  border-color: #ffd060;
+  background: rgba(213, 164, 62, 0.25);
+  box-shadow: 0 0 18px rgba(213, 164, 62, 0.6);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .guidelines-section {
+    padding: 85px 0;
+  }
+
+  .guidelines-section__container {
+    padding: 0 28px;
+  }
+
+  .guidelines-section__bg {
+    background-position: right 5% center;
+  }
+}
+
+@media (max-width: 768px) {
+  .guidelines-section {
+    padding: 70px 0;
+  }
+
+  .guidelines-section__container {
+    padding: 0 20px;
+  }
+
+  .guidelines-section__bg {
+    background-position: center top;
+  }
+
+  .guidelines-section__overlay-linear {
+    background: linear-gradient(
+      180deg,
+      rgba(16, 16, 20, 0.95) 0%,
+      rgba(16, 16, 20, 0.9) 60%,
+      rgba(16, 16, 20, 0.98) 100%
+    );
+  }
+
+  .guidelines-section__header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+
+  .guidelines-section__eyebrow {
+    justify-content: center;
+  }
+
+  .guidelines-section__cards {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+    margin: 0 auto;
+    gap: 20px;
+  }
+
+  .guideline-card {
+    padding: 28px 22px 20px;
+  }
+}
+
+/* Small mobile devices (<= 480px) */
+@media (max-width: 480px) {
+  .guidelines-section {
+    padding: 55px 0;
+  }
+
+  .guidelines-section__container {
+    padding: 0 16px;
+  }
+
+  .guidelines-section__header {
+    margin-bottom: 28px;
+  }
+
+  .eyebrow-text {
+    font-size: 11px;
+    letter-spacing: 0.22em;
+  }
+
+  .eyebrow-line {
+    width: 32px;
+  }
+
+  .guidelines-section__title {
+    font-size: clamp(1.8rem, 8.5vw, 2.5rem);
+    margin: 4px 0 10px 0;
+  }
+
+  .guidelines-section__desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+
+  .guidelines-section__cards {
+    gap: 16px;
+  }
+
+  .guideline-card {
+    padding: 22px 18px 18px;
+    border-radius: 16px;
+  }
+
+  .guideline-card__icon-wrap {
+    margin-bottom: 14px;
+  }
+
+  .guideline-card__icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .guideline-card__badge {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+
+  .guideline-card__title {
+    font-size: 1.3rem;
+    margin: 0 0 8px 0;
+  }
+
+  .guideline-card__text {
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 0 0 20px 0;
+    min-height: auto;
+  }
+
+  .guideline-card__footer {
+    padding-top: 14px;
+  }
+
+  .guideline-card__action-text {
+    font-size: 12.5px;
+  }
+
+  .guideline-card__arrow-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .guideline-card__arrow-btn svg {
+    width: 15px;
+    height: 15px;
+  }
+}

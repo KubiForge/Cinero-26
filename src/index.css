@@ -1,3 +1,15 @@
+:root {
+  --color-gold: #d5a43e;
+  --color-gold-light: #f5d77f;
+  --color-gold-dark: #b88628;
+  --color-gold-glow: rgba(213, 164, 62, 0.35);
+  --color-dark: #101014;
+  --color-dark-deep: #0b0a0d;
+  --color-ivory: #e9ded0;
+  --color-text-dim: #b8aba0;
+  --font-display: 'Cinzel', Georgia, serif;
+  --font-body: 'Outfit', system-ui, -apple-system, sans-serif;
+}
 
 * {
   box-sizing: border-box;
@@ -11,8 +23,12 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  font-family: Inter, Arial, sans-serif;
-  background: #101014;
+  font-family: var(--font-body);
+  background: var(--color-dark);
+  color: var(--color-ivory);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 button,
@@ -25,4 +41,19 @@ select {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* Custom sleek scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0c0f;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(213, 164, 62, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(213, 164, 62, 0.7);
 }
