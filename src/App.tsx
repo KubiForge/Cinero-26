@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TimelineSection from './components/TimelineSection';
 import GuidelinesSection from './components/GuidelinesSection';
+import ContactSection from './components/ContactSection';
 import GuidlinesPage from './pages/Guidlines';
 import './App.css';
 
@@ -164,34 +165,7 @@ function App() {
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="section section--contact">
-          <div className="section-container">
-            <div className="section-header">
-              <span className="section-eyebrow">Get In Touch</span>
-              <h2 className="section-title">Connect With The Team</h2>
-              <p className="section-desc">
-                Have questions regarding guidelines, sponsorship, or media partnerships?
-              </p>
-            </div>
-
-            <div className="contact-grid">
-              <div className="contact-card">
-                <div className="contact-card__label">Email Inquiries</div>
-                <div className="contact-card__val">cinero@jpura.voice.lk</div>
-              </div>
-
-              <div className="contact-card">
-                <div className="contact-card__label">Organized By</div>
-                <div className="contact-card__val">J'Pura Voice · Media Club</div>
-              </div>
-
-              <div className="contact-card">
-                <div className="contact-card__label">Location</div>
-                <div className="contact-card__val">University of Sri Jayewardenepura</div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <ContactSection />
       </main>
 
       {/* Footer */}
@@ -199,7 +173,7 @@ function App() {
         <div className="footer-inner">
           <div className="footer-brand">
             <img src="/images/cinero-logo.png" alt="CINERO'26" className="footer-logo" />
-            <img src="/images/Voice logo transparent.png" alt="J'Pura Voice" className="footer-logo" />
+            <img src="/images/Voice logo for footer.png" alt="J'Pura Voice" className="footer-logo" />
           </div>
           <p className="footer-text">
             © {new Date().getFullYear()} CINERO'26. Organized by J'Pura Voice, University of Sri Jayewardenepura.
