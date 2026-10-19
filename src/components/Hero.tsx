@@ -1,5 +1,6 @@
 import React from 'react';
 import './Hero.css';
+import BrandLogo from './BrandLogo';
 
 interface HeroProps {
   onRegisterClick?: () => void;
@@ -22,6 +23,27 @@ export const Hero: React.FC<HeroProps> = ({ onRegisterClick, onExploreClick }) =
     <section id="home" className="hero-section">
       {/* Background layer with responsive backdrop handling */}
       <div className="hero__bg" aria-hidden="true">
+        <picture className="hero__bg-art">
+          <source
+            type="image/webp"
+            media="(max-width: 768px)"
+            srcSet="/images/hero-mobile-mobile.71a241e927.webp 780w, /images/hero-mobile.5592611193.webp 940w"
+            sizes="100vw"
+          />
+          <source
+            type="image/webp"
+            srcSet="/images/hero-bg.a483ba35e7.webp 1672w"
+            sizes="100vw"
+          />
+          <img
+            src="/images/hero-bg.png"
+            alt=""
+            width={1672}
+            height={941}
+            fetchPriority="high"
+            decoding="async"
+          />
+        </picture>
         <div className="hero__overlay-radial" />
         <div className="hero__overlay-linear" />
         <div className="hero__overlay-bottom" />
@@ -37,11 +59,12 @@ export const Hero: React.FC<HeroProps> = ({ onRegisterClick, onExploreClick }) =
 
           {/* Logo & Main Title */}
           <div className="hero__brand">
-            <img
-              src="/images/cinero-logo.png"
+            <BrandLogo
               alt="CINERO'26"
               className="hero__logo-image"
               loading="eager"
+              decoding="async"
+              fetchPriority="high"
             />
             <h1 className="hero__title-text">
               <span className="hero__subtitle">Short Film Festival</span>

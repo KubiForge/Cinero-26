@@ -10,6 +10,27 @@ export const GuidelinesSection: React.FC<GuidelinesSectionProps> = ({ onSelectCa
     <section id="guidelines" className="guidelines-section">
       {/* Background with overlay */}
       <div className="guidelines-section__bg" aria-hidden="true">
+        <picture className="guidelines-section__bg-art">
+          <source
+            type="image/webp"
+            media="(max-width: 768px)"
+            srcSet="/images/guidline-section-backgound-mobile.992ef29093.webp 900w"
+            sizes="100vw"
+          />
+          <source
+            type="image/webp"
+            srcSet="/images/guidline-section-backgound.4faeae743b.webp 1671w"
+            sizes="100vw"
+          />
+          <img
+            src="/images/guidline-section-backgound.png"
+            alt=""
+            width={1671}
+            height={941}
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
         <div className="guidelines-section__overlay-linear" />
         <div className="guidelines-section__overlay-radial" />
       </div>
@@ -44,7 +65,27 @@ export const GuidelinesSection: React.FC<GuidelinesSectionProps> = ({ onSelectCa
             }}
             id="guideline-card-university"
           >
-            <div className="guideline-card__bg guideline-card__bg--university" />
+            <picture className="guideline-card__bg guideline-card__bg--university">
+              <source
+                type="image/webp"
+                media="(max-width: 768px)"
+                srcSet="/images/guidline-section-university-card-background-mobile.a29947c05e.webp 750w"
+                sizes="100vw"
+              />
+              <source
+                type="image/webp"
+                srcSet="/images/guidline-section-university-card-background.798382d6d0.webp 1254w"
+                sizes="350px"
+              />
+              <img
+                src="/images/guidline section-university card-background.png"
+                alt=""
+                width={1254}
+                height={1254}
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
             <div className="guideline-card__overlay" />
 
             <div className="guideline-card__content">
@@ -105,7 +146,27 @@ export const GuidelinesSection: React.FC<GuidelinesSectionProps> = ({ onSelectCa
             }}
             id="guideline-card-school"
           >
-            <div className="guideline-card__bg guideline-card__bg--school" />
+            <picture className="guideline-card__bg guideline-card__bg--school">
+              <source
+                type="image/webp"
+                media="(max-width: 768px)"
+                srcSet="/images/guidline-section-school-card-background-mobile.385a888440.webp 750w"
+                sizes="100vw"
+              />
+              <source
+                type="image/webp"
+                srcSet="/images/guidline-section-school-card-background.5f3343b629.webp 1254w"
+                sizes="350px"
+              />
+              <img
+                src="/images/guidline section-school card-background.png"
+                alt=""
+                width={1254}
+                height={1254}
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
             <div className="guideline-card__overlay" />
 
             <div className="guideline-card__content">

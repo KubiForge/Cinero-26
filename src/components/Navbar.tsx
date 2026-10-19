@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import "./Navbar.css";
-
-// Change this if your saved logo has a different file name
-const LOGO_SRC = "/images/cinero-logo.png";
+import BrandLogo from './BrandLogo';
 
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
@@ -40,7 +38,7 @@ export default function Navbar({ onNavigate }: NavbarProps = {}) {
     <header className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
       <div className="navbar__inner">
         <a href="#home" className="navbar__logo" onClick={() => handleNav("#home")}>
-          <img src={LOGO_SRC} alt="CINERO'26" />
+          <BrandLogo alt="CINERO'26" decoding="async" />
         </a>
 
         <button

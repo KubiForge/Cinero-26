@@ -1,5 +1,6 @@
 import React from 'react';
 import './Footer.css';
+import BrandLogo from './BrandLogo';
 
 interface FooterProps {
   onNavigate?: (href: string) => void;
@@ -33,19 +34,31 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <div className="footer-brand-col">
             <div className="footer-logos">
               <a href="#home" onClick={(e) => handleLinkClick('#home', e)} className="footer-logo-link">
-                <img
-                  src="/images/cinero-logo.png"
+                <BrandLogo
                   alt="CINERO'26"
                   className="footer-logo footer-logo--cinero"
+                  loading="lazy"
+                  decoding="async"
                 />
               </a>
               <span className="footer-logo-divider" aria-hidden="true" />
               <div className="footer-logo-link">
-                <img
-                  src="/images/Voice logo for footer.png"
-                  alt="J'Pura Voice"
-                  className="footer-logo footer-logo--voice"
-                />
+                <picture>
+                  <source
+                    type="image/webp"
+                    srcSet="/images/voice-logo-footer.7302b05421.webp 400w"
+                    sizes="400px"
+                  />
+                  <img
+                    src="/images/Voice logo for footer.png"
+                    alt="J'Pura Voice"
+                    className="footer-logo footer-logo--voice"
+                    width={400}
+                    height={165}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </picture>
               </div>
             </div>
 

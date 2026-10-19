@@ -19,11 +19,20 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/images/hero-bg.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: right 18% center;
   z-index: 1;
+}
+
+.hero__bg-art {
+  position: absolute;
+  inset: 0;
+}
+
+.hero__bg-art img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: 82% center;
 }
 
 /* Gradients to blend artwork and elevate typography readability */
@@ -345,8 +354,8 @@
     max-width: 540px;
   }
 
-  .hero__bg {
-    background-position: right 12% center;
+  .hero__bg-art img {
+    object-position: 88% center;
   }
 
   .hero__logo-image {
@@ -365,10 +374,8 @@
   }
 
   /* Swap to mobile background artwork with center composition */
-  .hero__bg {
-    background-image: url('/images/hero-mobile.png');
-    background-position: center top;
-    background-size: cover;
+  .hero__bg-art img {
+    object-position: center top;
   }
 
   /* Vertical gradient overlay to keep text ultra-crisp while spotlight shines */

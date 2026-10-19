@@ -18,11 +18,20 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/images/contact-background.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: right 15% center;
   z-index: 1;
+}
+
+.contact-section__bg-art {
+  position: absolute;
+  inset: 0;
+}
+
+.contact-section__bg-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 85% center;
 }
 
 .contact-section__overlay-linear {
@@ -460,8 +469,8 @@
     gap: 30px;
   }
 
-  .contact-section__bg {
-    background-position: right 8% center;
+  .contact-section__bg-art img {
+    object-position: 92% center;
   }
 }
 
@@ -483,8 +492,8 @@
     justify-content: center;
   }
 
-  .contact-section__bg {
-    background-position: center top;
+  .contact-section__bg-art img {
+    object-position: center top;
   }
 
   .contact-section__overlay-linear {

@@ -19,11 +19,20 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/images/guidline-section-backgound.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: right 10% center;
   z-index: 1;
+}
+
+.guidelines-section__bg-art {
+  position: absolute;
+  inset: 0;
+}
+
+.guidelines-section__bg-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 90% center;
 }
 
 .guidelines-section__overlay-linear {
@@ -168,22 +177,20 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  background-size: cover;
-  background-position: right center;
   z-index: 1;
   transition: transform 0.5s ease;
 }
 
+.guideline-card__bg img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+}
+
 .guideline-card:hover .guideline-card__bg {
   transform: scale(1.05);
-}
-
-.guideline-card__bg--university {
-  background-image: url('/images/guidline section-university card-background.png');
-}
-
-.guideline-card__bg--school {
-  background-image: url('/images/guidline section-school card-background.png');
 }
 
 /* Overlay for text legibility */
@@ -333,8 +340,8 @@
     padding: 0 28px;
   }
 
-  .guidelines-section__bg {
-    background-position: right 5% center;
+  .guidelines-section__bg-art img {
+    object-position: 95% center;
   }
 }
 
@@ -347,8 +354,8 @@
     padding: 0 20px;
   }
 
-  .guidelines-section__bg {
-    background-position: center top;
+  .guidelines-section__bg-art img {
+    object-position: center top;
   }
 
   .guidelines-section__overlay-linear {

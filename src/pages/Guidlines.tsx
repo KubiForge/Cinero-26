@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Guidlines.css';
+import BrandLogo from '../components/BrandLogo';
 
 export interface GuidlinesPageProps {
   initialCategory?: 'university' | 'school';
@@ -13,10 +14,6 @@ export const GuidlinesPage: React.FC<GuidlinesPageProps> = ({
   onRegisterClick,
 }) => {
   const [activeCategory, setActiveCategory] = useState<'university' | 'school'>(initialCategory);
-
-  useEffect(() => {
-    setActiveCategory(initialCategory);
-  }, [initialCategory]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -44,7 +41,7 @@ export const GuidlinesPage: React.FC<GuidlinesPageProps> = ({
           </button>
 
           <div className="guidelines-page__brand">
-            <img src="/images/cinero-logo.png" alt="CINERO'26" className="guidelines-page__brand-logo" />
+            <BrandLogo alt="CINERO'26" className="guidelines-page__brand-logo" decoding="async" />
           </div>
 
           <div className="guidelines-page__actions">
@@ -72,12 +69,44 @@ export const GuidlinesPage: React.FC<GuidlinesPageProps> = ({
 
       {/* Hero Banner for Category */}
       <section className="guidelines-page__hero">
-        <div
+        <picture
           className={`guidelines-page__hero-bg ${
             isUniversity ? 'guidelines-page__hero-bg--university' : 'guidelines-page__hero-bg--school'
           }`}
           aria-hidden="true"
-        />
+        >
+          <source
+            type="image/webp"
+            media="(max-width: 768px)"
+            srcSet={
+              isUniversity
+                ? '/images/guidline-section-university-card-background-mobile.a29947c05e.webp 750w'
+                : '/images/guidline-section-school-card-background-mobile.385a888440.webp 750w'
+            }
+            sizes="100vw"
+          />
+          <source
+            type="image/webp"
+            srcSet={
+              isUniversity
+                ? '/images/guidline-section-university-card-background.798382d6d0.webp 1254w'
+                : '/images/guidline-section-school-card-background.5f3343b629.webp 1254w'
+            }
+            sizes="100vw"
+          />
+          <img
+            src={
+              isUniversity
+                ? '/images/guidline section-university card-background.png'
+                : '/images/guidline section-school card-background.png'
+            }
+            alt=""
+            width={1254}
+            height={1254}
+            fetchPriority="high"
+            decoding="async"
+          />
+        </picture>
         <div className="guidelines-page__hero-overlay" aria-hidden="true" />
 
         <div className="guidelines-page__hero-content">

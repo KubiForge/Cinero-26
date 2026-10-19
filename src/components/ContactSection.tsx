@@ -25,6 +25,27 @@ export const ContactSection: React.FC = () => {
     <section id="contact" className="contact-section">
       {/* Background with artwork and ambient overlays */}
       <div className="contact-section__bg" aria-hidden="true">
+        <picture className="contact-section__bg-art">
+          <source
+            type="image/webp"
+            media="(max-width: 768px)"
+            srcSet="/images/contact-background-mobile.ab25b803fc.webp 900w"
+            sizes="100vw"
+          />
+          <source
+            type="image/webp"
+            srcSet="/images/contact-background.75b51239a3.webp 1672w"
+            sizes="100vw"
+          />
+          <img
+            src="/images/contact-background.png"
+            alt=""
+            width={1672}
+            height={941}
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
         <div className="contact-section__overlay-radial" />
         <div className="contact-section__overlay-linear" />
       </div>

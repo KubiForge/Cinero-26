@@ -64,6 +64,7 @@ function App() {
   if (currentPage === 'guidelines') {
     return (
       <GuidlinesPage
+        key={selectedCategory}
         initialCategory={selectedCategory}
         onBack={handleBackToHome}
         onRegisterClick={() => {

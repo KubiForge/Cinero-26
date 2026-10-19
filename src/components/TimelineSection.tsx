@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import './TimelineSection.css';
 
 export interface TimelineEvent {
@@ -11,7 +11,7 @@ export interface TimelineEvent {
   iconType: 'megaphone' | 'registration' | 'document' | 'certificate' | 'screening';
 }
 
-export const TIMELINE_EVENTS: TimelineEvent[] = [
+const TIMELINE_EVENTS: TimelineEvent[] = [
   {
     id: 1,
     stepNumber: '01',
@@ -87,11 +87,6 @@ export const TimelineSection: React.FC = () => {
   const autoActiveIndex = useMemo(() => calculateActiveIndex(TIMELINE_EVENTS), []);
   const [selectedIndex, setSelectedIndex] = useState<number>(autoActiveIndex);
 
-  // Sync auto detection on mount
-  useEffect(() => {
-    setSelectedIndex(autoActiveIndex);
-  }, [autoActiveIndex]);
-
   const activeEvent = TIMELINE_EVENTS[selectedIndex];
 
   // Render vector icons
@@ -139,6 +134,27 @@ export const TimelineSection: React.FC = () => {
     <section id="timeline" className="timeline-section">
       {/* Background artwork and ambient overlays */}
       <div className="timeline-section__bg" aria-hidden="true">
+        <picture className="timeline-section__bg-art">
+          <source
+            type="image/webp"
+            media="(max-width: 768px)"
+            srcSet="/images/timeline-background-mobile.c317b0be31.webp 900w"
+            sizes="100vw"
+          />
+          <source
+            type="image/webp"
+            srcSet="/images/timeline-background.4a58c3109d.webp 1672w"
+            sizes="100vw"
+          />
+          <img
+            src="/images/timeline background.png"
+            alt=""
+            width={1672}
+            height={941}
+            loading="lazy"
+            decoding="async"
+          />
+        </picture>
         <div className="timeline-section__overlay-radial" />
         <div className="timeline-section__overlay-linear" />
       </div>
