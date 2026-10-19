@@ -10,7 +10,6 @@ export const ContactSection: React.FC = () => {
   });
 
   const [submitted, setSubmitted] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,12 +19,6 @@ export const ContactSection: React.FC = () => {
       setSubmitted(false);
       setFormData({ name: '', email: '', category: 'general', message: '' });
     }, 4000);
-  };
-
-  const handleCopyEmail = (emailText: string) => {
-    navigator.clipboard.writeText(emailText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
   };
 
   return (
@@ -153,14 +146,6 @@ export const ContactSection: React.FC = () => {
                 <a href="mailto:cinero@jpura.voice.lk" className="info-card__value info-card__link">
                   cinero@jpura.voice.lk
                 </a>
-                <button
-                  type="button"
-                  className="copy-email-btn"
-                  onClick={() => handleCopyEmail('cinero@jpura.voice.lk')}
-                  title="Copy email to clipboard"
-                >
-                  {copied ? 'Copied ✓' : 'Copy Email'}
-                </button>
               </div>
             </div>
 

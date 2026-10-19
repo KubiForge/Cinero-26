@@ -4,12 +4,11 @@
 
 .contact-section {
   position: relative;
-  min-height: 100vh;
   display: flex;
   align-items: center;
   background-color: #101014;
   overflow: hidden;
-  padding: 110px 0 120px;
+  padding: 75px 0 80px;
   border-top: 1px solid rgba(213, 164, 62, 0.18);
 }
 
@@ -392,24 +391,6 @@
   color: #ffd060;
 }
 
-.copy-email-btn {
-  display: inline-block;
-  margin-top: 8px;
-  background: rgba(213, 164, 62, 0.12);
-  border: 1px solid rgba(213, 164, 62, 0.4);
-  color: #fae2b1;
-  border-radius: 999px;
-  padding: 4px 12px;
-  font-size: 11.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.copy-email-btn:hover {
-  background: rgba(213, 164, 62, 0.25);
-  color: #ffffff;
-}
 
 .info-card__sub {
   font-size: 12.5px;

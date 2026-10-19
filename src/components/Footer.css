@@ -1,0 +1,455 @@
+/* ==========================================================================
+   CINERO'26 FOOTER COMPONENT STYLES
+   ========================================================================== */
+
+.cinero-footer {
+  position: relative;
+  background-color: #08070a;
+  border-top: 1px solid rgba(213, 164, 62, 0.2);
+  padding: 56px 0 28px;
+  overflow: hidden;
+  color: #dfd5c8;
+}
+
+/* Subtle gold ambient glow at the top seam */
+.footer-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(800px, 90vw);
+  height: 80px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(213, 164, 62, 0.15) 0%, transparent 75%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.footer-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+/* Main Grid Layout */
+.footer-main-grid {
+  display: grid;
+  grid-template-columns: 1.8fr 1fr 1.1fr 1.2fr;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 40px;
+}
+
+/* ==========================================================================
+   COLUMN 1: BRAND & LOGOS
+   ========================================================================== */
+.footer-brand-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.footer-logos {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.footer-logo-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.footer-logo-link:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+.footer-logo--cinero {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7));
+}
+
+.footer-logo-divider {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(213, 164, 62, 0.45) 30%,
+    rgba(213, 164, 62, 0.45) 70%,
+    transparent 100%
+  );
+}
+
+.footer-logo--voice {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.7));
+}
+
+.footer-tagline {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #b0a498;
+  margin: 0 0 18px 0;
+  max-width: 360px;
+}
+
+.footer-university-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(213, 164, 62, 0.08);
+  border: 1px solid rgba(213, 164, 62, 0.22);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #dfd5c8;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d5a43e;
+  box-shadow: 0 0 6px #d5a43e;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   COLUMNS 2 & 3: LINKS & CATEGORIES
+   ========================================================================== */
+.footer-links-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-col-title {
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #f5d77f;
+  margin: 0 0 16px 0;
+}
+
+.footer-links-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.footer-links-list a {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 13.5px;
+  color: #a89f95;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+}
+
+.footer-links-list a:hover {
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+/* ==========================================================================
+   COLUMN 4: SOCIAL CONNECT
+   ========================================================================== */
+.footer-social-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-social-desc {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 13px;
+  line-height: 1.55;
+  color: #a89f95;
+  margin: 0 0 16px 0;
+}
+
+.footer-social-icons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-social-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(22, 20, 26, 0.85);
+  border: 1px solid rgba(213, 164, 62, 0.28);
+  color: #d5a43e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.footer-social-btn svg {
+  width: 17px;
+  height: 17px;
+}
+
+.footer-social-btn:hover {
+  background: rgba(213, 164, 62, 0.2);
+  border-color: #ffd060;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(213, 164, 62, 0.35);
+}
+
+/* ==========================================================================
+   BOTTOM DIVIDER & CREDITS BAR
+   ========================================================================== */
+.footer-bottom-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(213, 164, 62, 0.22) 18%,
+    rgba(213, 164, 62, 0.35) 50%,
+    rgba(213, 164, 62, 0.22) 82%,
+    transparent 100%
+  );
+  margin-bottom: 22px;
+}
+
+.footer-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 12.5px;
+  color: #8e857c;
+}
+
+.footer-copyright {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  line-height: 1.5;
+}
+
+.footer-copyright strong {
+  color: #dfd5c8;
+  font-weight: 600;
+}
+
+/* Developer Credit: Kubi Forge */
+.footer-developer {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dev-prefix {
+  font-size: 12px;
+  color: #8e857c;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kubiforge-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 14px;
+  background: rgba(18, 16, 22, 0.95);
+  border: 1.2px solid rgba(213, 164, 62, 0.35);
+  border-radius: 999px;
+  color: #f5d77f;
+  text-decoration: none;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.kubiforge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+  animation: pulseGlow 2.2s infinite ease-in-out;
+}
+
+.kubiforge-name {
+  color: #f5d77f;
+  transition: color 0.2s ease;
+}
+
+.external-icon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.8;
+  transition: transform 0.2s ease;
+}
+
+.kubiforge-badge:hover {
+  background: rgba(213, 164, 62, 0.16);
+  border-color: #ffd060;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(213, 164, 62, 0.35);
+}
+
+.kubiforge-badge:hover .kubiforge-name {
+  color: #ffffff;
+}
+
+.kubiforge-badge:hover .external-icon {
+  transform: translate(2px, -2px);
+  opacity: 1;
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 6px #34d399;
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.85);
+    box-shadow: 0 0 2px #34d399;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .footer-container {
+    padding: 0 28px;
+  }
+
+  .footer-main-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    margin-bottom: 32px;
+  }
+
+  .footer-brand-col {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .cinero-footer {
+    padding: 44px 0 24px;
+  }
+
+  .footer-container {
+    padding: 0 20px;
+  }
+
+  .footer-main-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    margin-bottom: 28px;
+  }
+
+  .footer-brand-col {
+    grid-column: span 1;
+    text-align: center;
+    align-items: center;
+  }
+
+  .footer-tagline {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .footer-logos {
+    justify-content: center;
+  }
+
+  .footer-links-col {
+    text-align: center;
+  }
+
+  .footer-links-list {
+    align-items: center;
+  }
+
+  .footer-links-list a:hover {
+    transform: none;
+    color: #ffd060;
+  }
+
+  .footer-social-col {
+    text-align: center;
+    align-items: center;
+  }
+
+  .footer-social-icons {
+    justify-content: center;
+  }
+
+  .footer-bottom-bar {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .footer-developer {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .cinero-footer {
+    padding: 38px 0 20px;
+  }
+
+  .footer-logo--cinero {
+    height: 32px;
+  }
+
+  .footer-logo--voice {
+    height: 30px;
+  }
+
+  .footer-tagline {
+    font-size: 13px;
+  }
+
+  .footer-links-list a {
+    font-size: 13px;
+    padding: 2px 0;
+  }
+
+  .footer-copyright {
+    font-size: 12px;
+  }
+
+  .kubiforge-badge {
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+}

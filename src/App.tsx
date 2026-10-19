@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import TimelineSection from './components/TimelineSection';
 import GuidelinesSection from './components/GuidelinesSection';
 import ContactSection from './components/ContactSection';
+import Footer from './components/Footer';
 import GuidlinesPage from './pages/Guidlines';
 import './App.css';
 
@@ -168,18 +169,8 @@ function App() {
         <ContactSection />
       </main>
 
-      {/* Footer */}
-      <footer className="cinero-footer">
-        <div className="footer-inner">
-          <div className="footer-brand">
-            <img src="/images/cinero-logo.png" alt="CINERO'26" className="footer-logo" />
-            <img src="/images/Voice logo for footer.png" alt="J'Pura Voice" className="footer-logo" />
-          </div>
-          <p className="footer-text">
-            © {new Date().getFullYear()} CINERO'26. Organized by J'Pura Voice, University of Sri Jayewardenepura.
-          </p>
-        </div>
-      </footer>
+      {/* Professional Industry-Level Footer */}
+      <Footer onNavigate={handleNavClick} />
     </>
   );
 }
