@@ -2,7 +2,10 @@ import React from 'react';
 import './Footer.css';
 import BrandLogo from './BrandLogo';
 import SocialLinks from './SocialLinks';
-import { footerCategoryLinks, siteNavigationLinks } from '../data/siteLinks';
+import {
+  footerCategoryLinks,
+  siteNavigationLinks,
+} from '../data/siteLinks';
 
 interface FooterProps {
   onNavigate?: (href: string) => void;

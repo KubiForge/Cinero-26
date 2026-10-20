@@ -231,6 +231,11 @@
   box-shadow: 0 6px 16px rgba(213, 164, 62, 0.35);
 }
 
+.footer-social-btn.social-link--disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 /* ==========================================================================
    BOTTOM DIVIDER & CREDITS BAR
    ========================================================================== */
