@@ -339,6 +339,59 @@
    RESPONSIVE BREAKPOINTS
    ========================================================================== */
 
+.site-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background: #101014;
+  opacity: 1;
+  transition: opacity 350ms ease;
+}
+
+.site-loader--dismissed {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.site-loader__spinner {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  border: 4px solid rgba(213, 164, 62, 0.2);
+  border-top-color: #d5a43e;
+  border-radius: 50%;
+  animation: siteLoaderSpin 1s linear infinite;
+}
+
+.site-loader__spinner::after {
+  position: absolute;
+  inset: 8px;
+  border: 3px solid rgba(213, 164, 62, 0.18);
+  border-bottom-color: #f5d77f;
+  border-radius: 50%;
+  content: "";
+  animation: siteLoaderSpin 1.5s linear infinite reverse;
+}
+
+.site-loader__label {
+  color: #d5a43e;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+@keyframes siteLoaderSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Large Tablets / Small Laptops */
 @media (max-width: 1024px) {
   .hero-section {
@@ -370,7 +423,7 @@
     min-height: 100vh;
     padding-top: 86px;
     padding-bottom: 40px;
-    align-items: flex-end;
+    align-items: flex-start;
   }
 
   /* Swap to mobile background artwork with center composition */
@@ -378,23 +431,42 @@
     object-position: center top;
   }
 
-  /* Vertical gradient overlay to keep text ultra-crisp while spotlight shines */
+  /* Keep the text area dark while letting the artwork and subject show below. */
   .hero__overlay-linear {
     background: linear-gradient(
       180deg,
-      rgba(16, 16, 20, 0.75) 0%,
-      rgba(16, 16, 20, 0.4) 30%,
-      rgba(16, 16, 20, 0.85) 60%,
-      rgba(16, 16, 20, 0.98) 85%,
-      #101014 100%
+      rgba(12, 10, 12, 0.78) 0%,
+      rgba(12, 10, 12, 0.66) 22%,
+      rgba(16, 12, 14, 0.44) 40%,
+      rgba(16, 12, 14, 0.2) 54%,
+      rgba(16, 16, 20, 0.02) 69%,
+      rgba(16, 16, 20, 0) 76%
     );
   }
 
   .hero__overlay-radial {
-    width: 320px;
-    height: 320px;
-    top: 50%;
-    left: 10%;
+    top: auto;
+    bottom: 2%;
+    left: 18%;
+    width: 420px;
+    height: 420px;
+    background: radial-gradient(
+      circle,
+      rgba(213, 164, 62, 0.18) 0%,
+      rgba(213, 164, 62, 0.07) 38%,
+      rgba(213, 164, 62, 0) 72%
+    );
+    filter: blur(22px);
+  }
+
+  .hero__overlay-bottom {
+    height: 50%;
+    background: linear-gradient(
+      to top,
+      rgba(12, 10, 12, 0.34) 0%,
+      rgba(16, 12, 14, 0.14) 20%,
+      rgba(16, 16, 20, 0) 56%
+    );
   }
 
   .hero__container {
@@ -405,7 +477,7 @@
     max-width: 100%;
     align-items: center;
     text-align: center;
-    padding-top: 180px; /* Let the spotlight character breathe above */
+    padding-top: 30px;
   }
 
   .hero__presenter {
@@ -442,6 +514,17 @@
     text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95);
   }
 
+  .hero__presenter-org,
+  .hero__presenter-label,
+  .hero__pillars,
+  .hero__meta {
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  }
+
+  .hero__subtitle {
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
+  }
+
   .hero__actions {
     flex-direction: row;
     justify-content: center;
@@ -451,10 +534,11 @@
 
   .hero__btn {
     flex: 1;
-    max-width: 200px;
-    height: 46px;
-    padding: 0 20px;
-    font-size: 13.5px;
+    min-width: 0;
+    max-width: 240px;
+    height: 54px;
+    padding: 0 16px;
+    font-size: 15px;
   }
 
   .hero__meta {
@@ -472,23 +556,36 @@
   }
 
   .hero__content {
-    padding-top: 140px;
+    padding-top: 20px;
   }
 
   .hero__actions {
-    flex-direction: column;
+    flex-direction: row;
     width: 100%;
     gap: 10px;
   }
 
   .hero__btn {
-    width: 100%;
-    max-width: 100%;
-    height: 46px;
+    width: auto;
+    max-width: none;
+    height: 54px;
+    padding: 0 10px;
+    font-size: 14px;
   }
 
   .hero__meta {
     flex-direction: column;
     gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-loader__spinner,
+  .site-loader__spinner::after {
+    animation: none;
+  }
+
+  .site-loader {
+    transition-duration: 0.01ms;
   }
 }

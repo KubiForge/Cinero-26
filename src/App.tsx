@@ -11,6 +11,47 @@ import './App.css';
 function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'guidelines'>('home');
   const [selectedCategory, setSelectedCategory] = useState<'university' | 'school'>('university');
+  const [isLoading, setIsLoading] = useState(true);
+  const [showLoader, setShowLoader] = useState(true);
+
+  useEffect(() => {
+    const minimumDisplayTime = 450;
+    const startedAt = Date.now();
+    let hideTimer: number | undefined;
+    let removeTimer: number | undefined;
+
+    const finishLoading = () => {
+      const remainingTime = Math.max(0, minimumDisplayTime - (Date.now() - startedAt));
+      hideTimer = window.setTimeout(() => {
+        setIsLoading(false);
+        removeTimer = window.setTimeout(() => setShowLoader(false), 350);
+      }, remainingTime);
+    };
+
+    if (document.readyState === 'complete') {
+      finishLoading();
+    } else {
+      window.addEventListener('load', finishLoading, { once: true });
+    }
+
+    return () => {
+      window.removeEventListener('load', finishLoading);
+      if (hideTimer !== undefined) window.clearTimeout(hideTimer);
+      if (removeTimer !== undefined) window.clearTimeout(removeTimer);
+    };
+  }, []);
+
+  const pageLoader = showLoader ? (
+    <div
+      className={`site-loader${isLoading ? '' : ' site-loader--dismissed'}`}
+      role="status"
+      aria-live="polite"
+      aria-hidden={!isLoading}
+    >
+      <span className="site-loader__spinner" aria-hidden="true" />
+      <span className="site-loader__label">Loading...</span>
+    </div>
+  ) : null;
 
   // Synchronize with URL hash for back/forward navigation and direct links
   useEffect(() => {
@@ -63,24 +104,28 @@ function App() {
   // If viewing the dedicated guidelines page
   if (currentPage === 'guidelines') {
     return (
-      <GuidlinesPage
-        key={selectedCategory}
-        initialCategory={selectedCategory}
-        onBack={handleBackToHome}
-        onRegisterClick={() => {
-          setCurrentPage('home');
-          setTimeout(() => {
-            const el = document.getElementById('register');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }, 80);
-        }}
-      />
+      <>
+        {pageLoader}
+        <GuidlinesPage
+          key={selectedCategory}
+          initialCategory={selectedCategory}
+          onBack={handleBackToHome}
+          onRegisterClick={() => {
+            setCurrentPage('home');
+            setTimeout(() => {
+              const el = document.getElementById('register');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }, 80);
+          }}
+        />
+      </>
     );
   }
 
   // Home Page View
   return (
     <>
+      {pageLoader}
       <Navbar onNavigate={handleNavClick} />
       <main>
         {/* Hero Section */}

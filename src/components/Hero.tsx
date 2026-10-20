@@ -128,10 +128,6 @@ export const Hero: React.FC<HeroProps> = ({ onRegisterClick, onExploreClick }) =
               <span className="hero__meta-bullet" />
               <span>University of Sri Jayewardenepura</span>
             </div>
-            <div className="hero__meta-item">
-              <span className="hero__meta-bullet" />
-              <span>National Competition</span>
-            </div>
           </div>
         </div>
       </div>
