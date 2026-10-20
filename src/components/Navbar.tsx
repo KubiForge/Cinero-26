@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import "./Navbar.css";
 import BrandLogo from './BrandLogo';
-
-const NAV_LINKS = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Timeline", href: "#timeline" },
-  { label: "Guidelines", href: "#guidelines" },
-  { label: "Contact", href: "#contact" },
-];
+import { siteNavigationLinks } from '../data/siteLinks';
 
 interface NavbarProps {
   onNavigate?: (href: string) => void;
@@ -59,7 +52,7 @@ export default function Navbar({ onNavigate }: NavbarProps = {}) {
 
         <nav className={`navbar__menu ${open ? "is-open" : ""}`}>
           <ul className="navbar__links">
-            {NAV_LINKS.map((link) => (
+            {siteNavigationLinks.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}

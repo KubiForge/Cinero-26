@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import './ContactSection.css';
+import SocialLinks from './SocialLinks';
+import { contactEmail } from '../data/siteLinks';
 
 const showContactAlert = (title: string, text: string, icon: 'success' | 'error') =>
   Swal.fire({
@@ -258,8 +260,8 @@ export const ContactSection: React.FC = () => {
               </div>
               <div className="info-card__content">
                 <span className="info-card__label">OFFICIAL EMAIL</span>
-                <a href="mailto:sathirasugeesvara@gmail.com" className="info-card__value info-card__link">
-                  sathirasugeesvara@gmail.com
+                <a href={contactEmail.href} className="info-card__value info-card__link">
+                  {contactEmail.address}
                 </a>
               </div>
             </div>
@@ -299,57 +301,7 @@ export const ContactSection: React.FC = () => {
             <div className="contact-social-card">
               <span className="info-card__label">CONNECT & FOLLOW</span>
               <p className="social-card__desc">Stay tuned with teaser trailers, shortlists, and behind-the-scenes.</p>
-              <div className="social-links">
-                <a
-                  href="https://facebook.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="social-btn"
-                  aria-label="Facebook"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                  </svg>
-                </a>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="social-btn"
-                  aria-label="Instagram"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                  </svg>
-                </a>
-                <a
-                  href="https://youtube.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="social-btn"
-                  aria-label="YouTube"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
-                    <polygon points="10 15 15 12 10 9 10 15" />
-                  </svg>
-                </a>
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="social-btn"
-                  aria-label="LinkedIn"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                    <rect x="2" y="9" width="4" height="12" />
-                    <circle cx="4" cy="4" r="2" />
-                  </svg>
-                </a>
-              </div>
+              <SocialLinks className="social-links" linkClassName="social-btn" />
             </div>
           </div>
         </div>

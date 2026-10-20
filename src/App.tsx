@@ -91,14 +91,24 @@ function App() {
   };
 
   const handleNavClick = (href: string) => {
+    if (href === '#guidelines-university' || href === '#guidelines-school') {
+      handleOpenCategoryGuidelines(href.endsWith('university') ? 'university' : 'school');
+      return;
+    }
+
+    const scrollToTarget = () => {
+      document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+    };
+
     if (currentPage === 'guidelines') {
       setCurrentPage('home');
-      setTimeout(() => {
-        const targetId = href.replace('#', '');
-        const el = document.getElementById(targetId);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 50);
+      window.location.hash = href;
+      window.setTimeout(scrollToTarget, 80);
+      return;
     }
+
+    window.location.hash = href;
+    scrollToTarget();
   };
 
   // If viewing the dedicated guidelines page
