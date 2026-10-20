@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 import './ContactSection.css';
+
+const showContactAlert = (title: string, text: string, icon: 'success' | 'error') =>
+  Swal.fire({
+    title,
+    text,
+    icon,
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#d4a642',
+    background: '#171518',
+    color: '#fff',
+  });
 
 export const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +30,9 @@ export const ContactSection: React.FC = () => {
     e.preventDefault();
     const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
     if (!accessKey) {
-      setSubmitError('The contact form is not configured yet. Please email us directly.');
+      const message = 'The contact form is not configured yet. Please email us directly.';
+      setSubmitError(message);
+      await showContactAlert('Unable to send message', message, 'error');
       return;
     }
 
@@ -74,13 +89,19 @@ export const ContactSection: React.FC = () => {
 
       setSubmitted(true);
       setFormData({ name: '', email: '', category: 'general', message: '' });
+      await showContactAlert(
+        'Message sent!',
+        'Thank you for reaching out to CINERO’26. We will be in touch with you shortly.',
+        'success',
+      );
     } catch (error) {
       console.error('Web3Forms contact submission failed:', error);
-      setSubmitError(
+      const message =
         error instanceof Error
           ? error.message
-          : 'Could not send your message. Please try again or email us directly.',
-      );
+          : 'Could not send your message. Please try again or email us directly.';
+      setSubmitError(message);
+      await showContactAlert('Message not sent', message, 'error');
     } finally {
       setIsSubmitting(false);
     }
