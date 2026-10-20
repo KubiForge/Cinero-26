@@ -10,15 +10,80 @@ export const ContactSection: React.FC = () => {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) return;
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+    if (!accessKey) {
+      setSubmitError('The contact form is not configured yet. Please email us directly.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    const inquirySubjects: Record<string, string> = {
+      general: 'General Inquiries',
+      university: 'Inter-University Category Guidelines',
+      school: 'Inter-School Category Guidelines',
+      submission: 'Submission Portal & Video Specs',
+      sponsorship: 'Sponsorship & Media Partnership',
+      other: 'Other',
+    };
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formData.name,
+          email: formData.email,
+          subject: `CINERO'26 - ${inquirySubjects[formData.category] ?? 'Other'}`,
+          message: formData.message,
+          replyto: formData.email,
+          botcheck: '',
+        }),
+      });
+      const result: unknown = await response.json();
+      const resultMessage =
+        typeof result === 'object' &&
+        result !== null &&
+        'message' in result &&
+        typeof result.message === 'string'
+          ? result.message
+          : '';
+
+      if (!response.ok) {
+        throw new Error(resultMessage || 'The message could not be sent. Please try again.');
+      }
+
+      if (
+        typeof result !== 'object' ||
+        result === null ||
+        !('success' in result) ||
+        result.success !== true
+      ) {
+        throw new Error(resultMessage || 'The message could not be sent. Please try again.');
+      }
+
+      setSubmitted(true);
       setFormData({ name: '', email: '', category: 'general', message: '' });
-    }, 4000);
+    } catch (error) {
+      console.error('Web3Forms contact submission failed:', error);
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : 'Could not send your message. Please try again or email us directly.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -28,13 +93,7 @@ export const ContactSection: React.FC = () => {
         <picture className="contact-section__bg-art">
           <source
             type="image/webp"
-            media="(max-width: 768px)"
-            srcSet="/images/contact-background-mobile.ab25b803fc.webp 900w"
-            sizes="100vw"
-          />
-          <source
-            type="image/webp"
-            srcSet="/images/contact-background.75b51239a3.webp 1672w"
+            srcSet="/images/contact-background-960.webp 960w, /images/contact-background-1600.webp 1600w"
             sizes="100vw"
           />
           <img
@@ -88,6 +147,13 @@ export const ContactSection: React.FC = () => {
                 <div>
                   <strong>Message Sent Successfully!</strong>
                   <p>Thank you for reaching out to CINERO’26. We will be in touch with you shortly.</p>
+                  <button
+                    type="button"
+                    className="contact-submit-btn"
+                    onClick={() => setSubmitted(false)}
+                  >
+                    Send another message
+                  </button>
                 </div>
               </div>
             ) : (
@@ -130,6 +196,7 @@ export const ContactSection: React.FC = () => {
                     <option value="school">Inter-School Category Guidelines</option>
                     <option value="submission">Submission Portal & Video Specs</option>
                     <option value="sponsorship">Sponsorship & Media Partnership</option>
+                    <option value="other">Other</option>
                   </select>
                 </div>
 
@@ -145,8 +212,14 @@ export const ContactSection: React.FC = () => {
                   />
                 </div>
 
-                <button type="submit" className="contact-submit-btn">
-                  Send Message
+                {submitError && (
+                  <p className="contact-error-msg" role="alert">
+                    {submitError}
+                  </p>
+                )}
+
+                <button type="submit" className="contact-submit-btn" disabled={isSubmitting}>
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             )}
@@ -164,8 +237,8 @@ export const ContactSection: React.FC = () => {
               </div>
               <div className="info-card__content">
                 <span className="info-card__label">OFFICIAL EMAIL</span>
-                <a href="mailto:cinero@jpura.voice.lk" className="info-card__value info-card__link">
-                  cinero@jpura.voice.lk
+                <a href="mailto:sathirasugeesvara@gmail.com" className="info-card__value info-card__link">
+                  sathirasugeesvara@gmail.com
                 </a>
               </div>
             </div>
@@ -181,7 +254,7 @@ export const ContactSection: React.FC = () => {
               </div>
               <div className="info-card__content">
                 <span className="info-card__label">ORGANIZED BY</span>
-                <div className="info-card__value">J'Pura Voice</div>
+                <div className="info-card__value">J'Pura Voice Filming Division</div>
                 <p className="info-card__sub">The Official Media Club of the University of Sri Jayewardenepura</p>
               </div>
             </div>
@@ -196,8 +269,8 @@ export const ContactSection: React.FC = () => {
               </div>
               <div className="info-card__content">
                 <span className="info-card__label">FESTIVAL LOCATION</span>
-                <div className="info-card__value">University of Sri Jayewardenepura</div>
-                <p className="info-card__sub">Gangodawila, Nugegoda, Sri Lanka</p>
+                <div className="info-card__value">Coming Soon</div>
+                <p className="info-card__sub">Festival venue details will be announced soon.</p>
               </div>
             </div>
 

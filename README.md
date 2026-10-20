@@ -11,6 +11,14 @@ Currently, two official plugins are available:
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
+## Web3Forms contact form
+
+1. Create a Web3Forms access key for `sathirasugeesvara@gmail.com` at [web3forms.com](https://web3forms.com/).
+2. Copy `.env.example` to `.env.local` and set `VITE_WEB3FORMS_ACCESS_KEY` to the generated key.
+3. Restart the Vite development server. For production, add the same variable to the hosting provider's build environment.
+
+The access key is used by the browser to submit the form, so it is included in the client bundle. Use a key created for the intended recipient email.
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:

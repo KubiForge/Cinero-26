@@ -35,35 +35,52 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="footer-logos">
               <a href="#home" onClick={(e) => handleLinkClick('#home', e)} className="footer-logo-link">
                 <BrandLogo
+                  variant="withCaption"
                   alt="CINERO'26"
                   className="footer-logo footer-logo--cinero"
+                  sizes="(max-width: 480px) 120px, 160px"
                   loading="lazy"
                   decoding="async"
                 />
               </a>
               <span className="footer-logo-divider" aria-hidden="true" />
-              <div className="footer-logo-link">
-                <picture>
-                  <source
-                    type="image/webp"
-                    srcSet="/images/voice-logo-footer.7302b05421.webp 400w"
-                    sizes="400px"
-                  />
-                  <img
-                    src="/images/Voice logo for footer.png"
-                    alt="J'Pura Voice"
-                    className="footer-logo footer-logo--voice"
-                    width={400}
-                    height={165}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </picture>
-              </div>
+              <picture>
+                <source
+                  type="image/webp"
+                  srcSet="/images/filmingdivision-320.webp 320w, /images/filmingdivision-640.webp 640w, /images/filmingdivision-960.webp 960w"
+                  sizes="(max-width: 480px) 74px, 96px"
+                />
+                <img
+                  src="/images/filmingdivision-optimized.png"
+                  alt="J'Pura Voice Filming Division"
+                  className="footer-logo footer-logo--division"
+                  width={960}
+                  height={288}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
+              <span className="footer-logo-divider" aria-hidden="true" />
+              <picture className="footer-logo-link footer-logo-link--voice">
+                <source
+                  type="image/webp"
+                  srcSet="/images/voice-logo-for-footer-320.webp 320w, /images/voice-logo-for-footer-640.webp 640w, /images/voice-logo-for-footer-960.webp 960w"
+                  sizes="(max-width: 480px) 54px, 68px"
+                />
+                <img
+                  src="/images/voice-logo-for-footer-optimized.png"
+                  alt="J'Pura Voice"
+                  className="footer-logo footer-logo--voice"
+                  width={960}
+                  height={393}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
             </div>
 
             <p className="footer-tagline">
-              The premier national short film festival celebrating bold voices, authentic narratives, and visionary student creators across Sri Lanka.
+              CINERO’26 is a stage for every story, celebrating visionary filmmakers across Sri Lanka.
             </p>
 
             <div className="footer-university-badge">
@@ -191,7 +208,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         {/* Bottom Credits Bar */}
         <div className="footer-bottom-bar">
           <div className="footer-copyright">
-            © {currentYear} <strong>CINERO’26</strong>. Organized by <strong>J'Pura Voice</strong>, University of Sri Jayewardenepura.
+            © {currentYear} <strong>CINERO’26</strong>. Organized by <strong>J'Pura Voice Filming Division</strong>, University of Sri Jayewardenepura.
           </div>
 
           {/* Developer Credit: Kubi Forge */}

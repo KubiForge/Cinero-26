@@ -41,7 +41,13 @@ export const GuidlinesPage: React.FC<GuidlinesPageProps> = ({
           </button>
 
           <div className="guidelines-page__brand">
-            <BrandLogo alt="CINERO'26" className="guidelines-page__brand-logo" decoding="async" />
+            <BrandLogo
+              variant="withoutCaption"
+              sizes="160px"
+              alt="CINERO'26"
+              className="guidelines-page__brand-logo"
+              decoding="async"
+            />
           </div>
 
           <div className="guidelines-page__actions">
@@ -80,8 +86,8 @@ export const GuidlinesPage: React.FC<GuidlinesPageProps> = ({
             media="(max-width: 768px)"
             srcSet={
               isUniversity
-                ? '/images/guidline-section-university-card-background-mobile.a29947c05e.webp 750w'
-                : '/images/guidline-section-school-card-background-mobile.385a888440.webp 750w'
+                ? '/images/guidline-section-university-card-background-480.webp 480w, /images/guidline-section-university-card-background-960.webp 960w'
+                : '/images/guidline-section-school-card-background-480.webp 480w, /images/guidline-section-school-card-background-960.webp 960w'
             }
             sizes="100vw"
           />
@@ -89,8 +95,8 @@ export const GuidlinesPage: React.FC<GuidlinesPageProps> = ({
             type="image/webp"
             srcSet={
               isUniversity
-                ? '/images/guidline-section-university-card-background.798382d6d0.webp 1254w'
-                : '/images/guidline-section-school-card-background.5f3343b629.webp 1254w'
+                ? '/images/guidline-section-university-card-background-480.webp 480w, /images/guidline-section-university-card-background-960.webp 960w'
+                : '/images/guidline-section-school-card-background-480.webp 480w, /images/guidline-section-school-card-background-960.webp 960w'
             }
             sizes="100vw"
           />

@@ -38,7 +38,7 @@
 }
 
 .navbar__logo img {
-  height: 38px;
+  height: 24px;
   width: auto;
   display: block;
 }
@@ -173,7 +173,7 @@
   }
 
   .navbar__logo img {
-    height: 30px;
+    height: 20px;
   }
 
   .navbar__toggle {

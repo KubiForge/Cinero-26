@@ -38,7 +38,12 @@ export default function Navbar({ onNavigate }: NavbarProps = {}) {
     <header className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
       <div className="navbar__inner">
         <a href="#home" className="navbar__logo" onClick={() => handleNav("#home")}>
-          <BrandLogo alt="CINERO'26" decoding="async" />
+          <BrandLogo
+            variant="withCaption"
+            sizes="(max-width: 768px) 150px, 190px"
+            alt="CINERO'26"
+            decoding="async"
+          />
         </a>
 
         <button

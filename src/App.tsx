@@ -147,7 +147,7 @@ function App() {
               <span className="section-eyebrow">About The Festival</span>
               <h2 className="section-title">Celebrating Visionary Filmmakers</h2>
               <p className="section-desc">
-                CINERO'26 is the premier national short film festival organized by J'Pura Voice,
+                CINERO'26 is a short film festival organized by J'Pura Voice Filming Division,
                 the Official Media Club of the University of Sri Jayewardenepura.
                 Empowering independent filmmakers, university students, and school creators to bring untold stories to light.
               </p>
@@ -203,7 +203,7 @@ function App() {
               <button
                 type="button"
                 className="register-btn"
-                onClick={() => alert("Registration portal will open for CINERO'26 submissions soon. Stay tuned!")}
+                onClick={() => alert("Registration opens October 26, 2026. Stay tuned!")}
               >
                 Register Film Entry
               </button>

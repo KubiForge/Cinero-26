@@ -27,17 +27,17 @@ export const Hero: React.FC<HeroProps> = ({ onRegisterClick, onExploreClick }) =
           <source
             type="image/webp"
             media="(max-width: 768px)"
-            srcSet="/images/hero-mobile-mobile.71a241e927.webp 780w, /images/hero-mobile.5592611193.webp 940w"
+            srcSet="/images/hero-mobile-480.webp 480w, /images/hero-mobile-940.webp 940w"
             sizes="100vw"
           />
           <source
             type="image/webp"
-            srcSet="/images/hero-bg.a483ba35e7.webp 1672w"
+            srcSet="/images/hero-bg-960.webp 960w, /images/hero-bg-1600.webp 1600w"
             sizes="100vw"
           />
           <img
             src="/images/hero-bg.png"
-            alt=""
+            alt="CINERO'26 Short Film Festival"
             width={1672}
             height={941}
             fetchPriority="high"
@@ -54,21 +54,21 @@ export const Hero: React.FC<HeroProps> = ({ onRegisterClick, onExploreClick }) =
           {/* Eyebrow / Presenter */}
           <div className="hero__presenter">
             <span className="hero__presenter-org">J'PURA VOICE</span>
-            <span className="hero__presenter-label">PRESENTS</span>
+            <span className="hero__presenter-label">FILMING DIVISION</span>
           </div>
 
           {/* Logo & Main Title */}
           <div className="hero__brand">
             <BrandLogo
-              alt="CINERO'26"
+              variant="withCaption"
+              sizes="(max-width: 768px) 72vw, 460px"
+              alt=""
               className="hero__logo-image"
               loading="eager"
               decoding="async"
               fetchPriority="high"
             />
-            <h1 className="hero__title-text">
-              <span className="hero__subtitle">Short Film Festival</span>
-            </h1>
+            <h1 className="hero__title-text">CINERO’26</h1>
           </div>
 
           {/* Golden Divider */}
@@ -91,8 +91,7 @@ export const Hero: React.FC<HeroProps> = ({ onRegisterClick, onExploreClick }) =
 
           {/* Tagline / Mission */}
           <p className="hero__tagline">
-            A PLATFORM FOR BOLD VOICES<br />
-            AND MEANINGFUL STORIES
+            A STAGE FOR EVERY STORY
           </p>
 
           {/* CTA Buttons (Strictly without arrows as requested) */}

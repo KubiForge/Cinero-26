@@ -13,13 +13,7 @@ export const GuidelinesSection: React.FC<GuidelinesSectionProps> = ({ onSelectCa
         <picture className="guidelines-section__bg-art">
           <source
             type="image/webp"
-            media="(max-width: 768px)"
-            srcSet="/images/guidline-section-backgound-mobile.992ef29093.webp 900w"
-            sizes="100vw"
-          />
-          <source
-            type="image/webp"
-            srcSet="/images/guidline-section-backgound.4faeae743b.webp 1671w"
+            srcSet="/images/guidline-section-backgound-960.webp 960w, /images/guidline-section-backgound-1600.webp 1600w"
             sizes="100vw"
           />
           <img
@@ -68,14 +62,8 @@ export const GuidelinesSection: React.FC<GuidelinesSectionProps> = ({ onSelectCa
             <picture className="guideline-card__bg guideline-card__bg--university">
               <source
                 type="image/webp"
-                media="(max-width: 768px)"
-                srcSet="/images/guidline-section-university-card-background-mobile.a29947c05e.webp 750w"
-                sizes="100vw"
-              />
-              <source
-                type="image/webp"
-                srcSet="/images/guidline-section-university-card-background.798382d6d0.webp 1254w"
-                sizes="350px"
+                srcSet="/images/guidline-section-university-card-background-480.webp 480w, /images/guidline-section-university-card-background-960.webp 960w"
+                sizes="(max-width: 768px) 100vw, 350px"
               />
               <img
                 src="/images/guidline section-university card-background.png"
@@ -149,14 +137,8 @@ export const GuidelinesSection: React.FC<GuidelinesSectionProps> = ({ onSelectCa
             <picture className="guideline-card__bg guideline-card__bg--school">
               <source
                 type="image/webp"
-                media="(max-width: 768px)"
-                srcSet="/images/guidline-section-school-card-background-mobile.385a888440.webp 750w"
-                sizes="100vw"
-              />
-              <source
-                type="image/webp"
-                srcSet="/images/guidline-section-school-card-background.5f3343b629.webp 1254w"
-                sizes="350px"
+                srcSet="/images/guidline-section-school-card-background-480.webp 480w, /images/guidline-section-school-card-background-960.webp 960w"
+                sizes="(max-width: 768px) 100vw, 350px"
               />
               <img
                 src="/images/guidline section-school card-background.png"
