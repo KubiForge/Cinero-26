@@ -188,7 +188,7 @@ export const ContactSection: React.FC = () => {
                       type="text"
                       id="contact-name"
                       required
-                      placeholder="e.g. Kasun Perera"
+                      placeholder="Name here...."
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     />
@@ -200,7 +200,7 @@ export const ContactSection: React.FC = () => {
                       type="email"
                       id="contact-email"
                       required
-                      placeholder="e.g. kasun@example.com"
+                      placeholder="Email here...."
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
@@ -278,7 +278,7 @@ export const ContactSection: React.FC = () => {
               <div className="info-card__content">
                 <span className="info-card__label">ORGANIZED BY</span>
                 <div className="info-card__value">J'Pura Voice Filming Division</div>
-                <p className="info-card__sub">The Official Media Club of the University of Sri Jayewardenepura</p>
+                <p className="info-card__sub">The Official Media and Broadcasting Unit of the University of Sri Jayewardenepura</p>
               </div>
             </div>
 

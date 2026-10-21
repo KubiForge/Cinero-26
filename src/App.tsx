@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TimelineSection from './components/TimelineSection';
@@ -7,6 +9,49 @@ import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 import GuidlinesPage from './pages/Guidlines';
 import './App.css';
+
+const showRegistrationStatus = () => {
+  const today = new Date();
+  const registrationStart = new Date(2026, 9, 26);
+  const registrationEnd = new Date(2026, 10, 7);
+  const currentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+  if (currentDate < registrationStart) {
+    void Swal.fire({
+      title: 'Registration Has Not Opened Yet',
+      text: 'Registration opens on October 26, 2026.',
+      icon: 'info',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#d4a642',
+      background: '#171518',
+      color: '#fff',
+    });
+    return;
+  }
+
+  if (currentDate > registrationEnd) {
+    void Swal.fire({
+      title: 'Registration Is Closed',
+      text: 'The registration period ended on November 7, 2026.',
+      icon: 'warning',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#d4a642',
+      background: '#171518',
+      color: '#fff',
+    });
+    return;
+  }
+
+  void Swal.fire({
+    title: 'Registration Is Open',
+    text: 'Registration is open until November 7, 2026.',
+    icon: 'success',
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#d4a642',
+    background: '#171518',
+    color: '#fff',
+  });
+};
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'guidelines'>('home');
@@ -152,13 +197,34 @@ function App() {
 
         {/* About Section */}
         <section id="about" className="section section--about">
+          <picture className="section-bg-art section-bg-art--about" aria-hidden="true">
+            <source
+              type="image/webp"
+              media="(max-width: 768px)"
+              srcSet="/images/about-background-480.webp 480w, /images/about-background-960.webp 960w"
+              sizes="100vw"
+            />
+            <source
+              type="image/webp"
+              srcSet="/images/about-background-960.webp 960w, /images/about-background-1600.webp 1600w"
+              sizes="100vw"
+            />
+            <img
+              src="/images/background%20for%20about%20section%20and%20page.png"
+              alt=""
+              width={1672}
+              height={941}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
           <div className="section-container">
             <div className="section-header">
               <span className="section-eyebrow">About The Festival</span>
               <h2 className="section-title">Celebrating Visionary Filmmakers</h2>
               <p className="section-desc">
                 CINERO'26 is a short film festival organized by J'Pura Voice Filming Division,
-                the Official Media Club of the University of Sri Jayewardenepura.
+                the Official Media and Broadcasting Unit of the University of Sri Jayewardenepura.
                 Empowering independent filmmakers, university students, and school creators to bring untold stories to light.
               </p>
             </div>
@@ -202,6 +268,27 @@ function App() {
 
         {/* Register Section */}
         <section id="register" className="section section--register">
+          <picture className="section-bg-art section-bg-art--register" aria-hidden="true">
+            <source
+              type="image/webp"
+              media="(max-width: 768px)"
+              srcSet="/images/registration-background-480.webp 480w, /images/registration-background-960.webp 960w"
+              sizes="100vw"
+            />
+            <source
+              type="image/webp"
+              srcSet="/images/registration-background-960.webp 960w, /images/registration-background-1600.webp 1600w"
+              sizes="100vw"
+            />
+            <img
+              src="/images/background%20for%20registration%20section%20and%20page.png"
+              alt=""
+              width={1672}
+              height={941}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
           <div className="section-container">
             <div className="register-card">
               <span className="section-eyebrow">Ready To Submit?</span>
@@ -213,7 +300,7 @@ function App() {
               <button
                 type="button"
                 className="register-btn"
-                onClick={() => alert("Registration opens October 26, 2026. Stay tuned!")}
+                onClick={showRegistrationStatus}
               >
                 Register Film Entry
               </button>

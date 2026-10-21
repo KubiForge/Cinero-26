@@ -461,11 +461,12 @@
   }
 
   .mobile-active-card__title {
-    font-size: 1.35rem;
+    font-size: 1.5rem;
   }
 
   .mobile-active-card__desc {
-    font-size: 13.5px;
+    font-size: 14px;
+    line-height: 1.6;
   }
 
   .mobile-track {
@@ -504,6 +505,8 @@
 
   .mobile-step__body {
     flex: 1 1 0;
+    height: auto;
+    min-height: 0;
     padding: 16px 18px;
     text-align: left;
   }
@@ -529,12 +532,12 @@
 
   .mobile-step__title {
     margin-bottom: 4px;
-    font-size: 1.05rem;
+    font-size: 1.12rem;
   }
 
   .mobile-step__desc {
-    font-size: 12.5px;
-    line-height: 1.5;
+    font-size: 12.75px;
+    line-height: 1.55;
   }
 }
 
@@ -578,11 +581,29 @@
   }
 
   .mobile-step__body {
+    min-height: 0;
     padding: 14px 15px;
+  }
+
+  .mobile-step__title {
+    font-size: 1.18rem;
+  }
+
+  .mobile-step__desc {
+    font-size: 12.8px;
+    line-height: 1.6;
   }
 
   .mobile-active-card {
     padding: 20px 18px;
+  }
+
+  .mobile-active-card__title {
+    font-size: 1.55rem;
+  }
+
+  .mobile-active-card__desc {
+    font-size: 13.8px;
   }
 
   .in-progress-badge {

@@ -30,8 +30,8 @@ export const getContactPhoneHref = (number: string) => {
 export const socialLinks = [
   { label: 'Facebook', href: 'https://www.facebook.com/JapuraVoice', platform: 'facebook' },
   { label: 'Instagram', href: 'https://www.instagram.com/japura_voice', platform: 'instagram' },
-  { label: 'YouTube', href: 'https://youtube.com', platform: 'youtube' },
-  { label: 'LinkedIn', href: 'https://linkedin.com', platform: 'linkedin' },
+  { label: 'YouTube', href: 'https://youtube.com/@voicetvbyjapuravoice', platform: 'youtube' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/j-pura-voice', platform: 'linkedin' },
 ] as const;
 
 export type SocialPlatform = (typeof socialLinks)[number]['platform'];

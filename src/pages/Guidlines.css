@@ -375,13 +375,14 @@
   padding-left: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .guidelines-list li {
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.8;
   color: #dfd5c8;
+  padding-left: 4px;
 }
 
 .guidelines-list li strong {
