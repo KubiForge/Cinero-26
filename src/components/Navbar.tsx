@@ -8,7 +8,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ onNavigate }: NavbarProps = {}) {
-  const [active, setActive] = useState("#home");
+  const [active, setActive] = useState(() => window.location.hash || "#home");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 

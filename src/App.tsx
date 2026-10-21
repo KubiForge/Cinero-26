@@ -7,6 +7,7 @@ import TimelineSection from './components/TimelineSection';
 import GuidelinesSection from './components/GuidelinesSection';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
+import AboutPage from './pages/About';
 import GuidlinesPage from './pages/Guidlines';
 import './App.css';
 
@@ -54,7 +55,7 @@ const showRegistrationStatus = () => {
 };
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'guidelines'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'guidelines'>('home');
   const [selectedCategory, setSelectedCategory] = useState<'university' | 'school'>('university');
   const [isLoading, setIsLoading] = useState(true);
   const [showLoader, setShowLoader] = useState(true);
@@ -110,7 +111,14 @@ function App() {
         setCurrentPage('guidelines');
       } else if (hash === '#guidelines-detail') {
         setCurrentPage('guidelines');
-      } else if (currentPage === 'guidelines' && (hash === '#home' || hash === '' || hash === '#guidelines')) {
+      } else if (hash === '#about' || hash.startsWith('#about-')) {
+        setCurrentPage('about');
+        if (hash !== '#about') {
+          window.setTimeout(() => {
+            document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+          }, 80);
+        }
+      } else if (currentPage !== 'home' && (hash === '#home' || hash === '' || hash === '#guidelines' || hash === '#timeline' || hash === '#register' || hash === '#contact')) {
         setCurrentPage('home');
       }
     };
@@ -141,11 +149,20 @@ function App() {
       return;
     }
 
+    if (href === '#about' || href.startsWith('#about-')) {
+      setCurrentPage('about');
+      window.location.hash = href;
+      window.setTimeout(() => {
+        document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+      }, 80);
+      return;
+    }
+
     const scrollToTarget = () => {
       document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    if (currentPage === 'guidelines') {
+    if (currentPage !== 'home') {
       setCurrentPage('home');
       window.location.hash = href;
       window.setTimeout(scrollToTarget, 80);
@@ -177,6 +194,16 @@ function App() {
     );
   }
 
+  if (currentPage === 'about') {
+    return (
+      <>
+        {pageLoader}
+        <AboutPage onNavigate={handleNavClick} />
+        <Footer onNavigate={handleNavClick} />
+      </>
+    );
+  }
+
   // Home Page View
   return (
     <>
@@ -186,7 +213,7 @@ function App() {
         {/* Hero Section */}
         <Hero
           onExploreClick={() => {
-            const el = document.getElementById('about');
+            const el = document.getElementById('about-preview');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }}
           onRegisterClick={() => {
@@ -196,7 +223,7 @@ function App() {
         />
 
         {/* About Section */}
-        <section id="about" className="section section--about">
+        <section id="about-preview" className="section section--about">
           <picture className="section-bg-art section-bg-art--about" aria-hidden="true">
             <source
               type="image/webp"
@@ -219,43 +246,52 @@ function App() {
             />
           </picture>
           <div className="section-container">
-            <div className="section-header">
-              <span className="section-eyebrow">About The Festival</span>
-              <h2 className="section-title">Celebrating Visionary Filmmakers</h2>
+            <div className="about-section__header">
+              <div className="about-section__eyebrow">
+                <span>CINERO’26</span>
+                <span className="about-section__eyebrow-line" aria-hidden="true" />
+              </div>
+              <h2 className="about-section__title">ABOUT</h2>
               <p className="section-desc">
-                CINERO'26 is a short film festival organized by J'Pura Voice Filming Division,
-                the Official Media and Broadcasting Unit of the University of Sri Jayewardenepura.
-                Empowering independent filmmakers, university students, and school creators to bring untold stories to light.
+                CINERO’26 is an inter-school and inter-university short film festival celebrating
+                the stories, ideas, and creative voices of emerging filmmakers.
               </p>
             </div>
 
             <div className="about-grid">
               <div className="about-card">
                 <span className="about-card__num">01 / SPOTLIGHT</span>
-                <h3 className="about-card__title">Creative Freedom</h3>
+                <h3 className="about-card__title">Our Concept</h3>
                 <p className="about-card__text">
-                  A nationwide platform encouraging diverse perspectives, unique narratives,
-                  and unconventional storytelling across all genres.
+                  Every story deserves to be told, and every vision deserves the chance to be seen.
                 </p>
               </div>
 
               <div className="about-card">
                 <span className="about-card__num">02 / MASTERY</span>
-                <h3 className="about-card__title">Industry Recognition</h3>
+                <h3 className="about-card__title">Our Purpose</h3>
                 <p className="about-card__text">
-                  Evaluated by a distinguished panel of veteran directors, cinematographers,
-                  and screenwriters from Sri Lanka’s cinema landscape.
+                  Encourage creativity, celebrate diverse perspectives, and support the next generation of filmmakers.
                 </p>
               </div>
 
               <div className="about-card">
                 <span className="about-card__num">03 / HORIZONS</span>
-                <h3 className="about-card__title">Grand Screening</h3>
+                <h3 className="about-card__title">Two Categories</h3>
                 <p className="about-card__text">
-                  Finalists experience their films screened before an eager cinema audience,
-                  paired with networking and award ceremonies.
+                  A shared platform for school students and university undergraduates to express themselves through film.
                 </p>
               </div>
+            </div>
+            <div className="about-preview__actions">
+              <button
+                type="button"
+                className="about-preview__button"
+                onClick={() => handleNavClick('#about')}
+              >
+                <span>Discover Our Story</span>
+                <span className="about-preview__button-arrow" aria-hidden="true">→</span>
+              </button>
             </div>
           </div>
         </section>

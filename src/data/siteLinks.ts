@@ -9,7 +9,7 @@ export const siteNavigationLinks = [
 export const footerCategoryLinks = [
   { label: 'Inter-University', href: '#guidelines-university' },
   { label: 'Inter-School', href: '#guidelines-school' },
-  { label: 'Awards & Recognition', href: '#about' },
+  { label: 'Our Purpose', href: '#about-purpose' },
   { label: 'Registration Portal', href: '#register' },
 ] as const;
 
