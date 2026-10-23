@@ -29,6 +29,15 @@ export default function Navbar({ onNavigate }: NavbarProps = {}) {
 
   return (
     <header className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
+      {open && (
+        <button
+          className="navbar__backdrop"
+          type="button"
+          aria-label="Close navigation menu"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
       <div className="navbar__inner">
         <a href="#home" className="navbar__logo" onClick={() => handleNav("#home")}>
           <BrandLogo
@@ -41,8 +50,9 @@ export default function Navbar({ onNavigate }: NavbarProps = {}) {
 
         <button
           className={`navbar__toggle ${open ? "is-open" : ""}`}
-          aria-label="Toggle menu"
+          aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
+          aria-controls="site-navigation"
           onClick={() => setOpen((o) => !o)}
         >
           <span />
@@ -50,7 +60,10 @@ export default function Navbar({ onNavigate }: NavbarProps = {}) {
           <span />
         </button>
 
-        <nav className={`navbar__menu ${open ? "is-open" : ""}`}>
+        <nav
+          id="site-navigation"
+          className={`navbar__menu ${open ? "is-open" : ""}`}
+        >
           <ul className="navbar__links">
             {siteNavigationLinks.map((link) => (
               <li key={link.href}>
