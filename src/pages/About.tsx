@@ -258,6 +258,47 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
 
         </section>
 
+        <section id="about-jpura-voice" className="about-page__voice">
+          <picture className="about-page__background" aria-hidden="true">
+            <source
+              type="image/webp"
+              media="(max-width: 768px)"
+              srcSet="/images/about-background-480.webp 480w, /images/about-background-960.webp 960w"
+              sizes="100vw"
+            />
+            <source
+              type="image/webp"
+              srcSet="/images/about-background-960.webp 960w, /images/about-background-1600.webp 1600w"
+              sizes="100vw"
+            />
+            <img
+              src="/images/background%20for%20about%20section%20and%20page.png"
+              alt=""
+              width={1672}
+              height={941}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
+          <div className="about-page__voice-overlay" aria-hidden="true" />
+
+          <div className="about-page__voice-content">
+            <h2 className="about-page__voice-title">ABOUT J’PURA VOICE</h2>
+            <article className="about-page__voice-card">
+              <p>
+                J’PURA VOICE functions as the Official Media &amp; Broadcasting Unit of the
+                University of Sri Jayewardenepura and represents 600+ active members across 11
+                faculties, making it the largest university media organization in Sri Lanka. The
+                unit operates through multiple divisions including Announcing, Debating,
+                Dubbing, Filming &amp; Programming, while also managing official platforms such as
+                FM J’PURA and J’PURA NEWS. J’PURA VOICE actively supports university events,
+                national level competitions, and media productions, while offering students
+                direct exposure to real-world media practices.
+              </p>
+            </article>
+          </div>
+        </section>
+
         <section id="about-filming-division" className="about-page__division">
           <picture className="about-page__background" aria-hidden="true">
             <source

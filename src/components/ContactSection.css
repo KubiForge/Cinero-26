@@ -109,9 +109,13 @@
 /* Grid: Left Form (56%) + Right Info (44%) */
 .contact-section__grid {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
   gap: 36px;
   align-items: start;
+}
+
+.contact-section__grid > * {
+  min-width: 0;
 }
 
 /* ==========================================================================
@@ -178,11 +182,12 @@
 
 .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
 .form-group {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -199,6 +204,7 @@
 .form-group select,
 .form-group textarea {
   width: 100%;
+  min-width: 0;
   background: rgba(14, 12, 17, 0.85);
   border: 1.5px solid rgba(213, 164, 62, 0.3);
   border-radius: 10px;

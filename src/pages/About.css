@@ -373,6 +373,68 @@
   line-height: 1.5;
 }
 
+.about-page__voice {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100vh - 61px);
+  min-height: calc(100svh - 61px);
+  overflow: hidden;
+  padding: 58px 0 36px;
+  border-top: 1px solid rgba(213, 164, 62, 0.18);
+  isolation: isolate;
+}
+
+.about-page__voice-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 76% 48%, rgba(213, 50, 32, 0.12), transparent 55%),
+    linear-gradient(90deg, rgba(10, 8, 8, 0.84), rgba(10, 8, 8, 0.46)),
+    linear-gradient(180deg, rgba(10, 8, 8, 0.34), rgba(10, 8, 8, 0.44));
+  pointer-events: none;
+}
+
+.about-page__voice-content {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+.about-page__voice-title {
+  margin: 0 0 26px;
+  color: #f0b41b;
+  font-family: var(--font-display, 'Cinzel', Georgia, serif);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.55);
+}
+
+.about-page__voice-card {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 34px 42px;
+  border: 1px solid rgba(213, 164, 62, 0.2);
+  border-radius: 14px;
+  background: linear-gradient(105deg, rgba(55, 16, 14, 0.96), rgba(7, 5, 5, 0.98) 78%);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.4);
+  color: #eee6df;
+}
+
+.about-page__voice-card p {
+  margin: 0;
+  color: #e9ded0;
+  font-size: clamp(16px, 2vw, 20px);
+  font-weight: 400;
+  line-height: 1.65;
+  text-align: justify;
+}
+
 .about-page__division {
   position: relative;
   display: flex;
@@ -937,6 +999,32 @@
     margin-bottom: 20px;
   }
 
+  .about-page__voice {
+    justify-content: flex-start;
+    min-height: calc(100svh - 54px);
+    padding: 50px 0 30px;
+  }
+
+  .about-page__voice-content {
+    padding: 0 20px;
+  }
+
+  .about-page__voice-title {
+    margin-bottom: 22px;
+    font-size: clamp(2.05rem, 9.5vw, 3.8rem);
+    overflow-wrap: anywhere;
+  }
+
+  .about-page__voice-card {
+    padding: 22px 20px;
+  }
+
+  .about-page__voice-card p {
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: left;
+  }
+
   .about-page__objectives {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -1118,6 +1206,7 @@
   .about-page__overview-content,
   .about-page__concept-content,
   .about-page__purpose-content,
+  .about-page__voice-content,
   .about-page__division-content,
   .about-page__audience-content,
   .about-page__awards-content {
@@ -1136,6 +1225,7 @@
 
   .about-page__concept,
   .about-page__purpose,
+  .about-page__voice,
   .about-page__division,
   .about-page__audience,
   .about-page__awards {
@@ -1144,6 +1234,7 @@
 
   .about-page__concept-title,
   .about-page__purpose-title,
+  .about-page__voice-title,
   .about-page__division-title,
   .about-page__audience-title {
     font-size: clamp(2rem, 10vw, 2.8rem);
@@ -1159,6 +1250,7 @@
   }
 
   .about-page__concept-description,
+  .about-page__voice-card p,
   .about-page__division-card p {
     font-size: 14px;
     line-height: 1.65;

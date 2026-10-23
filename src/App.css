@@ -22,6 +22,7 @@ main {
 }
 
 .section-container {
+  width: 100%;
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 48px;
@@ -143,8 +144,15 @@ main {
 
 .about-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 28px;
+}
+
+.about-grid > *,
+.timeline-track > *,
+.guidelines-grid > *,
+.contact-grid > * {
+  min-width: 0;
 }
 
 .about-card {
@@ -246,7 +254,7 @@ main {
 
 .timeline-track {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
   position: relative;
 }
@@ -299,7 +307,7 @@ main {
 
 .guidelines-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
 }
 
@@ -425,7 +433,7 @@ main {
 
 .contact-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 28px;
 }
 

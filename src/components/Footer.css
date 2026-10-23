@@ -36,10 +36,14 @@
 /* Main Grid Layout */
 .footer-main-grid {
   display: grid;
-  grid-template-columns: 1.8fr 1fr 1.1fr 1.2fr;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1.1fr) minmax(0, 1.2fr);
   gap: 40px;
   align-items: start;
   margin-bottom: 40px;
+}
+
+.footer-main-grid > * {
+  min-width: 0;
 }
 
 /* ==========================================================================

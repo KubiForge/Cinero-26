@@ -277,7 +277,7 @@ export const ContactSection: React.FC = () => {
               </div>
               <div className="info-card__content">
                 <span className="info-card__label">ORGANIZED BY</span>
-                <div className="info-card__value">J'Pura Voice Filming Division</div>
+                <div className="info-card__value">J'PURA VOICE FILMING DIVISION</div>
                 <p className="info-card__sub">The Official Media and Broadcasting Unit of the University of Sri Jayewardenepura</p>
               </div>
             </div>

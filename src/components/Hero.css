@@ -5,6 +5,7 @@
 .hero-section {
   position: relative;
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   background-color: #101014;
@@ -413,8 +414,8 @@
 /* Tablets & Mobile Devices */
 @media (max-width: 768px) {
   .hero-section {
-    min-height: 100svh;
     min-height: 100vh;
+    min-height: 100svh;
     padding-top: 86px;
     padding-bottom: 40px;
     align-items: flex-start;

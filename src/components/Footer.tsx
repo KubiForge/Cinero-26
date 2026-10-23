@@ -54,7 +54,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 />
                 <img
                   src="/images/filmingdivision-optimized.png"
-                  alt="J'Pura Voice Filming Division"
+                  alt="J'PURA VOICE FILMING DIVISION"
                   className="footer-logo footer-logo--division"
                   width={960}
                   height={288}
@@ -134,7 +134,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         {/* Bottom Credits Bar */}
         <div className="footer-bottom-bar">
           <div className="footer-copyright">
-            © {currentYear} <strong>CINERO’26</strong>. Organized by <strong>J'Pura Voice Filming Division</strong>, University of Sri Jayewardenepura.
+            © {currentYear} <strong>CINERO’26</strong>. Organized by <strong>J'PURA VOICE FILMING DIVISION</strong>, University of Sri Jayewardenepura.
           </div>
 
           {/* Developer Credit: Kubi Forge */}
