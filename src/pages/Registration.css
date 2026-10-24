@@ -1619,6 +1619,108 @@
   .reg-success__email-notice a {
     font-size: 1rem;
   }
+
+  /* Urgent email notice responsive */
+  .reg-success__urgent-alert {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.25rem 1rem;
+    gap: 0.85rem;
+  }
+
+  .reg-success__urgent-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+  }
+
+  .reg-success__urgent-title {
+    font-size: 1.02rem;
+  }
+
+  .reg-success__urgent-email {
+    font-size: 1.1rem;
+  }
+
+  .reg-success__urgent-sub {
+    font-size: 0.82rem;
+  }
+
+  /* Printable confirmation document mobile responsive */
+  .reg-doc {
+    padding: 1.35rem 1rem;
+    border-radius: 12px;
+  }
+
+  .reg-doc__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .reg-doc__brand {
+    gap: 0.85rem;
+  }
+
+  .reg-doc__fest-title {
+    font-size: 1.2rem;
+  }
+
+  .reg-doc__organizer {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .reg-doc__status-block {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 1rem;
+  }
+
+  .reg-doc__status-heading {
+    font-size: 1.3rem;
+  }
+
+  .reg-doc__ref-box {
+    width: 100%;
+    min-width: 0;
+    padding: 0.85rem 1rem;
+  }
+
+  .reg-doc__ref-code {
+    font-size: 1.2rem;
+  }
+
+  .reg-doc__grid {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .reg-doc__field--full {
+    grid-column: span 1;
+  }
+
+  .reg-doc__field--fee {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .reg-doc__fee-num {
+    font-size: 1.15rem;
+  }
+
+  .reg-doc__steps-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .reg-doc__footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 }
 
 @media (max-width: 480px) {

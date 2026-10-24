@@ -434,8 +434,8 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
       setIsSubmitting(false);
 
       await Swal.fire({
-        title: 'Registration Failed',
-        text: error?.message || 'We could not confirm your registration. Your details may not have been saved. Please try again.',
+        title: 'Registration Unsuccessful',
+        text: 'Something went wrong while processing your registration. Please check your connection and try again, or reach out to our support team.',
         icon: 'error',
         confirmButtonText: 'Try Again',
         confirmButtonColor: '#d4a642',

@@ -98,12 +98,10 @@ export const ContactSection: React.FC = () => {
       );
     } catch (error) {
       console.error('Web3Forms contact submission failed:', error);
-      const message =
-        error instanceof Error
-          ? error.message
-          : 'Could not send your message. Please try again or email us directly.';
-      setSubmitError(message);
-      await showContactAlert('Message not sent', message, 'error');
+      const friendlyMessage =
+        'Could not send your message at this moment. Please check your connection or contact us directly at cinero2026@gmail.com.';
+      setSubmitError(friendlyMessage);
+      await showContactAlert('Message Not Sent', friendlyMessage, 'error');
     } finally {
       setIsSubmitting(false);
     }
