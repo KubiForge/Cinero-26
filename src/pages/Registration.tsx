@@ -141,6 +141,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
   const [studentRegNo, setStudentRegNo] = useState('');
   const [studentIdFile, setStudentIdFile] = useState<File | null>(null);
   const [studentIdFileName, setStudentIdFileName] = useState('');
+  const [universityEligibility, setUniversityEligibility] = useState(false);
 
   // Step 3: Payment
   const [paymentMethod, setPaymentMethod] = useState<'Bank deposit' | 'Online transfer' | 'Other'>('Online transfer');
@@ -262,6 +263,10 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
         void Swal.fire({ title: 'Student ID Required', text: "Please upload a photo or scan of the team leader's student ID.", icon: 'warning', background: '#171518', color: '#fff', confirmButtonColor: '#d4a642' });
         return false;
       }
+      if (!universityEligibility) {
+        void Swal.fire({ title: 'Eligibility Confirmation Required', text: 'Please tick the box to confirm that all team members are currently enrolled undergraduates.', icon: 'warning', background: '#171518', color: '#fff', confirmButtonColor: '#d4a642' });
+        return false;
+      }
     }
     return true;
   };
@@ -371,7 +376,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
       guardianOrDegree: category === 'school' ? guardianDetails.trim() : degree.trim(),
       consentOrEligibility: category === 'school'
         ? `Parent/guardian consent: ${parentConsent ? 'Yes' : 'No'}; Declarations accepted: Yes`
-        : 'Eligibility not collected; Declarations accepted: Yes',
+        : `Undergraduate eligibility: ${universityEligibility ? 'Yes' : 'No'}; Declarations accepted: Yes`,
       amountPaid: calculatedFee,
       paymentMethod,
       paymentDate,
@@ -871,11 +876,11 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                     />
                   </div>
 
-                  <div className="reg-parent-consent">
-                    <label className="reg-parent-consent__label">
+                  <div className="reg-category-consent">
+                    <label className="reg-category-consent__label">
                       <input
                         type="checkbox"
-                        className="reg-parent-consent__checkbox"
+                        className="reg-category-consent__checkbox"
                         checked={parentConsent}
                         onChange={(e) => setParentConsent(e.target.checked)}
                       />
@@ -883,7 +888,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                         <strong>Parent or guardian consent:</strong> Parents or guardians of every team member under 18 should agree to their child taking part in CINERO'26.
                       </span>
                     </label>
-                    <p className="reg-parent-consent__notice">Please tick this box to confirm consent.</p>
+                    <p className="reg-category-consent__notice">Please tick this box to confirm consent.</p>
                   </div>
                 </div>
               ) : (
@@ -1037,9 +1042,20 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                     )}
                   </div>
 
-                  <p className="reg-declaration-note">
-                    <strong>Eligibility:</strong> All team members should be currently enrolled undergraduates at a recognised university or higher education institution in Sri Lanka.
-                  </p>
+                  <div className="reg-category-consent">
+                    <label className="reg-category-consent__label">
+                      <input
+                        type="checkbox"
+                        className="reg-category-consent__checkbox"
+                        checked={universityEligibility}
+                        onChange={(e) => setUniversityEligibility(e.target.checked)}
+                      />
+                      <span>
+                        <strong>Eligibility:</strong> All team members should be currently enrolled undergraduates at a recognised university or higher education institution in Sri Lanka.
+                      </span>
+                    </label>
+                    <p className="reg-category-consent__notice">Please tick this box to confirm your team meets the eligibility requirements.</p>
+                  </div>
                 </div>
               )}
 
@@ -1051,6 +1067,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                   Next: Registration Fee & Payment →
                 </button>
               </div>
+
             </div>
           )}
 

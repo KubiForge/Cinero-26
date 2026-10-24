@@ -804,6 +804,7 @@
   grid-template-columns: 18px minmax(0, 1fr);
   align-items: start;
   gap: 0.75rem;
+  min-width: 0;
   margin: 0;
   padding: 0.9rem 1rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -815,15 +816,21 @@
   cursor: pointer;
 }
 
+.reg-declaration-note > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .reg-declaration-checkbox {
   width: 18px;
   height: 18px;
   margin: 2px 0 0;
+  flex: 0 0 auto;
   accent-color: #d4a642;
   cursor: pointer;
 }
 
-.reg-parent-consent {
+.reg-category-consent {
   grid-column: 1 / -1;
   margin-top: 0.5rem;
   padding: 1rem;
@@ -832,30 +839,38 @@
   background: rgba(212, 166, 66, 0.06);
 }
 
-.reg-parent-consent__label {
+.reg-category-consent__label {
   display: grid;
   grid-template-columns: 20px minmax(0, 1fr);
   align-items: start;
   gap: 0.75rem;
+  min-width: 0;
   color: #d1cfe2;
   font-size: 0.88rem;
   line-height: 1.5;
   cursor: pointer;
 }
 
-.reg-parent-consent__checkbox {
+.reg-category-consent__label > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.reg-category-consent__checkbox {
   width: 18px;
   height: 18px;
   margin: 2px 0 0;
+  flex: 0 0 auto;
   accent-color: #d4a642;
   cursor: pointer;
 }
 
-.reg-parent-consent__notice {
+.reg-category-consent__notice {
   margin: 0.6rem 0 0 1.7rem;
   color: #e5c366;
   font-size: 0.78rem;
   line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .reg-source-options {
@@ -1315,6 +1330,139 @@
   }
 
   .reg-success__summary-val {
+    overflow-wrap: anywhere;
+  }
+}
+
+@page {
+  size: A4 portrait;
+  margin: 12mm;
+}
+
+@media print {
+  html,
+  body {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    background: #fff !important;
+    color: #191919 !important;
+  }
+
+  .reg-page {
+    display: block;
+    width: 100%;
+    min-height: 0;
+    overflow: visible;
+    background: #fff !important;
+    color: #191919 !important;
+  }
+
+  .reg-page__bg-wrapper,
+  .reg-page__header,
+  .reg-hero,
+  .reg-stepper,
+  .reg-success__actions {
+    display: none !important;
+  }
+
+  .reg-page__main {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .reg-card {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: #fff !important;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .reg-success {
+    max-width: 180mm;
+    margin: 0 auto;
+    padding: 0;
+    color: #191919 !important;
+    text-align: center;
+    break-inside: avoid;
+  }
+
+  .reg-success__email-notice {
+    gap: 2mm;
+    margin: 0 auto 5mm;
+    padding: 3mm 5mm;
+    border: 1px solid #c28b20;
+    border-radius: 3mm;
+    background: #fff8e8 !important;
+    color: #654a17 !important;
+    font-size: 10pt;
+    line-height: 1.35;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .reg-success__email-notice a {
+    color: #171717 !important;
+    font-size: 11pt;
+  }
+
+  .reg-success__title {
+    margin: 0 0 2mm;
+    color: #171717 !important;
+    font-size: 23pt;
+    line-height: 1.15;
+  }
+
+  .reg-success__ref {
+    margin: 0 0 4mm;
+    padding: 1mm 4mm;
+    border-color: #c28b20;
+    background: #fff8e8 !important;
+    color: #654a17 !important;
+    font-size: 9pt;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .reg-success__msg {
+    max-width: 165mm;
+    margin: 0 auto 5mm;
+    color: #333 !important;
+    font-size: 9.5pt;
+    line-height: 1.4;
+  }
+
+  .reg-success__summary-card {
+    width: 100%;
+    max-width: 160mm;
+    margin: 0 auto;
+    padding: 3mm 5mm;
+    border: 1px solid #d7d7d7;
+    border-radius: 3mm;
+    background: #fff !important;
+    break-inside: avoid;
+  }
+
+  .reg-success__summary-row {
+    padding: 2.2mm 0;
+    border-color: #e8e8e8;
+    color: #222 !important;
+    font-size: 9.5pt;
+    break-inside: avoid;
+  }
+
+  .reg-success__summary-label {
+    color: #555 !important;
+  }
+
+  .reg-success__summary-val {
+    max-width: 60%;
+    color: #171717 !important;
     overflow-wrap: anywhere;
   }
 }
