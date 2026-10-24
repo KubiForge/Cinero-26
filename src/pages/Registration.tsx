@@ -1132,7 +1132,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                   </div>
                   <div className="reg-bank-item">
                     <span className="reg-bank-item__label">Account Number</span>
-                    <span className="reg-bank-item__val">000984521098</span>
+                    <span className="reg-bank-item__val">000000000</span>
                   </div>
                   <div className="reg-bank-item">
                     <span className="reg-bank-item__label">Branch</span>

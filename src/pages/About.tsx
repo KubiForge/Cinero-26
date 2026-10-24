@@ -65,14 +65,22 @@ const universityPrizes = [
   { place: '3rd Place', prize: 'Rs. 30,000', icon: 'award' },
 ] as const;
 
-const individualAwards = [
+const universityIndividualAwards = [
   'Best Director',
   'Best Screenplay',
   'Best Cinematography',
   'Best Editing',
-  'Best Sound Design',
+  'Best Makeup Artist',
   'Best Actor',
   'Best Actress',
+];
+
+const schoolIndividualAwards = [
+  'Best Director',
+  'Best Screenplay',
+  'Best Cinematography',
+  'Best Editing',
+  'Best Actor/Actress',
 ];
 
 const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
@@ -465,10 +473,10 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               <section className="about-page__individual-awards">
                 <header>
                   <h4>Individual Awards</h4>
-                  <span>7 recognitions</span>
+                  <span>{universityIndividualAwards.length} recognitions</span>
                 </header>
                 <ul className="about-page__individual-awards-grid">
-                  {individualAwards.map((award) => (
+                  {universityIndividualAwards.map((award) => (
                     <li key={award}>
                       <span aria-hidden="true">✦</span>
                       {award}
@@ -498,10 +506,10 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               <section className="about-page__individual-awards">
                 <header>
                   <h4>Individual Awards</h4>
-                  <span>7 recognitions</span>
+                  <span>{schoolIndividualAwards.length} recognitions</span>
                 </header>
                 <ul className="about-page__individual-awards-grid">
-                  {individualAwards.map((award) => (
+                  {schoolIndividualAwards.map((award) => (
                     <li key={award}>
                       <span aria-hidden="true">✦</span>
                       {award}
