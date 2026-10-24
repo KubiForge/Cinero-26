@@ -392,38 +392,56 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
       heardFrom: selectedSources.join(', ') || 'N/A',
     };
 
-    const webhookUrl = import.meta.env.VITE_GOOGLE_SHEET_WEBHOOK_URL;
-    if (webhookUrl) {
-      try {
-        await fetch(webhookUrl, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8',
-          },
-          body: JSON.stringify(payload),
-        });
-      } catch (error) {
-        console.error('Google Sheet submission error:', error);
+
+    const apiUrl = '/api/registration';
+
+    try {
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || result.success !== true) {
+        throw new Error(
+          result.message || 'Your registration could not be saved.'
+        );
       }
-    } else {
-      console.info('Google Sheet Webhook URL not set. Data packaged:', payload);
+
+      // Show success only after the backend confirms the save.
+      setReferenceId(generatedRef);
+      setIsSubmitting(false);
+      setCurrentStep(5);
+      window.scrollTo({ top: 80, behavior: 'smooth' });
+
+      await Swal.fire({
+        title: 'Registration Successful!',
+        text: `Your team "${teamName}" has been submitted successfully. Your reference ID is ${generatedRef}.`,
+        icon: 'success',
+        confirmButtonText: 'View Summary',
+        confirmButtonColor: '#d4a642',
+        background: '#171518',
+        color: '#fff',
+      });
+    } catch (error) {
+      console.error('Registration submission failed:', error);
+
+      setIsSubmitting(false);
+
+      await Swal.fire({
+        title: 'Registration Failed',
+        text: 'We could not confirm your registration. Your details may not have been saved. Please try again.',
+        icon: 'error',
+        confirmButtonText: 'Try Again',
+        confirmButtonColor: '#d4a642',
+        background: '#171518',
+        color: '#fff',
+      });
     }
-
-    setReferenceId(generatedRef);
-    setIsSubmitting(false);
-    setCurrentStep(5);
-    window.scrollTo({ top: 80, behavior: 'smooth' });
-
-    void Swal.fire({
-      title: 'Registration Submitted!',
-      text: `Your team "${teamName}" has been successfully registered. Reference ID: ${generatedRef}`,
-      icon: 'success',
-      confirmButtonText: 'View Summary',
-      confirmButtonColor: '#d4a642',
-      background: '#171518',
-      color: '#fff',
-    });
   };
 
   return (
