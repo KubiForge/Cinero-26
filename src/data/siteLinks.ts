@@ -14,7 +14,7 @@ export const footerCategoryLinks = [
 ] as const;
 
 export const contactEmail = {
-  address: 'sathirasugeesvara@gmail.com',
+  address: 'cinero2026@gmail.com',
   href: 'mailto:cinero2026@gmail.com',
 } as const;
 

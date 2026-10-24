@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import Swal from 'sweetalert2';
-import 'sweetalert2/dist/sweetalert2.min.css';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TimelineSection from './components/TimelineSection';
@@ -9,53 +7,11 @@ import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
 import AboutPage from './pages/About';
 import GuidlinesPage from './pages/Guidlines';
+import RegistrationPage from './pages/Registration';
 import './App.css';
 
-const showRegistrationStatus = () => {
-  const today = new Date();
-  const registrationStart = new Date(2026, 9, 26);
-  const registrationEnd = new Date(2026, 10, 7);
-  const currentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-  if (currentDate < registrationStart) {
-    void Swal.fire({
-      title: 'Registration Has Not Opened Yet',
-      text: 'Registration opens on October 26, 2026.',
-      icon: 'info',
-      confirmButtonText: 'OK',
-      confirmButtonColor: '#d4a642',
-      background: '#171518',
-      color: '#fff',
-    });
-    return;
-  }
-
-  if (currentDate > registrationEnd) {
-    void Swal.fire({
-      title: 'Registration Is Closed',
-      text: 'The registration period ended on November 7, 2026.',
-      icon: 'warning',
-      confirmButtonText: 'OK',
-      confirmButtonColor: '#d4a642',
-      background: '#171518',
-      color: '#fff',
-    });
-    return;
-  }
-
-  void Swal.fire({
-    title: 'Registration Is Open',
-    text: 'Registration is open until November 7, 2026.',
-    icon: 'success',
-    confirmButtonText: 'OK',
-    confirmButtonColor: '#d4a642',
-    background: '#171518',
-    color: '#fff',
-  });
-};
-
 function App() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'guidelines'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'guidelines' | 'register'>('home');
   const [selectedCategory, setSelectedCategory] = useState<'university' | 'school'>('university');
   const [isLoading, setIsLoading] = useState(true);
   const [showLoader, setShowLoader] = useState(true);
@@ -103,7 +59,9 @@ function App() {
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash;
-      if (hash === '#guidelines-university') {
+      if (hash === '#register' || hash === '#register-form') {
+        setCurrentPage('register');
+      } else if (hash === '#guidelines-university') {
         setSelectedCategory('university');
         setCurrentPage('guidelines');
       } else if (hash === '#guidelines-school') {
@@ -118,7 +76,7 @@ function App() {
             document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth' });
           }, 80);
         }
-      } else if (currentPage !== 'home' && (hash === '#home' || hash === '' || hash === '#guidelines' || hash === '#timeline' || hash === '#register' || hash === '#contact')) {
+      } else if (currentPage !== 'home' && (hash === '#home' || hash === '' || hash === '#guidelines' || hash === '#timeline' || hash === '#contact')) {
         setCurrentPage('home');
       }
     };
@@ -136,14 +94,19 @@ function App() {
 
   const handleBackToHome = () => {
     setCurrentPage('home');
-    window.location.hash = '#guidelines';
+    window.location.hash = '#home';
     setTimeout(() => {
-      const el = document.getElementById('guidelines');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 50);
   };
 
   const handleNavClick = (href: string) => {
+    if (href === '#register' || href === '#register-form') {
+      setCurrentPage('register');
+      window.location.hash = '#register';
+      return;
+    }
+
     if (href === '#guidelines-university' || href === '#guidelines-school') {
       handleOpenCategoryGuidelines(href.endsWith('university') ? 'university' : 'school');
       return;
@@ -183,11 +146,8 @@ function App() {
           initialCategory={selectedCategory}
           onBack={handleBackToHome}
           onRegisterClick={() => {
-            setCurrentPage('home');
-            setTimeout(() => {
-              const el = document.getElementById('register');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }, 80);
+            setCurrentPage('register');
+            window.location.hash = '#register';
           }}
         />
       </>
@@ -204,6 +164,15 @@ function App() {
     );
   }
 
+  if (currentPage === 'register') {
+    return (
+      <>
+        {pageLoader}
+        <RegistrationPage onBack={handleBackToHome} />
+      </>
+    );
+  }
+
   // Home Page View
   return (
     <>
@@ -216,10 +185,7 @@ function App() {
             const el = document.getElementById('about-preview');
             if (el) el.scrollIntoView({ behavior: 'smooth' });
           }}
-          onRegisterClick={() => {
-            const el = document.getElementById('register');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }}
+          onRegisterClick={() => handleNavClick('#register')}
         />
 
         {/* About Section */}
@@ -336,7 +302,7 @@ function App() {
               <button
                 type="button"
                 className="register-btn"
-                onClick={showRegistrationStatus}
+                onClick={() => handleNavClick('#register')}
               >
                 Register Film Entry
               </button>
