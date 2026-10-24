@@ -141,7 +141,6 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
   const [studentRegNo, setStudentRegNo] = useState('');
   const [studentIdFile, setStudentIdFile] = useState<File | null>(null);
   const [studentIdFileName, setStudentIdFileName] = useState('');
-  const [universityEligibility, setUniversityEligibility] = useState(false);
 
   // Step 3: Payment
   const [paymentMethod, setPaymentMethod] = useState<'Bank deposit' | 'Online transfer' | 'Other'>('Online transfer');
@@ -157,7 +156,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
   const [useOfInfo, setUseOfInfo] = useState(false);
   const [signature, setSignature] = useState('');
   const [questions, setQuestions] = useState('');
-  const [selectedSources, setSelectedSources] = useState<string[]>(['Instagram']);
+  const [selectedSources, setSelectedSources] = useState<string[]>([]);
 
   // Submission Status
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -239,7 +238,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
         return false;
       }
       if (!parentConsent) {
-        void Swal.fire({ title: 'Parental Consent Required', text: 'Please confirm parent/guardian consent for team members under 18.', icon: 'warning', background: '#171518', color: '#fff', confirmButtonColor: '#d4a642' });
+        void Swal.fire({ title: 'Parent or Guardian Consent Required', text: 'Please tick the box to confirm parent or guardian consent for team members under 18.', icon: 'warning', background: '#171518', color: '#fff', confirmButtonColor: '#d4a642' });
         return false;
       }
     } else {
@@ -263,10 +262,6 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
         void Swal.fire({ title: 'Student ID Required', text: "Please upload a photo or scan of the team leader's student ID.", icon: 'warning', background: '#171518', color: '#fff', confirmButtonColor: '#d4a642' });
         return false;
       }
-      if (!universityEligibility) {
-        void Swal.fire({ title: 'Undergraduate Eligibility Required', text: 'Please confirm that all team members are currently enrolled undergraduates.', icon: 'warning', background: '#171518', color: '#fff', confirmButtonColor: '#d4a642' });
-        return false;
-      }
     }
     return true;
   };
@@ -285,7 +280,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
 
   const validateStep4 = (): boolean => {
     if (!acceptRules || !productionDateAccuracy || !copyrightCleared || !useOfInfo) {
-      void Swal.fire({ title: 'Declarations Incomplete', text: 'Please accept all 4 mandatory declarations to continue.', icon: 'warning', background: '#171518', color: '#fff', confirmButtonColor: '#d4a642' });
+      void Swal.fire({ title: 'Declarations Required', text: 'Please tick all four declaration boxes before continuing.', icon: 'warning', background: '#171518', color: '#fff', confirmButtonColor: '#d4a642' });
       return false;
     }
     if (!signature.trim()) {
@@ -374,7 +369,9 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
       gradeOrYear: category === 'school' ? leaderGrade : yearOfStudy,
       teacherOrRegNo: category === 'school' ? `${teacherName.trim()} (${teacherPhone.trim()})` : studentRegNo.trim(),
       guardianOrDegree: category === 'school' ? guardianDetails.trim() : degree.trim(),
-      consentOrEligibility: category === 'school' ? (parentConsent ? 'Yes' : 'No') : (universityEligibility ? 'Yes' : 'No'),
+      consentOrEligibility: category === 'school'
+        ? `Parent/guardian consent: ${parentConsent ? 'Yes' : 'No'}; Declarations accepted: Yes`
+        : 'Eligibility not collected; Declarations accepted: Yes',
       amountPaid: calculatedFee,
       paymentMethod,
       paymentDate,
@@ -439,12 +436,13 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
       {/* Header bar with Back button & Logo */}
       <header className="reg-page__header">
         <div className="reg-page__header-inner">
-          <button type="button" className="reg-page__back-btn" onClick={onBack} aria-label="Back to Festival Home">
+          <button type="button" className="reg-page__back-btn" onClick={onBack} aria-label="Back to Home">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="19" y1="12" x2="5" y2="12" />
               <polyline points="12 19 5 12 12 5" />
             </svg>
-            <span>Back to Festival</span>
+            <span className="reg-page__back-text-full">Back to Home</span>
+            <span className="reg-page__back-text-short">Back</span>
           </button>
 
           <div className="reg-page__logo-link">
@@ -456,32 +454,51 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
               decoding="async"
             />
           </div>
-
-          <div className="reg-page__badge">
-            <span className="reg-page__badge-dot" />
-            <span>Registration Portal</span>
-          </div>
         </div>
       </header>
 
-      {/* Main Container */}
-      <main className="reg-page__main">
-        {/* Hero title */}
-        <div className="reg-hero">
-          <div className="reg-hero__eyebrow">CINERO’26 SHORT FILM FESTIVAL</div>
-          <h1 className="reg-hero__title">Team Registration</h1>
+      <section className="reg-hero">
+        <picture className="reg-hero__background" aria-hidden="true">
+          <source
+            type="image/webp"
+            media="(max-width: 480px)"
+            srcSet="/images/registration-background-480.webp"
+            sizes="100vw"
+          />
+          <source
+            type="image/webp"
+            srcSet="/images/registration-background-960.webp 960w, /images/registration-background-1600.webp 1600w"
+            sizes="100vw"
+          />
+          <img
+            src="/images/registration-background-1600.webp"
+            alt=""
+            width={1600}
+            height={900}
+            fetchPriority="high"
+            decoding="async"
+          />
+        </picture>
+        <div className="reg-hero__overlay" aria-hidden="true" />
+        <div className="reg-hero__content">
+          <div className="reg-hero__eyebrow">CINERO’26 TEAM REGISTRATION</div>
+          <h1 className="reg-hero__title">Register Your Team</h1>
           <p className="reg-hero__desc">
-            Organised by the Filming Division of J'PURA VOICE, University of Sri Jayewardenepura.
-            Registration runs from <strong>October 26 to November 7, 2026</strong>.
+            Join CINERO’26 and bring your story to the screen. Registration is open from{' '}
+            <strong>October 26 to November 7, 2026</strong>.
           </p>
         </div>
+      </section>
+
+      {/* Main Container */}
+      <main className="reg-page__main">
 
         {/* Stepper (Only active if not in confirmation step) */}
         {currentStep < 5 && (
           <nav className="reg-stepper" aria-label="Registration Progress">
             <div
               className="reg-stepper__progress-line"
-              style={{ width: `${((currentStep - 1) / 3) * 100}%` }}
+              style={{ width: `${((currentStep - 1) / 3) * 75}%` }}
               aria-hidden="true"
             />
             {[
@@ -503,7 +520,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                   disabled={!isCompleted && !isActive}
                 >
                   <div className="reg-step-item__circle">
-                    {isCompleted ? '✓' : step.num}
+                    {step.num}
                   </div>
                   <span className="reg-step-item__label">{step.label}</span>
                 </button>
@@ -513,7 +530,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
         )}
 
         {/* FORM CONTENT */}
-        <form onSubmit={handleSubmit} noValidate>
+        <form id="registration-form" onSubmit={handleSubmit} noValidate>
           {/* ================= STEP 1: CATEGORY & TEAM DETAILS ================= */}
           {currentStep === 1 && (
             <div className="reg-card">
@@ -854,18 +871,19 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                     />
                   </div>
 
-                  <div className="reg-field reg-field--full" style={{ marginTop: '0.5rem' }}>
-                    <label className="reg-checkbox-label">
+                  <div className="reg-parent-consent">
+                    <label className="reg-parent-consent__label">
                       <input
                         type="checkbox"
-                        className="reg-checkbox"
+                        className="reg-parent-consent__checkbox"
                         checked={parentConsent}
                         onChange={(e) => setParentConsent(e.target.checked)}
                       />
                       <span>
-                        <strong>Parent or guardian consent:</strong> "I confirm that the parents or guardians of every team member under 18 have agreed to their child taking part in CINERO'26." <span className="reg-label__required">*</span>
+                        <strong>Parent or guardian consent:</strong> Parents or guardians of every team member under 18 should agree to their child taking part in CINERO'26.
                       </span>
                     </label>
+                    <p className="reg-parent-consent__notice">Please tick this box to confirm consent.</p>
                   </div>
                 </div>
               ) : (
@@ -1019,19 +1037,9 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                     )}
                   </div>
 
-                  <div className="reg-field reg-field--full" style={{ marginTop: '0.5rem' }}>
-                    <label className="reg-checkbox-label">
-                      <input
-                        type="checkbox"
-                        className="reg-checkbox"
-                        checked={universityEligibility}
-                        onChange={(e) => setUniversityEligibility(e.target.checked)}
-                      />
-                      <span>
-                        <strong>Eligibility Check:</strong> "All members of our team are currently enrolled undergraduate students of a recognised university or higher education institution in Sri Lanka." <span className="reg-label__required">*</span>
-                      </span>
-                    </label>
-                  </div>
+                  <p className="reg-declaration-note">
+                    <strong>Eligibility:</strong> All team members should be currently enrolled undergraduates at a recognised university or higher education institution in Sri Lanka.
+                  </p>
                 </div>
               )}
 
@@ -1226,64 +1234,53 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                 <span className="reg-card__step-tag">Step 04 of 04</span>
                 <h2 className="reg-card__title">Declarations & Confirmation</h2>
                 <p className="reg-card__subtitle">
-                  Please review and accept the official festival declarations before completing your team registration.
+                  Please review the official festival declarations before completing your team registration.
                 </p>
               </div>
 
               <div className="reg-declarations">
-                <label className="reg-checkbox-label">
+                <label className="reg-declaration-note">
                   <input
                     type="checkbox"
-                    className="reg-checkbox"
+                    className="reg-declaration-checkbox"
                     checked={acceptRules}
                     onChange={(e) => setAcceptRules(e.target.checked)}
                   />
-                  <span>
-                    <strong>Rules and regulations:</strong> "I have read the CINERO'26 rules and regulations and my team agrees to follow them." <span className="reg-label__required">*</span>
-                  </span>
+                  <span><strong>Rules and regulations:</strong> Teams are expected to follow the CINERO'26 rules and regulations.</span>
                 </label>
-
-                <label className="reg-checkbox-label">
+                <label className="reg-declaration-note">
                   <input
                     type="checkbox"
-                    className="reg-checkbox"
+                    className="reg-declaration-checkbox"
                     checked={productionDateAccuracy}
                     onChange={(e) => setProductionDateAccuracy(e.target.checked)}
                   />
-                  <span>
-                    <strong>Production date and accuracy:</strong> "We understand that our film must be produced or completed on or after January 1, 2026, and that our submission may be disqualified at any stage if any information we provide is found to be false or misleading." <span className="reg-label__required">*</span>
-                  </span>
+                  <span><strong>Production date and accuracy:</strong> Films must be produced or completed on or after January 1, 2026. Submissions may be disqualified if any provided information is false or misleading.</span>
                 </label>
-
-                <label className="reg-checkbox-label">
+                <label className="reg-declaration-note">
                   <input
                     type="checkbox"
-                    className="reg-checkbox"
+                    className="reg-declaration-checkbox"
                     checked={copyrightCleared}
                     onChange={(e) => setCopyrightCleared(e.target.checked)}
                   />
-                  <span>
-                    <strong>Copyright:</strong> "We understand that all music, footage, photographs, graphics, fonts, stock footage and other third-party materials used in our film must be legally obtained or appropriately licensed." <span className="reg-label__required">*</span>
-                  </span>
+                  <span><strong>Copyright:</strong> All music, footage, photographs, graphics, fonts, stock footage, and other third-party materials used in the film must be legally obtained or appropriately licensed.</span>
                 </label>
-
-                <label className="reg-checkbox-label">
+                <label className="reg-declaration-note">
                   <input
                     type="checkbox"
-                    className="reg-checkbox"
+                    className="reg-declaration-checkbox"
                     checked={useOfInfo}
                     onChange={(e) => setUseOfInfo(e.target.checked)}
                   />
-                  <span>
-                    <strong>Use of information:</strong> "We agree that the CINERO'26 organising committee may use the details in this form to contact our team and run the festival." <span className="reg-label__required">*</span>
-                  </span>
+                  <span><strong>Use of information:</strong> The CINERO'26 organising committee may use the details in this form to contact the team and run the festival.</span>
                 </label>
               </div>
 
               <div className="reg-form-grid" style={{ marginBottom: '1.75rem' }}>
                 <div className="reg-field">
                   <label htmlFor="reg-signature" className="reg-label">
-                    Team Leader's Confirmation (Electronic Signature) <span className="reg-label__required">*</span>
+                    Team Leader's Confirmation (Team Leader's Full Name) <span className="reg-label__required">*</span>
                   </label>
                   <input
                     id="reg-signature"
@@ -1319,9 +1316,10 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                           key={src}
                           type="button"
                           className={`reg-source-btn ${isSelected ? 'is-active' : ''}`}
+                          aria-pressed={isSelected}
                           onClick={() => handleSourceToggle(src)}
                         >
-                          {isSelected ? '✓ ' : ''}{src}
+                          {src}
                         </button>
                       );
                     })}
@@ -1344,12 +1342,10 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
           {currentStep === 5 && (
             <div className="reg-card">
               <div className="reg-success">
-                <div className="reg-success__icon-wrap">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
+                <div className="reg-success__email-notice">
+                  <strong>Important: Print or save this summary as a PDF, then email it to</strong>
+                  <a href="mailto:cinero2026@gmail.com">cinero2026@gmail.com</a>
                 </div>
-
                 <h2 className="reg-success__title">Registration Successful!</h2>
                 <div className="reg-success__ref">Reference ID: {referenceId}</div>
 

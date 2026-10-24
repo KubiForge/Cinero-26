@@ -13,7 +13,7 @@ The React Compiler is not enabled on this template because of its impact on dev 
 
 ## Web3Forms contact form
 
-1. Create a Web3Forms access key for `sathirasugeesvara@gmail.com` at [web3forms.com](https://web3forms.com/).
+1. Create a Web3Forms access key for `cinero2026@gmail.com` at [web3forms.com](https://web3forms.com/).
 2. Copy `.env.example` to `.env.local` and set `VITE_WEB3FORMS_ACCESS_KEY` to the generated key.
 3. Restart the Vite development server. For production, add the same variable to the hosting provider's build environment.
 
