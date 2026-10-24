@@ -1,6 +1,9 @@
 # 🎬 CINERO'26 — All Island Inter-University & Inter-School Short Film Festival
 
 <p align="center">
+  <a href="https://cinero-26.live" target="_blank">
+    <img src="https://img.shields.io/badge/Live%20Website-cinero--26.live-D4A642?style=for-the-badge&logo=googlechrome&logoColor=black" alt="Live Site" />
+  </a>
   <img src="https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
   <img src="https://img.shields.io/badge/TypeScript-6.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Vite-8.3-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
@@ -8,6 +11,11 @@
   <img src="https://img.shields.io/badge/Vercel-Serverless-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
   <img src="https://img.shields.io/badge/SweetAlert2-11.26-D4A642?style=for-the-badge&logo=sweetalert2&logoColor=white" alt="SweetAlert2" />
 </p>
+
+---
+
+## 🌐 Official Festival Website
+🔗 **Live URL**: [https://cinero-26.live](https://cinero-26.live)
 
 ---
 
@@ -140,15 +148,23 @@ npm run preview
 
 ---
 
-## 🌐 Deployment Guidelines
+## 🌐 Deployment & Custom Domain Setup
 
-### Deploying on Vercel
+### 1. Deploying on Vercel
 1. Push your repository to GitHub / GitLab.
 2. Import the project into **[Vercel](https://vercel.com)**.
 3. In **Settings ➔ Environment Variables**, add:
    - `GOOGLE_SHEET_WEBHOOK_URL`: Your Google Apps Script Web App URL.
    - `VITE_WEB3FORMS_ACCESS_KEY`: Your Web3Forms access token.
 4. Click **Deploy**. Vercel will automatically configure both the Vite SPA and `/api/registration` serverless function.
+
+### 2. Connecting Custom Domain (`cinero-26.live`)
+1. Go to your Vercel Project Dashboard ➔ **Settings** ➔ **Domains**.
+2. Enter **`cinero-26.live`** and click **Add** (also recommend adding `www.cinero-26.live`).
+3. In your Domain Registrar DNS settings (where you purchased the domain), configure the DNS records:
+   - **Type A**: Name `@` ➔ Value `76.76.21.21`
+   - **Type CNAME**: Name `www` ➔ Value `cname.vercel-dns.com`
+4. Once DNS propagates, your site will be live securely with automatic SSL at **[https://cinero-26.live](https://cinero-26.live)**.
 
 ---
 

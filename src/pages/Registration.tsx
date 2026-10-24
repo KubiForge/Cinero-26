@@ -1418,70 +1418,199 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
 
           {/* ================= STEP 5: CONFIRMATION MESSAGE & SUMMARY ================= */}
           {currentStep === 5 && (
-            <div className="reg-card">
-              <div className="reg-success">
-                <div className="reg-success__email-notice">
-                  <strong>Important: Print or save this summary as a PDF, then email it to</strong>
-                  <a href="mailto:cinero2026@gmail.com">cinero2026@gmail.com</a>
+            <div className="reg-card reg-card--confirmation">
+              {/* Screen-Only Prominent Animated Red Action Notice */}
+              <div className="reg-success__urgent-alert" role="alert">
+                <div className="reg-success__urgent-glow"></div>
+                <div className="reg-success__urgent-icon">
+                  <span className="reg-success__pulse-ring"></span>
+                  ⚠️
                 </div>
-                <h2 className="reg-success__title">Registration Successful!</h2>
-                <div className="reg-success__ref">Reference ID: {referenceId}</div>
+                <div className="reg-success__urgent-content">
+                  <div className="reg-success__urgent-badge">CRITICAL FINAL STEP</div>
+                  <h3 className="reg-success__urgent-title">
+                    Print or save this summary as a PDF, then email it to:
+                  </h3>
+                  <a href="mailto:cinero2026@gmail.com" className="reg-success__urgent-email">
+                    cinero2026@gmail.com
+                  </a>
+                  <p className="reg-success__urgent-sub">
+                    Your team registration is only finalized after sending this confirmation PDF along with any supporting documents to our committee email.
+                  </p>
+                </div>
+              </div>
 
-                <p className="reg-success__msg">
-                  Thank you for registering for CINERO'26. The organising committee will check your details and payment. Teams that are registered successfully will receive access to the film submission form, which is open from <strong>November 9 to December 6, 2026</strong>. If you have any questions, write to <strong>cinero2026@gmail.com</strong>.
-                </p>
+              {/* Printable Premium Confirmation Document */}
+              <div className="reg-doc" id="cinero-print-document">
+                {/* Print/Doc Header */}
+                <header className="reg-doc__header">
+                  <div className="reg-doc__brand">
+                    <img
+                      src="/images/cinero-logo-with-caption-optimized.png"
+                      alt="CINERO'26 Logo"
+                      className="reg-doc__logo"
+                    />
+                    <div className="reg-doc__brand-text">
+                      <span className="reg-doc__fest-title">CINERO '26</span>
+                      <span className="reg-doc__fest-sub">All-Island Short Film Festival</span>
+                      <span className="reg-doc__fest-tagline">“A Stage for Every Story”</span>
+                    </div>
+                  </div>
+                  <div className="reg-doc__organizer">
+                    <span className="reg-doc__org-line">Organized by J'pura Voice Filming Division</span>
+                    <span className="reg-doc__org-line">University of Sri Jayewardenepura</span>
+                    <span className="reg-doc__date-badge">Issued: {new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                  </div>
+                </header>
 
-                <div className="reg-success__summary-card">
-                  <div className="reg-success__summary-row">
-                    <span className="reg-success__summary-label">Team Name</span>
-                    <span className="reg-success__summary-val">{teamName}</span>
+                <div className="reg-doc__divider"></div>
+
+                {/* Status & Reference ID Banner */}
+                <div className="reg-doc__status-block">
+                  <div className="reg-doc__status-left">
+                    <span className="reg-doc__status-pill">✓ OFFICIAL CONFIRMATION</span>
+                    <h2 className="reg-doc__status-heading">REGISTRATION SUCCESSFUL</h2>
+                    <p className="reg-doc__status-note">
+                      Thank you for submitting your entry for <strong>CINERO'26</strong>. Please retain this document for all future inquiries.
+                    </p>
                   </div>
-                  <div className="reg-success__summary-row">
-                    <span className="reg-success__summary-label">Category</span>
-                    <span className="reg-success__summary-val">
-                      {category === 'school' ? 'Inter-School Category' : 'Inter-University Category'}
-                    </span>
-                  </div>
-                  <div className="reg-success__summary-row">
-                    <span className="reg-success__summary-label">Team Leader</span>
-                    <span className="reg-success__summary-val">{leaderName} ({leaderPhone})</span>
-                  </div>
-                  <div className="reg-success__summary-row">
-                    <span className="reg-success__summary-label">Institution</span>
-                    <span className="reg-success__summary-val">
-                      {category === 'school' ? schoolName : (university === 'Other' ? customUniversity : university)}
-                    </span>
-                  </div>
-                  <div className="reg-success__summary-row">
-                    <span className="reg-success__summary-label">Total Members</span>
-                    <span className="reg-success__summary-val">{teamSize} members</span>
-                  </div>
-                  <div className="reg-success__summary-row">
-                    <span className="reg-success__summary-label">Amount Paid</span>
-                    <span className="reg-success__summary-val">Rs. {calculatedFee.toLocaleString()}</span>
-                  </div>
-                  <div className="reg-success__summary-row">
-                    <span className="reg-success__summary-label">Payment Method</span>
-                    <span className="reg-success__summary-val">{paymentMethod}</span>
+                  <div className="reg-doc__ref-box">
+                    <span className="reg-doc__ref-label">REGISTRATION REFERENCE ID</span>
+                    <span className="reg-doc__ref-code">{referenceId || 'CNR26-CONFIRMED'}</span>
+                    <span className="reg-doc__ref-hint">Keep safe for submission portal</span>
                   </div>
                 </div>
 
-                <div className="reg-success__actions">
-                  <button
-                    type="button"
-                    className="reg-btn reg-btn--next"
-                    onClick={() => window.print()}
-                  >
-                    Print / Save Summary
-                  </button>
-                  <button
-                    type="button"
-                    className="reg-btn reg-btn--prev"
-                    onClick={onBack}
-                  >
-                    Return to Festival Home
-                  </button>
+                {/* Registration Details Section */}
+                <section className="reg-doc__section">
+                  <div className="reg-doc__section-header">
+                    <span className="reg-doc__section-title">TEAM & REGISTRATION SPECIFICATIONS</span>
+                  </div>
+                  <div className="reg-doc__grid">
+                    <div className="reg-doc__field">
+                      <span className="reg-doc__label">Team Name</span>
+                      <span className="reg-doc__val reg-doc__val--highlight">{teamName}</span>
+                    </div>
+                    <div className="reg-doc__field">
+                      <span className="reg-doc__label">Festival Category</span>
+                      <span className="reg-doc__val">
+                        {category === 'school' ? 'Inter-School Category' : 'Inter-University Category'}
+                      </span>
+                    </div>
+                    <div className="reg-doc__field">
+                      <span className="reg-doc__label">Team Leader</span>
+                      <span className="reg-doc__val">{leaderName}</span>
+                    </div>
+                    <div className="reg-doc__field">
+                      <span className="reg-doc__label">Leader Contact Number</span>
+                      <span className="reg-doc__val">{leaderPhone}</span>
+                    </div>
+                    <div className="reg-doc__field">
+                      <span className="reg-doc__label">Leader Email</span>
+                      <span className="reg-doc__val">{leaderEmail}</span>
+                    </div>
+                    <div className="reg-doc__field">
+                      <span className="reg-doc__label">Institution / Faculty</span>
+                      <span className="reg-doc__val">
+                        {category === 'school' ? schoolName : (university === 'Other' ? customUniversity : university)}
+                        {category === 'school' && district ? ` (${district} District)` : ''}
+                        {category === 'university' && faculty ? ` - ${faculty}` : ''}
+                      </span>
+                    </div>
+                    <div className="reg-doc__field">
+                      <span className="reg-doc__label">Total Registered Members</span>
+                      <span className="reg-doc__val">{teamSize} Members</span>
+                    </div>
+                    <div className="reg-doc__field">
+                      <span className="reg-doc__label">Payment Status & Method</span>
+                      <span className="reg-doc__val">Paid via {paymentMethod} (Slip Attached)</span>
+                    </div>
+                    <div className="reg-doc__field reg-doc__field--full reg-doc__field--fee">
+                      <span className="reg-doc__label">Official Registration Fee Paid</span>
+                      <span className="reg-doc__fee-num">Rs. {calculatedFee.toLocaleString()}.00 LKR</span>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Next Steps & Submission Window */}
+                <section className="reg-doc__next-steps">
+                  <div className="reg-doc__section-header">
+                    <span className="reg-doc__section-title">VERIFICATION & FILM SUBMISSION TIMELINE</span>
+                  </div>
+                  <div className="reg-doc__steps-grid">
+                    <div className="reg-doc__step-card">
+                      <div className="reg-doc__step-badge">STAGE 01</div>
+                      <h4 className="reg-doc__step-title">Verification & Review</h4>
+                      <p className="reg-doc__step-desc">
+                        The organizing committee is reviewing your submitted details, student identification, and bank slip.
+                      </p>
+                    </div>
+                    <div className="reg-doc__step-card">
+                      <div className="reg-doc__step-badge">STAGE 02</div>
+                      <h4 className="reg-doc__step-title">Film Submission Window</h4>
+                      <p className="reg-doc__step-desc">
+                        The portal opens exclusively for confirmed teams from:
+                        <strong className="reg-doc__date-highlight"> November 9 – December 6, 2026</strong>.
+                      </p>
+                    </div>
+                    <div className="reg-doc__step-card">
+                      <div className="reg-doc__step-badge">STAGE 03</div>
+                      <h4 className="reg-doc__step-title">Portal Access Link</h4>
+                      <p className="reg-doc__step-desc">
+                        Upon successful verification, your team leader will receive private submission access to upload your short film.
+                      </p>
+                    </div>
+                  </div>
+                </section>
+
+                {/* Instructions & Inquiries Notice */}
+                <div className="reg-doc__inquiry-bar">
+                  <div className="reg-doc__inquiry-item">
+                    <span className="reg-doc__inquiry-label">Required Action:</span>
+                    <span className="reg-doc__inquiry-val">Email this PDF file to <strong>cinero2026@gmail.com</strong> with your Reference ID in the subject.</span>
+                  </div>
+                  <div className="reg-doc__inquiry-item">
+                    <span className="reg-doc__inquiry-label">Inquiries & Support:</span>
+                    <span className="reg-doc__inquiry-val"><strong>cinero2026@gmail.com</strong> | J'pura Voice Filming Division</span>
+                  </div>
                 </div>
+
+                {/* Footer Signature & Verification Bar */}
+                <footer className="reg-doc__footer">
+                  <div className="reg-doc__footer-left">
+                    <span className="reg-doc__footer-brand">CINERO'26 | A Stage for Every Story</span>
+                    <span className="reg-doc__footer-desc">J'pura Voice Filming Division • University of Sri Jayewardenepura</span>
+                  </div>
+                  <div className="reg-doc__footer-right">
+                    <div className="reg-doc__seal">
+                      <span>OFFICIALLY REGISTERED</span>
+                      <small>VERIFIED RECORD</small>
+                    </div>
+                  </div>
+                </footer>
+              </div>
+
+              {/* Action Buttons (Hidden during Print) */}
+              <div className="reg-success__actions">
+                <button
+                  type="button"
+                  className="reg-btn reg-btn--next reg-btn--print-main"
+                  onClick={() => window.print()}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                  </svg>
+                  Print / Save Official PDF
+                </button>
+                <button
+                  type="button"
+                  className="reg-btn reg-btn--prev"
+                  onClick={onBack}
+                >
+                  Return to Festival Home
+                </button>
               </div>
             </div>
           )}
