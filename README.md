@@ -19,6 +19,16 @@ The React Compiler is not enabled on this template because of its impact on dev 
 
 The access key is used by the browser to submit the form, so it is included in the client bundle. Use a key created for the intended recipient email.
 
+## Registration form and Google Sheets
+
+1. Open the target Google Sheet and its Apps Script project.
+2. Paste the code from `GoogleAppsScript.js` into the Apps Script editor and save it. The script is configured to write to the spreadsheet ID in the code.
+3. Deploy the Apps Script project as a web app that executes as you and allows access to anyone, then copy its `/exec` URL.
+4. Set `GOOGLE_SHEET_WEBHOOK_URL` to that URL in `.env.local` for local serverless development and in Vercel's Environment Variables for production.
+5. Redeploy the Vercel project after setting the environment variable. If you change the Apps Script code, create a new deployment version.
+
+The registration page posts to the `/api/registration` serverless function. Keep the Apps Script URL in `GOOGLE_SHEET_WEBHOOK_URL` without the `VITE_` prefix so it is not bundled into the public browser code.
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:

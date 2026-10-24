@@ -1,4 +1,6 @@
 
+var SPREADSHEET_ID = "1o4fJfhYWUjowLaSvpUUn4BWLDKeETCScxP5M6mMOmHk";
+
 function doPost(e) {
   var lock = LockService.getScriptLock();
   var locked = false;
@@ -18,8 +20,7 @@ function doPost(e) {
       throw new Error("Required registration details are missing.");
     }
 
-    // This script must be connected to the target Google Sheet.
-    var sheet = SpreadsheetApp.getActiveSpreadsheet()
+    var sheet = SpreadsheetApp.openById(SPREADSHEET_ID)
       .getActiveSheet();
 
     // Create headers automatically for an empty sheet.
