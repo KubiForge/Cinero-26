@@ -1318,6 +1318,37 @@
     padding: 0.8rem 1rem;
     font-size: 0.85rem;
     white-space: normal;
+    width: 100%;
+  }
+
+  .reg-actions {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+  }
+
+  .reg-actions .reg-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .reg-stepper {
+    padding: 0 0.5rem;
+  }
+
+  .reg-step-item__circle {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+
+  .reg-success__actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .reg-success__actions .reg-btn {
+    width: 100%;
+    justify-content: center;
   }
 
   .reg-success__summary-card {

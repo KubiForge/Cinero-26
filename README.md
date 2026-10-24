@@ -1,93 +1,166 @@
-# React + TypeScript + Vite
+# 🎬 CINERO'26 — All Island Inter-University & Inter-School Short Film Festival
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  <img src="https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-6.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-8.3-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/Google%20Apps%20Script-API-34A853?style=for-the-badge&logo=google&logoColor=white" alt="Google Apps Script" />
+  <img src="https://img.shields.io/badge/Vercel-Serverless-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
+  <img src="https://img.shields.io/badge/SweetAlert2-11.26-D4A642?style=for-the-badge&logo=sweetalert2&logoColor=white" alt="SweetAlert2" />
+</p>
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🌟 Overview
 
-## React Compiler
+**CINERO'26** is the official web portal for Sri Lanka's premier All-Island Short Film Festival organized by **J'pura Voice Filming Division** (University of Sri Jayewardenepura). The platform delivers a high-impact cinematic experience, comprehensive festival rules, interactive timelines, and an enterprise-grade automated team registration system connected directly to **Google Sheets** and **Google Drive**.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Web3Forms contact form
+## 🚀 Key Highlights & Architecture
 
-1. Create a Web3Forms access key for `cinero2026@gmail.com` at [web3forms.com](https://web3forms.com/).
-2. Copy `.env.example` to `.env.local` and set `VITE_WEB3FORMS_ACCESS_KEY` to the generated key.
-3. Restart the Vite development server. For production, add the same variable to the hosting provider's build environment.
+- **Cinematic Dark Luxury Aesthetic**: Built with glassmorphism, responsive typography, and tailored gold/amber accents.
+- **Dynamic 5-Step Registration Pipeline**:
+  - Category selection: *Inter-School* vs. *Inter-University*.
+  - Flexible Team Sizing: Supports **4 to 15 members** with dynamic member input rows and automated fee calculation.
+  - Base64 direct file uploads for Student ID verification & payment receipts.
+  - Interactive SweetAlert2 dialogs for user guidance and validation alerts.
+- **Enterprise Serverless Integration**:
+  - Secure Serverless API proxy masking Google Webhook endpoints.
+  - Vite dev server middleware handling local testing out-of-the-box.
+  - Google Apps Script webhook storing structured records in Google Sheets and managing files in Google Drive.
+- **Bank-Grade Data Privacy & Security**:
+  - Uploaded files are strictly restricted to committee spreadsheet editors (`DriveApp.Access.PRIVATE`).
+  - Payload bomb protection (size limiting up to 20MB) and rigorous regex sanitization.
+  - Production-ready HTTP Security Headers (anti-clickjacking, XSS protection, MIME sniffing prevention).
 
-The access key is used by the browser to submit the form, so it is included in the client bundle. Use a key created for the intended recipient email.
+---
 
-## Registration form and Google Sheets
+## 🛠️ Technology Stack & Techniques
 
-1. Open the target Google Sheet and its Apps Script project.
-2. Paste the code from `GoogleAppsScript.js` into the Apps Script editor and save it. The script is configured to write to the spreadsheet ID in the code.
-3. Deploy the Apps Script project as a web app that executes as you and allows access to anyone, then copy its `/exec` URL.
-4. Set `GOOGLE_SHEET_WEBHOOK_URL` to that URL in `.env.local` for local serverless development and in Vercel's Environment Variables for production.
-5. Redeploy the Vercel project after setting the environment variable. If you change the Apps Script code, create a new deployment version.
+### Frontend & UI/UX
+| Technology | Description |
+| :--- | :--- |
+| **React 19** | Modern functional components, custom hooks, and state management. |
+| **TypeScript** | Strict compile-time safety and self-documenting data interfaces. |
+| **Vite 8** | Next-generation instant HMR and optimized production bundling. |
+| **Vanilla CSS3** | Custom design system with CSS variables, fluid clamping (`clamp()`), and flex/grid architectures (Zero bloated frameworks). |
+| **SweetAlert2** | Accessible, responsive dark-themed modals matching festival brand colors. |
+| **React Icons** | Feather, FontAwesome, and Ionicons for intuitive iconography. |
 
-The registration page posts to the `/api/registration` serverless function. Keep the Apps Script URL in `GOOGLE_SHEET_WEBHOOK_URL` without the `VITE_` prefix so it is not bundled into the public browser code.
+### Backend & Cloud Architecture
+| Technology | Description |
+| :--- | :--- |
+| **Vercel Serverless Functions** | Edge-ready Node.js API handlers (`/api/registration.js`) routing data securely. |
+| **Google Apps Script (V8)** | Webhook processing JSON payloads with concurrency locks (`LockService`). |
+| **Google Sheets API** | Structured database recording timestamped team information and member details. |
+| **Google Drive API** | Cloud storage bucket automatically storing decapsulated Base64 documents with private access control. |
+| **Web3Forms API** | Direct asynchronous contact and inquiry dispatching system. |
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 📁 Project Directory Structure
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```text
+Cinero'26/
+├── 📁 api/
+│   └── 📄 registration.js         # Production Vercel Serverless Function
+├── 📁 public/                    # Static assets & brand media
+├── 📁 src/
+│   ├── 📁 components/            # Modular reusable components
+│   │   ├── 📄 BrandLogo.tsx      # SVG brand logo component
+│   │   ├── 📄 ContactSection.tsx # Web3Forms contact form & alerts
+│   │   ├── 📄 GuidelinesSection  # Rules & submission guidelines
+│   │   ├── 📄 Hero.tsx           # Cinematic landing hero
+│   │   ├── 📄 Navbar.tsx         # Mobile-responsive slide-out navigation
+│   │   ├── 📄 SocialLinks.tsx    # Official festival social channels
+│   │   └── 📄 TimelineSection    # Interactive event roadmap
+│   ├── 📁 data/                  # Static constants, links & districts
+│   ├── 📁 pages/
+│   │   ├── 📄 About.tsx          # About festival & organizing body
+│   │   ├── 📄 Guidlines.tsx      # Full guidelines documentation
+│   │   └── 📄 Registration.tsx   # 5-Step interactive registration form
+│   ├── 📄 App.tsx                # Main SPA routing and view management
+│   └── 📄 main.tsx               # React DOM entry point
+├── 📄 GoogleAppsScript.js        # Full Apps Script backend code
+├── 📄 vercel.json                # Vercel routing & HTTP Security Headers
+├── 📄 vite.config.ts             # Dev proxy middleware & Vite build configs
+└── 📄 package.json               # Dependencies & build scripts
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ⚙️ Environment Variables
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Create a `.env.local` file in the root directory (never committed to Git):
 
+```env
+# Contact Form (Web3Forms)
+VITE_WEB3FORMS_ACCESS_KEY=your_web3forms_key_here
+
+# Google Apps Script Webhook Endpoint
+GOOGLE_SHEET_WEBHOOK_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
 ```
+
+---
+
+## 🚀 Getting Started
+
+### 1. Prerequisites
+- **Node.js** (v18.0.0 or higher)
+- **npm** or **yarn**
+
+### 2. Installation
+```bash
+# Clone the repository
+git clone https://github.com/your-username/cinero-26.git
+
+# Navigate to project directory
+cd cinero-26
+
+# Install dependencies
+npm install
+```
+
+### 3. Local Development
+```bash
+# Start Vite development server
+npm run dev
+```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+### 4. Build for Production
+```bash
+# Run TypeScript validation and compile bundle
+npm run build
+
+# Preview production build locally
+npm run preview
+```
+
+---
+
+## 🌐 Deployment Guidelines
+
+### Deploying on Vercel
+1. Push your repository to GitHub / GitLab.
+2. Import the project into **[Vercel](https://vercel.com)**.
+3. In **Settings ➔ Environment Variables**, add:
+   - `GOOGLE_SHEET_WEBHOOK_URL`: Your Google Apps Script Web App URL.
+   - `VITE_WEB3FORMS_ACCESS_KEY`: Your Web3Forms access token.
+4. Click **Deploy**. Vercel will automatically configure both the Vite SPA and `/api/registration` serverless function.
+
+---
+
+## 🛡️ Security & Privacy Compliance
+
+- **Restricted Asset Protection**: Student IDs and bank transaction slips uploaded by applicants are stored under private permissions in Google Drive and can only be accessed by authorized committee editors.
+- **Zero-Trust Client Submissions**: The frontend does not expose Google Script endpoints directly to prevent spamming and DDoS exploitation.
+- **Strict Anti-Abuse Controls**: Built-in 20MB payload ceiling prevents memory saturation attacks.
+
+---
+
+<p align="center">
+  <b>CINERO'26</b> • Organized with ❤️ by <b>J'pura Voice Filming Division</b><br/>
+  <i>University of Sri Jayewardenepura, Sri Lanka</i>
+</p>

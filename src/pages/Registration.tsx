@@ -116,8 +116,9 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
   const [leaderName, setLeaderName] = useState('');
   const [leaderPhone, setLeaderPhone] = useState('');
   const [leaderEmail, setLeaderEmail] = useState('');
-  const [teamSize, setTeamSize] = useState<number>(3);
+  const [teamSize, setTeamSize] = useState<number>(4);
   const [members, setMembers] = useState<TeamMember[]>([
+    { name: '', gradeOrYear: '', phone: '', institution: '' },
     { name: '', gradeOrYear: '', phone: '', institution: '' },
     { name: '', gradeOrYear: '', phone: '', institution: '' },
   ]);
@@ -427,14 +428,14 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
         background: '#171518',
         color: '#fff',
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration submission failed:', error);
 
       setIsSubmitting(false);
 
       await Swal.fire({
         title: 'Registration Failed',
-        text: 'We could not confirm your registration. Your details may not have been saved. Please try again.',
+        text: error?.message || 'We could not confirm your registration. Your details may not have been saved. Please try again.',
         icon: 'error',
         confirmButtonText: 'Try Again',
         confirmButtonColor: '#d4a642',
@@ -686,7 +687,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                     value={teamSize}
                     onChange={(e) => handleTeamSizeChange(Number(e.target.value))}
                   >
-                    {[2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                    {[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((num) => (
                       <option key={num} value={num}>
                         {num} members {category === 'university' ? `(Registration fee: Rs. ${num * 1000})` : ''}
                       </option>
@@ -1024,8 +1025,29 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
+                            if (file.size > 10 * 1024 * 1024) {
+                              void Swal.fire({
+                                title: 'File Too Large',
+                                text: 'The selected file exceeds the 10MB limit. Please choose a smaller file.',
+                                icon: 'warning',
+                                background: '#171518',
+                                color: '#fff',
+                                confirmButtonColor: '#d4a642',
+                              });
+                              e.target.value = '';
+                              return;
+                            }
                             setStudentIdFile(file);
                             setStudentIdFileName(file.name);
+                            void Swal.fire({
+                              title: 'Student ID Attached',
+                              text: `"${file.name}" has been selected successfully.`,
+                              icon: 'success',
+                              timer: 2000,
+                              showConfirmButton: false,
+                              background: '#171518',
+                              color: '#fff',
+                            });
                           }
                         }}
                       />
@@ -1214,8 +1236,29 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
+                          if (file.size > 10 * 1024 * 1024) {
+                            void Swal.fire({
+                              title: 'File Too Large',
+                              text: 'The selected receipt file exceeds 10MB. Please upload a smaller file.',
+                              icon: 'warning',
+                              background: '#171518',
+                              color: '#fff',
+                              confirmButtonColor: '#d4a642',
+                            });
+                            e.target.value = '';
+                            return;
+                          }
                           setPaymentSlipFile(file);
                           setPaymentSlipFileName(file.name);
+                          void Swal.fire({
+                            title: 'Payment Slip Attached',
+                            text: `"${file.name}" has been selected successfully.`,
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false,
+                            background: '#171518',
+                            color: '#fff',
+                          });
                         }
                       }}
                     />

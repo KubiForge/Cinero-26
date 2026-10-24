@@ -25,6 +25,7 @@ export default async function handler(req, res) {
 
     if (
       !payload ||
+      typeof payload !== 'object' ||
       !payload.referenceId ||
       !payload.teamName ||
       !payload.leaderName ||
@@ -32,7 +33,25 @@ export default async function handler(req, res) {
     ) {
       return res.status(400).json({
         success: false,
-        message: 'Required registration details are missing.',
+        message: 'Required registration details are missing or invalid.',
+      });
+    }
+
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(String(payload.leaderEmail))) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid leader email format.',
+      });
+    }
+
+    // Limit maximum payload size (e.g. 15MB total to prevent memory abuse)
+    const payloadStr = JSON.stringify(payload);
+    if (payloadStr.length > 20 * 1024 * 1024) {
+      return res.status(413).json({
+        success: false,
+        message: 'Payload is too large.',
       });
     }
 
@@ -51,16 +70,18 @@ export default async function handler(req, res) {
 
     const result = await response.json();
 
-    if (result.status !== 'success') {
+    const isSuccess = result && (result.success === true || result.status === 'success');
+
+    if (!isSuccess) {
       throw new Error(
-        result.message || 'Google Sheets did not confirm the save.'
+        result?.message || 'Google Sheets did not confirm the save.'
       );
     }
 
     return res.status(200).json({
       success: true,
-      message: 'Registration saved successfully.',
-      referenceId: result.referenceId || payload.referenceId,
+      message: result?.message || 'Registration saved successfully.',
+      referenceId: result?.referenceId || payload.referenceId,
     });
   } catch (error) {
     console.error('Registration API error:', error);

@@ -1,5 +1,5 @@
 
-var SPREADSHEET_ID = "1o4fJfhYWUjowLaSvpUUn4BWLDKeETCScxP5M6mMOmHk";
+var SPREADSHEET_ID = "18sPX0nKl4IKDqBf1zRhDSpfNcGUStvw-DhCddBmwoQw";
 
 function doPost(e) {
   var lock = LockService.getScriptLock();
@@ -132,31 +132,47 @@ function saveFile(base64, mimeType, fileName, referenceId, label) {
     return "N/A";
   }
 
-  var folderName = "CINERO'26 Registration Uploads";
-  var folders = DriveApp.getFoldersByName(folderName);
-  var folder = folders.hasNext()
-    ? folders.next()
-    : DriveApp.createFolder(folderName);
+  try {
+    var folderName = "CINERO'26 Registration Uploads";
+    var folders = DriveApp.getFoldersByName(folderName);
+    var folder = folders.hasNext()
+      ? folders.next()
+      : DriveApp.createFolder(folderName);
 
-  var bytes = Utilities.base64Decode(base64);
-  var safeName = String(fileName).replace(/[\\/:*?"<>|]/g, "_");
+    var bytes = Utilities.base64Decode(base64);
+    var safeName = String(fileName).replace(/[\\/:*?"<>|]/g, "_");
 
-  var blob = Utilities.newBlob(
-    bytes,
-    mimeType || "application/octet-stream",
-    referenceId + "_" + label + "_" + safeName
-  );
+    var blob = Utilities.newBlob(
+      bytes,
+      mimeType || "application/octet-stream",
+      referenceId + "_" + label + "_" + safeName
+    );
 
-  var file = folder.createFile(blob);
+    var file = folder.createFile(blob);
 
-  // Anyone with the link can view these uploaded documents.
-  // Consider restricted access because these may contain personal data.
-  file.setSharing(
-    DriveApp.Access.ANYONE_WITH_LINK,
-    DriveApp.Permission.VIEW
-  );
+    // SECURITY: Keep file strictly private to organizing committee & spreadsheet editors.
+    // Do NOT allow ANYONE_WITH_LINK access so uploaded personal IDs & bank receipts stay secure.
+    try {
+      file.setSharing(
+        DriveApp.Access.PRIVATE,
+        DriveApp.Permission.NONE
+      );
+    } catch (e) {
+      // Default creation in private folder is already restricted
+    }
 
-  return file.getUrl();
+    return file.getUrl();
+  } catch (driveErr) {
+    Logger.log("Drive save error: " + driveErr.message);
+    return "Upload failed (Drive permission required): " + String(fileName);
+  }
+}
+
+// Helper function to force Drive authorization in Apps Script Editor:
+// Run this function once manually in the Apps Script editor to grant Drive permissions!
+function authorizeDrive() {
+  var root = DriveApp.getRootFolder();
+  Logger.log("Drive authorized: " + root.getName());
 }
 
 function jsonResponse(data) {
