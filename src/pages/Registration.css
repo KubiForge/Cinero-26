@@ -873,34 +873,101 @@
   overflow-wrap: anywhere;
 }
 
-.reg-source-options {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.65rem;
-  margin-top: 0.35rem;
+/* Step 4: Section Blocks, Badges, and Promotional Checkboxes */
+.reg-section-block {
+  margin-bottom: 2rem;
+  padding: 1.25rem 1.4rem;
+  background: rgba(22, 20, 26, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
 }
 
-.reg-source-btn {
-  background: rgba(14, 13, 16, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.reg-section-block__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.reg-section-block__badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: rgba(212, 166, 66, 0.18);
+  border: 1px solid rgba(212, 166, 66, 0.5);
+  color: #f5d77f;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius: 4px;
+}
+
+.reg-section-block__badge--optional {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #c4c2cb;
+}
+
+.reg-section-block__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.reg-section-block__hint {
+  font-size: 0.84rem;
   color: #a3a1a8;
-  padding: 0.55rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  line-height: 1.5;
+  margin: 0 0 1.25rem;
+}
+
+.reg-hint-tag {
+  font-size: 0.75rem;
+  color: #8c8998;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.reg-promotional-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.reg-promotional-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.95rem;
+  background: rgba(14, 13, 16, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
   cursor: pointer;
-  text-align: center;
   transition: all 0.2s ease;
 }
 
-.reg-source-btn:hover {
+.reg-promotional-item:hover {
+  background: rgba(255, 255, 255, 0.03);
   border-color: rgba(212, 166, 66, 0.3);
-  color: #fff;
 }
 
-.reg-source-btn.is-active {
-  background: rgba(212, 166, 66, 0.15);
+.reg-promotional-item.is-selected {
+  background: rgba(212, 166, 66, 0.12);
   border-color: #d4a642;
-  color: #f5d77f;
+}
+
+.reg-promotional-item__label {
+  font-size: 0.85rem;
+  color: #d1cfe2;
+  user-select: none;
+}
+
+.reg-promotional-item.is-selected .reg-promotional-item__label {
+  color: #fff;
   font-weight: 600;
 }
 

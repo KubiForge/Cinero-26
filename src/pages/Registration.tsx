@@ -285,14 +285,66 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
   };
 
   const validateStep4 = (): boolean => {
-    if (!acceptRules || !productionDateAccuracy || !copyrightCleared || !useOfInfo) {
-      void Swal.fire({ title: 'Declarations Required', text: 'Please tick all four declaration boxes before continuing.', icon: 'warning', background: '#171518', color: '#fff', confirmButtonColor: '#d4a642' });
+    if (!acceptRules) {
+      void Swal.fire({
+        title: 'Rules & Regulations Required',
+        text: 'Please tick the Rules and Regulations declaration box before submitting.',
+        icon: 'warning',
+        background: '#171518',
+        color: '#fff',
+        confirmButtonColor: '#d4a642',
+      });
       return false;
     }
+
+    if (!productionDateAccuracy) {
+      void Swal.fire({
+        title: 'Production Date & Accuracy Required',
+        text: 'Please tick the Production Date and Accuracy declaration box before submitting.',
+        icon: 'warning',
+        background: '#171518',
+        color: '#fff',
+        confirmButtonColor: '#d4a642',
+      });
+      return false;
+    }
+
+    if (!copyrightCleared) {
+      void Swal.fire({
+        title: 'Copyright Declaration Required',
+        text: 'Please tick the Copyright declaration box before submitting.',
+        icon: 'warning',
+        background: '#171518',
+        color: '#fff',
+        confirmButtonColor: '#d4a642',
+      });
+      return false;
+    }
+
+    if (!useOfInfo) {
+      void Swal.fire({
+        title: 'Use of Information Consent Required',
+        text: 'Please tick the Use of Information declaration box before submitting.',
+        icon: 'warning',
+        background: '#171518',
+        color: '#fff',
+        confirmButtonColor: '#d4a642',
+      });
+      return false;
+    }
+
     if (!signature.trim()) {
-      void Swal.fire({ title: 'Missing Confirmation Signature', text: "Please type the team leader's full name to confirm the submission.", icon: 'warning', background: '#171518', color: '#fff', confirmButtonColor: '#d4a642' });
+      void Swal.fire({
+        title: 'Missing Confirmation Signature',
+        text: "Please type your full name to confirm that the information in this form is true and accurate.",
+        icon: 'warning',
+        background: '#171518',
+        color: '#fff',
+        confirmButtonColor: '#d4a642',
+      });
       return false;
     }
+
     return true;
   };
 
@@ -1299,108 +1351,151 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                   ← Back to Institution Details
                 </button>
                 <button type="button" className="reg-btn reg-btn--next" onClick={handleNext}>
-                  Next: Declarations & Feedback →
+                  Next: Declarations & Permissions →
                 </button>
               </div>
             </div>
           )}
 
-          {/* ================= STEP 4: DECLARATIONS AND FEEDBACK ================= */}
+          {/* ================= STEP 4: DECLARATIONS & QUESTIONS/FEEDBACK ================= */}
           {currentStep === 4 && (
             <div className="reg-card">
               <div className="reg-card__header">
                 <span className="reg-card__step-tag">Step 04 of 04</span>
-                <h2 className="reg-card__title">Declarations & Confirmation</h2>
+                <h2 className="reg-card__title">Declarations & Feedback</h2>
                 <p className="reg-card__subtitle">
-                  Please review the official festival declarations before completing your team registration.
+                  Please review the official declarations and provide your feedback before completing registration.
                 </p>
               </div>
 
-              <div className="reg-declarations">
-                <label className="reg-declaration-note">
-                  <input
-                    type="checkbox"
-                    className="reg-declaration-checkbox"
-                    checked={acceptRules}
-                    onChange={(e) => setAcceptRules(e.target.checked)}
-                  />
-                  <span><strong>Rules and regulations:</strong> Teams are expected to follow the CINERO'26 rules and regulations.</span>
-                </label>
-                <label className="reg-declaration-note">
-                  <input
-                    type="checkbox"
-                    className="reg-declaration-checkbox"
-                    checked={productionDateAccuracy}
-                    onChange={(e) => setProductionDateAccuracy(e.target.checked)}
-                  />
-                  <span><strong>Production date and accuracy:</strong> Films must be produced or completed on or after January 1, 2026. Submissions may be disqualified if any provided information is false or misleading.</span>
-                </label>
-                <label className="reg-declaration-note">
-                  <input
-                    type="checkbox"
-                    className="reg-declaration-checkbox"
-                    checked={copyrightCleared}
-                    onChange={(e) => setCopyrightCleared(e.target.checked)}
-                  />
-                  <span><strong>Copyright:</strong> All music, footage, photographs, graphics, fonts, stock footage, and other third-party materials used in the film must be legally obtained or appropriately licensed.</span>
-                </label>
-                <label className="reg-declaration-note">
-                  <input
-                    type="checkbox"
-                    className="reg-declaration-checkbox"
-                    checked={useOfInfo}
-                    onChange={(e) => setUseOfInfo(e.target.checked)}
-                  />
-                  <span><strong>Use of information:</strong> The CINERO'26 organising committee may use the details in this form to contact the team and run the festival.</span>
-                </label>
-              </div>
+              {/* 1. Declarations Section */}
+              <div className="reg-section-block">
+                <div className="reg-section-block__header">
+                  <span className="reg-section-block__badge">Required Section</span>
+                  <h3 className="reg-section-block__title">Declarations</h3>
+                </div>
 
-              <div className="reg-form-grid" style={{ marginBottom: '1.75rem' }}>
-                <div className="reg-field">
+                <div className="reg-declarations">
+                  {/* Rules and regulations */}
+                  <label className="reg-declaration-note">
+                    <input
+                      type="checkbox"
+                      className="reg-declaration-checkbox"
+                      checked={acceptRules}
+                      onChange={(e) => setAcceptRules(e.target.checked)}
+                      required
+                    />
+                    <span>
+                      <strong>Rules and regulations:</strong> "I have read the CINERO'26 rules and regulations and my team agrees to follow them."
+                    </span>
+                  </label>
+
+                  {/* Production date and accuracy */}
+                  <label className="reg-declaration-note">
+                    <input
+                      type="checkbox"
+                      className="reg-declaration-checkbox"
+                      checked={productionDateAccuracy}
+                      onChange={(e) => setProductionDateAccuracy(e.target.checked)}
+                      required
+                    />
+                    <span>
+                      <strong>Production date and accuracy:</strong> "We understand that our film must be produced or completed on or after January 1, 2026, and that our submission may be disqualified at any stage if any information we provide is found to be false or misleading."
+                    </span>
+                  </label>
+
+                  {/* Copyright */}
+                  <label className="reg-declaration-note">
+                    <input
+                      type="checkbox"
+                      className="reg-declaration-checkbox"
+                      checked={copyrightCleared}
+                      onChange={(e) => setCopyrightCleared(e.target.checked)}
+                      required
+                    />
+                    <span>
+                      <strong>Copyright:</strong> "We understand that all music, footage, photographs, graphics, fonts, stock footage and other third-party materials used in our film must be legally obtained or appropriately licensed."
+                    </span>
+                  </label>
+
+                  {/* Use of information */}
+                  <label className="reg-declaration-note">
+                    <input
+                      type="checkbox"
+                      className="reg-declaration-checkbox"
+                      checked={useOfInfo}
+                      onChange={(e) => setUseOfInfo(e.target.checked)}
+                      required
+                    />
+                    <span>
+                      <strong>Use of information:</strong> "We agree that the CINERO'26 organising committee may use the details in this form to contact our team and run the festival."
+                    </span>
+                  </label>
+                </div>
+
+                {/* Team leader's confirmation */}
+                <div className="reg-field" style={{ marginTop: '1.25rem' }}>
                   <label htmlFor="reg-signature" className="reg-label">
-                    Team Leader's Confirmation (Team Leader's Full Name) <span className="reg-label__required">*</span>
+                    Team leader's confirmation <span className="reg-label__required">*</span>
                   </label>
                   <input
                     id="reg-signature"
                     type="text"
                     className="reg-input"
-                    placeholder="Type your full name to confirm that the information in this form is true and accurate"
+                    placeholder='Type your full name to confirm that the information in this form is true and accurate.'
                     value={signature}
                     onChange={(e) => setSignature(e.target.value)}
                     required
                   />
+                  <span className="reg-hint">Type your full legal name to confirm that the information in this form is true and accurate.</span>
+                </div>
+              </div>
+
+              {/* 2. Questions and Feedback Section */}
+              <div className="reg-section-block">
+                <div className="reg-section-block__header">
+                  <span className="reg-section-block__badge reg-section-block__badge--optional">Optional Section</span>
+                  <h3 className="reg-section-block__title">Questions and feedback</h3>
                 </div>
 
-                <div className="reg-field">
-                  <label htmlFor="reg-questions" className="reg-label">
-                    Do you have any questions for the CINERO'26 organising committee? (Optional)
-                  </label>
-                  <textarea
-                    id="reg-questions"
-                    className="reg-textarea"
-                    placeholder="Write any questions, special requirements, or inquiries here..."
-                    value={questions}
-                    onChange={(e) => setQuestions(e.target.value)}
-                  />
-                </div>
+                <div className="reg-form-grid">
+                  {/* Question: Paragraph */}
+                  <div className="reg-field" style={{ gridColumn: '1 / -1' }}>
+                    <label htmlFor="reg-questions" className="reg-label">
+                      Do you have any questions for the CINERO'26 organising committee?
+                    </label>
+                    <textarea
+                      id="reg-questions"
+                      className="reg-textarea"
+                      placeholder="Write your questions or inquiries here..."
+                      value={questions}
+                      onChange={(e) => setQuestions(e.target.value)}
+                      rows={3}
+                    />
+                  </div>
 
-                <div className="reg-field">
-                  <span className="reg-label">How did you hear about CINERO'26? (Optional)</span>
-                  <div className="reg-source-options">
-                    {HEAR_SOURCES.map((src) => {
-                      const isSelected = selectedSources.includes(src);
-                      return (
-                        <button
-                          key={src}
-                          type="button"
-                          className={`reg-source-btn ${isSelected ? 'is-active' : ''}`}
-                          aria-pressed={isSelected}
-                          onClick={() => handleSourceToggle(src)}
-                        >
-                          {src}
-                        </button>
-                      );
-                    })}
+                  {/* Question: Checkboxes */}
+                  <div className="reg-field" style={{ gridColumn: '1 / -1' }}>
+                    <span className="reg-label">How did you hear about CINERO'26?</span>
+                    <div className="reg-promotional-grid">
+                      {HEAR_SOURCES.map((src) => {
+                        const isChecked = selectedSources.includes(src);
+                        return (
+                          <label
+                            key={src}
+                            className={`reg-promotional-item ${isChecked ? 'is-selected' : ''}`}
+                          >
+                            <input
+                              type="checkbox"
+                              className="reg-declaration-checkbox"
+                              checked={isChecked}
+                              onChange={() => handleSourceToggle(src)}
+                            />
+                            <span className="reg-promotional-item__label">{src}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
