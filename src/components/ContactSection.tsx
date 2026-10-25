@@ -290,8 +290,8 @@ export const ContactSection: React.FC = () => {
               </div>
               <div className="info-card__content">
                 <span className="info-card__label">FESTIVAL LOCATION</span>
-                <div className="info-card__value">Coming Soon</div>
-                <p className="info-card__sub">Festival venue details will be announced soon.</p>
+                <div className="info-card__value">University Premises</div>
+                <p className="info-card__sub">University of Sri Jayewardenepura</p>
               </div>
             </div>
 

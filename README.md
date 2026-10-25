@@ -21,7 +21,7 @@
 
 ## 🌟 Overview
 
-**CINERO'26** is the official web portal for Sri Lanka's premier All-Island Short Film Festival organized by **J'pura Voice Filming Division** (University of Sri Jayewardenepura). The platform delivers a high-impact cinematic experience, comprehensive festival rules, interactive timelines, and an enterprise-grade automated team registration system connected directly to **Google Sheets** and **Google Drive**.
+**CINERO'26** is the official web portal for Sri Lanka's premier All-Island Short Film Festival organized by **J'PURA VOICE FILMING DIVISION** (University of Sri Jayewardenepura). The platform delivers a high-impact cinematic experience, comprehensive festival rules, interactive timelines, and an enterprise-grade automated team registration system connected directly to **Google Sheets** and **Google Drive**.
 
 ---
 
@@ -177,6 +177,6 @@ npm run preview
 ---
 
 <p align="center">
-  <b>CINERO'26</b> • Organized with ❤️ by <b>J'pura Voice Filming Division</b><br/>
+  <b>CINERO'26</b> • Organized with ❤️ by <b>J'PURA VOICE FILMING DIVISION</b><br/>
   <i>University of Sri Jayewardenepura, Sri Lanka</i>
 </p>

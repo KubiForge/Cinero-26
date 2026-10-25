@@ -15,8 +15,8 @@ const TIMELINE_EVENTS: TimelineEvent[] = [
   {
     id: 1,
     stepNumber: '01',
-    dateLabel: '26 OCT 2026',
-    startDate: '2026-10-26',
+    dateLabel: '27 OCT 2026',
+    startDate: '2026-10-27',
     title: 'Registration Opens',
     description: 'Registration opens for CINERO’26 filmmakers.',
     iconType: 'registration',

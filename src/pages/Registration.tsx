@@ -421,9 +421,9 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
 
       await Swal.fire({
         title: 'Registration Successful!',
-        text: `Your team "${teamName}" has been submitted successfully. Your reference ID is ${generatedRef}.`,
+        text: 'Your registration has been submitted successfully.',
         icon: 'success',
-        confirmButtonText: 'View Summary',
+        confirmButtonText: 'Continue',
         confirmButtonColor: '#d4a642',
         background: '#171518',
         color: '#fff',
@@ -509,7 +509,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
           <h1 className="reg-hero__title">Register Your Team</h1>
           <p className="reg-hero__desc">
             Join CINERO’26 and bring your story to the screen. Registration is open from{' '}
-            <strong>October 26 to November 7, 2026</strong>.
+            <strong>October 27 to November 7, 2026</strong>.
           </p>
         </div>
       </section>
@@ -1419,7 +1419,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
           {/* ================= STEP 5: CONFIRMATION MESSAGE & SUMMARY ================= */}
           {currentStep === 5 && (
             <div className="reg-card reg-card--confirmation">
-              {/* Screen-Only Prominent Animated Red Action Notice */}
+              {/* Screen-Only Prominent Animated Red Action Notice: WhatsApp Group Join */}
               <div className="reg-success__urgent-alert" role="alert">
                 <div className="reg-success__urgent-glow"></div>
                 <div className="reg-success__urgent-icon">
@@ -1427,16 +1427,29 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                   ⚠️
                 </div>
                 <div className="reg-success__urgent-content">
-                  <div className="reg-success__urgent-badge">CRITICAL FINAL STEP</div>
+                  <div className="reg-success__urgent-badge">ATTENTION • MANDATORY NEXT STEP</div>
                   <h3 className="reg-success__urgent-title">
-                    Print or save this summary as a PDF, then email it to:
+                    You must join the official {category === 'school' ? 'Schools' : 'Inter-University'} WhatsApp group immediately!
                   </h3>
-                  <a href="mailto:cinero2026@gmail.com" className="reg-success__urgent-email">
-                    cinero2026@gmail.com
-                  </a>
                   <p className="reg-success__urgent-sub">
-                    Your team registration is only finalized after sending this confirmation PDF along with any supporting documents to our committee email.
+                    All crucial announcements, submission links, verification updates, and festival notices will be shared <strong>strictly through this official WhatsApp group</strong>. Joining is compulsory for all registered teams.
                   </p>
+                  <a
+                    href={
+                      category === 'school'
+                        ? 'https://chat.whatsapp.com/LXTNzeCWlgmKf13Bxe0Fow?s=cl&p=a&mlu=4&ilr=4&iam=0'
+                        : 'https://chat.whatsapp.com/KObeiSgX580I8UYUfEP7ov?s=cl&p=a&mlu=4&ilr=4&iam=0'
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="reg-success__whatsapp-btn"
+                  >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                    </svg>
+                    <span>Join Official WhatsApp Group ({category === 'school' ? 'Inter-School' : 'Inter-University'})</span>
+                    <span className="reg-success__whatsapp-arrow">→</span>
+                  </a>
                 </div>
               </div>
 
@@ -1457,7 +1470,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                     </div>
                   </div>
                   <div className="reg-doc__organizer">
-                    <span className="reg-doc__org-line">Organized by J'pura Voice Filming Division</span>
+                    <span className="reg-doc__org-line">Organized by J'PURA VOICE FILMING DIVISION</span>
                     <span className="reg-doc__org-line">University of Sri Jayewardenepura</span>
                     <span className="reg-doc__date-badge">Issued: {new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                   </div>
@@ -1566,12 +1579,12 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                 {/* Instructions & Inquiries Notice */}
                 <div className="reg-doc__inquiry-bar">
                   <div className="reg-doc__inquiry-item">
-                    <span className="reg-doc__inquiry-label">Required Action:</span>
-                    <span className="reg-doc__inquiry-val">Email this PDF file to <strong>cinero2026@gmail.com</strong> with your Reference ID in the subject.</span>
+                    <span className="reg-doc__inquiry-label">Official Communication:</span>
+                    <span className="reg-doc__inquiry-val">All festival announcements, updates, and film submission portal links will be shared via the official CINERO’26 WhatsApp group.</span>
                   </div>
                   <div className="reg-doc__inquiry-item">
                     <span className="reg-doc__inquiry-label">Inquiries & Support:</span>
-                    <span className="reg-doc__inquiry-val"><strong>cinero2026@gmail.com</strong> | J'pura Voice Filming Division</span>
+                    <span className="reg-doc__inquiry-val"><strong>cinero2026@gmail.com</strong> | J'PURA VOICE FILMING DIVISION</span>
                   </div>
                 </div>
 
@@ -1579,7 +1592,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                 <footer className="reg-doc__footer">
                   <div className="reg-doc__footer-left">
                     <span className="reg-doc__footer-brand">CINERO'26 | A Stage for Every Story</span>
-                    <span className="reg-doc__footer-desc">J'pura Voice Filming Division • University of Sri Jayewardenepura</span>
+                    <span className="reg-doc__footer-desc">J'PURA VOICE FILMING DIVISION • University of Sri Jayewardenepura</span>
                   </div>
                   <div className="reg-doc__footer-right">
                     <div className="reg-doc__seal">

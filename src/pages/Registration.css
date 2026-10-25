@@ -1087,30 +1087,46 @@
   line-height: 1.35;
 }
 
-.reg-success__urgent-email {
-  display: inline-block;
-  color: #fca5a5;
-  font-size: 1.3rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  transition: all 0.2s ease;
-  margin-bottom: 0.5rem;
-  overflow-wrap: anywhere;
-}
-
-.reg-success__urgent-email:hover {
-  color: #ffffff;
-  text-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
-}
-
 .reg-success__urgent-sub {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   color: #fca5a5;
-  opacity: 0.92;
+  opacity: 0.95;
   line-height: 1.5;
-  margin: 0;
+  margin: 0 0 1rem;
+}
+
+.reg-success__whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.4rem;
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4), 0 0 0 2px rgba(255, 255, 255, 0.15);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.01em;
+}
+
+.reg-success__whatsapp-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 28px rgba(37, 211, 102, 0.55), 0 0 0 3px rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.reg-success__whatsapp-arrow {
+  display: inline-block;
+  font-size: 1.15rem;
+  font-weight: 800;
+  transition: transform 0.2s ease;
+}
+
+.reg-success__whatsapp-btn:hover .reg-success__whatsapp-arrow {
+  transform: translateX(4px);
 }
 
 /* ==========================================================================
@@ -1639,12 +1655,16 @@
     font-size: 1.02rem;
   }
 
-  .reg-success__urgent-email {
-    font-size: 1.1rem;
+  .reg-success__urgent-sub {
+    font-size: 0.85rem;
+    margin-bottom: 0.85rem;
   }
 
-  .reg-success__urgent-sub {
-    font-size: 0.82rem;
+  .reg-success__whatsapp-btn {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-size: 0.88rem;
+    box-sizing: border-box;
   }
 
   /* Printable confirmation document mobile responsive */

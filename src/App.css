@@ -388,11 +388,23 @@ main {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
 }
 
-.register-card h2 {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 3.5vw, 2.75rem);
-  color: var(--color-ivory);
-  margin: 0 0 16px 0;
+.register-card__eyebrow {
+  margin-bottom: 12px;
+  justify-content: center;
+}
+
+.register-card h2,
+.register-card__title {
+  font-family: var(--font-display, 'Cinzel', Georgia, serif);
+  font-size: clamp(2.3rem, 4.5vw, 3.6rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  background: linear-gradient(135deg, #ffffff 0%, #fae2b1 30%, #e0b457 65%, #b98829 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  margin: 6px 0 16px 0;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
 }
 
 .register-card p {

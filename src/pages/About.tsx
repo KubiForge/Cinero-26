@@ -164,7 +164,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               <h2>Project Overview</h2>
               <p>
                 CINERO’26 is an inter-school and inter-university short film festival organized
-                by the Filming Division of J’PURA VOICE, the Official Media and Broadcasting Unit
+                by the J'PURA VOICE FILMING DIVISION, the Official Media and Broadcasting Unit
                 of the University of Sri Jayewardenepura. The festival aims to provide a platform
                 for school students and university undergraduates to express their creativity,
                 showcase their storytelling abilities, and explore the art of filmmaking. Through
@@ -342,7 +342,7 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
 
             <article className="about-page__division-card">
               <p>
-                The Filming Division of J’PURA VOICE is a dedicated creative unit focused on
+                J'PURA VOICE FILMING DIVISION is a dedicated creative unit focused on
                 visual storytelling and media production within the University of Sri
                 Jayewardenepura. It brings together students with skills in directing,
                 cinematography, editing, and production. The division is responsible for

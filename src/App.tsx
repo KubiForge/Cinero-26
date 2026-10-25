@@ -293,18 +293,21 @@ function App() {
           </picture>
           <div className="section-container">
             <div className="register-card">
-              <span className="section-eyebrow">Ready To Submit?</span>
-              <h2>Step Into The Spotlight</h2>
+              <div className="guidelines-section__eyebrow register-card__eyebrow">
+                <span className="eyebrow-text">CINERO’26</span>
+                <span className="eyebrow-line" />
+              </div>
+              <h2 className="register-card__title">REGISTRATION</h2>
               <p>
-                Register your film crew and upload your short film submission for CINERO'26.
-                Be heard, be recognized, and celebrate cinema.
+                Register your film crew and team entry for CINERO'26.<br />
+                Be heard, be recognized, and take the first step towards the spotlight.
               </p>
               <button
                 type="button"
                 className="register-btn"
                 onClick={() => handleNavClick('#register')}
               >
-                Register Film Entry
+                Register Your Team
               </button>
             </div>
           </div>
