@@ -531,3 +531,68 @@ main {
     text-align: center;
   }
 }
+
+@media (max-width: 480px) {
+  .section {
+    padding: 55px 0 60px;
+  }
+  .section-container {
+    padding: 0 16px;
+  }
+  .section-header {
+    margin-bottom: 28px;
+  }
+  .section-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 8vw, 2.3rem);
+  }
+  .section-desc {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* About preview on home */
+  .about-section__header {
+    margin-bottom: 24px;
+  }
+  .about-section__title {
+    font-size: clamp(2rem, 9vw, 2.7rem);
+  }
+  .about-card {
+    padding: 24px 20px;
+  }
+  .about-preview__button {
+    width: 100%;
+    min-height: 50px;
+    padding: 0 20px;
+    font-size: 14px;
+  }
+
+  /* Registration CTA Section on Home Page */
+  .section--register {
+    min-height: auto;
+    padding: 60px 0;
+  }
+  .register-card {
+    padding: 32px 18px;
+    border-radius: 18px;
+  }
+  .register-card h2,
+  .register-card__title {
+    font-size: clamp(1.85rem, 8.5vw, 2.45rem);
+    letter-spacing: 0.08em;
+  }
+  .register-card p {
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+  .register-btn {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 14px;
+  }
+}

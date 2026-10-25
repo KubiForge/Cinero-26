@@ -1816,31 +1816,31 @@
   }
 
   .reg-page__header-inner {
-    position: relative;
     display: flex;
-    justify-content: center;
-    min-height: 36px;
-    padding: 0 0.8rem;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 0.85rem;
+    gap: 0.5rem;
   }
 
   .reg-page__back-btn {
-    position: absolute;
-    left: 0.8rem;
-    top: 50%;
-    transform: translateY(-50%);
+    position: static;
+    transform: none;
     gap: 0.35rem;
-    padding: 0.45rem 0.65rem;
+    padding: 0.45rem 0.75rem;
     font-size: 0.75rem;
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .reg-page__back-btn:hover {
-    transform: translateY(-50%) translateX(-2px);
+    transform: translateX(-2px);
   }
 
   .reg-page__back-btn svg {
-    width: 16px;
-    height: 16px;
+    width: 15px;
+    height: 15px;
   }
 
   .reg-page__back-text-full {
@@ -1853,16 +1853,17 @@
 
   .reg-page__logo-link {
     flex: 0 0 auto;
+    margin-left: auto;
   }
 
   .reg-page__logo-img {
-    height: 26px;
+    height: 25px;
     max-width: 100px;
   }
 
   .reg-hero {
-    min-height: 285px;
-    padding: 3rem 1rem 2.5rem;
+    min-height: 260px;
+    padding: 2.75rem 0.85rem 2.25rem;
   }
 
   .reg-hero__background img {
@@ -1882,47 +1883,229 @@
 
   .reg-hero__title {
     font-size: clamp(1.75rem, 8vw, 2.25rem);
+    line-height: 1.18;
+    margin-bottom: 0.75rem;
   }
 
   .reg-hero__desc {
     font-size: 0.84rem;
+    line-height: 1.5;
+    padding: 0 4px;
   }
 
   .reg-page__main {
     margin: 0 auto 2rem;
-    padding: 0 0.7rem;
+    padding: 0 0.75rem;
   }
 
   .reg-card {
-    padding: 1.15rem 0.9rem;
-    border-radius: 12px;
+    padding: 1.15rem 0.85rem;
+    border-radius: 14px;
   }
 
   .reg-card__header {
-    margin-bottom: 1.35rem;
-    padding-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.85rem;
+  }
+
+  .reg-card__step-tag {
+    font-size: 0.68rem;
+    margin-bottom: 0.25rem;
   }
 
   .reg-card__title {
-    font-size: 1.2rem;
+    font-size: 1.18rem;
+    line-height: 1.25;
+  }
+
+  .reg-card__subtitle {
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  /* Category selection cards */
+  .reg-category-options {
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .reg-cat-card {
+    padding: 1.15rem 0.95rem;
+    border-radius: 10px;
+    gap: 0.5rem;
+  }
+
+  .reg-cat-card__title {
+    font-size: 1.05rem;
+  }
+
+  .reg-cat-card__desc {
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+
+  .reg-cat-card__fee {
+    font-size: 0.76rem;
+    padding-top: 0.5rem;
   }
 
   .reg-form-grid {
-    gap: 1rem;
+    gap: 0.9rem;
   }
 
-  .reg-members-box,
-  .reg-bank-card,
+  .reg-label {
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .reg-input,
+  .reg-select,
+  .reg-textarea {
+    padding: 0.7rem 0.85rem;
+    font-size: 0.88rem;
+    border-radius: 7px;
+  }
+
+  .reg-hint {
+    font-size: 0.73rem;
+  }
+
+  /* Dynamic Members Box */
+  .reg-members-box {
+    padding: 0.85rem;
+    border-radius: 10px;
+    margin-top: 0.25rem;
+  }
+
+  .reg-members-box__title {
+    font-size: 0.85rem;
+  }
+
+  .reg-member-row {
+    padding: 0.85rem;
+    gap: 0.65rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+  }
+
+  .reg-member-row .reg-field {
+    gap: 0.3rem;
+  }
+
+  /* Fee Summary Box */
   .reg-fee-summary {
     padding: 1rem;
+    gap: 0.85rem;
+    border-radius: 10px;
+  }
+
+  .reg-fee-summary__info h4 {
+    font-size: 0.78rem;
+  }
+
+  .reg-fee-summary__calc {
+    font-size: 0.8rem;
+  }
+
+  .reg-fee-summary__amount-num {
+    font-size: 1.65rem;
+  }
+
+  /* Bank Details */
+  .reg-bank-card {
+    padding: 0.95rem;
+    border-radius: 10px;
   }
 
   .reg-bank-grid {
     grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .reg-bank-item__label {
+    font-size: 0.72rem;
   }
 
   .reg-bank-item__val {
+    font-size: 0.85rem;
     overflow-wrap: anywhere;
+  }
+
+  /* File Dropzone */
+  .reg-file-dropzone {
+    padding: 1.15rem 0.75rem;
+    border-radius: 8px;
+  }
+
+  .reg-file-dropzone__icon {
+    width: 26px;
+    height: 26px;
+    margin-bottom: 0.35rem;
+  }
+
+  .reg-file-dropzone__text {
+    font-size: 0.82rem;
+  }
+
+  .reg-file-dropzone__subtext {
+    font-size: 0.7rem;
+  }
+
+  .reg-file-preview {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .reg-file-preview__name {
+    font-size: 0.78rem;
+  }
+
+  /* Declarations & Consent */
+  .reg-declaration-note {
+    grid-template-columns: 20px minmax(0, 1fr);
+    padding: 0.75rem 0.85rem;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    gap: 0.6rem;
+  }
+
+  .reg-category-consent {
+    padding: 0.85rem;
+  }
+
+  .reg-category-consent__label {
+    grid-template-columns: 20px minmax(0, 1fr);
+    font-size: 0.82rem;
+    line-height: 1.45;
+    gap: 0.6rem;
+  }
+
+  .reg-category-consent__notice {
+    margin-left: 0;
+    margin-top: 0.5rem;
+    font-size: 0.74rem;
+  }
+
+  .reg-section-block {
+    padding: 1rem 0.85rem;
+    border-radius: 10px;
+    margin-bottom: 1.35rem;
+  }
+
+  .reg-section-block__title {
+    font-size: 0.95rem;
+  }
+
+  .reg-promotional-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .reg-promotional-item {
+    padding: 0.65rem 0.85rem;
+  }
+
+  .reg-promotional-item__label {
+    font-size: 0.82rem;
   }
 
   .reg-source-options {
@@ -1944,6 +2127,8 @@
   .reg-actions {
     flex-direction: column-reverse;
     gap: 0.75rem;
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
   }
 
   .reg-actions .reg-btn {
@@ -1952,18 +2137,43 @@
   }
 
   .reg-stepper {
-    padding: 0 0.5rem;
+    padding: 0 0.25rem;
+    margin: 1.25rem 0 1.25rem;
   }
 
   .reg-step-item__circle {
     width: 28px;
     height: 28px;
+    font-size: 0.78rem;
+  }
+
+  /* Urgent WhatsApp notice on small mobile */
+  .reg-success__urgent-alert {
+    padding: 1.15rem 0.9rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+  }
+
+  .reg-success__urgent-title {
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+
+  .reg-success__urgent-sub {
     font-size: 0.8rem;
+    line-height: 1.45;
+    margin-bottom: 0.85rem;
+  }
+
+  .reg-success__whatsapp-btn {
+    font-size: 0.82rem;
+    padding: 0.75rem 0.9rem;
   }
 
   .reg-success__actions {
     flex-direction: column;
     width: 100%;
+    gap: 0.75rem;
   }
 
   .reg-success__actions .reg-btn {
