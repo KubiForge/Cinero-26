@@ -839,6 +839,280 @@
   letter-spacing: 0.04em;
 }
 
+/* ==========================================================================
+   KEY PERSONNEL SECTION STYLES (Compact & Elegant PC View)
+   ========================================================================== */
+
+.about-page__personnel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100vh - 61px);
+  min-height: calc(100svh - 61px);
+  overflow: hidden;
+  padding: 28px 0 24px;
+  border-top: 1px solid rgba(213, 164, 62, 0.18);
+  isolation: isolate;
+}
+
+.about-page__personnel-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at 50% 25%, rgba(213, 164, 62, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 85% 80%, rgba(197, 41, 42, 0.12) 0%, transparent 55%),
+    linear-gradient(180deg, rgba(13, 12, 16, 0.88) 0%, rgba(13, 12, 16, 0.94) 100%);
+  pointer-events: none;
+}
+
+.about-page__personnel-content {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 36px;
+  box-sizing: border-box;
+}
+
+.about-page__personnel-title {
+  margin: 0 0 3px;
+  color: #f0b41b;
+  font-family: var(--font-display, 'Cinzel', Georgia, serif);
+  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.1;
+  text-align: center;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+}
+
+.about-page__personnel-subtitle {
+  margin: 0 auto 18px;
+  color: #c4b8ad;
+  font-size: 13.5px;
+  letter-spacing: 0.05em;
+  text-align: center;
+  max-width: 550px;
+}
+
+/* 2-column compact grid */
+.about-page__personnel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 22px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* Personnel Card */
+.personnel-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* Rounded photo container - compact */
+.personnel-card__photo-wrap {
+  position: relative;
+  flex: 0 0 108px;
+  width: 108px;
+  height: 125px;
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(145deg, #2a1f24 0%, #171419 100%);
+  border: 1.2px solid rgba(213, 164, 62, 0.35);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.55),
+    inset 0 0 14px rgba(0, 0, 0, 0.5);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.personnel-card:hover .personnel-card__photo-wrap {
+  transform: translateY(-2px);
+  border-color: rgba(240, 195, 85, 0.75);
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.65),
+    0 0 18px rgba(213, 164, 62, 0.3);
+}
+
+.personnel-card__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+/* Fallback if user hasn't copied the image yet */
+.personnel-card__photo-wrap--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(213, 164, 62, 0.22) 0%, rgba(20, 17, 22, 0.95) 75%);
+}
+
+.personnel-card__photo-wrap--fallback::after {
+  content: attr(data-initials);
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #f5d77f;
+  letter-spacing: 0.1em;
+}
+
+/* Information Container (Dark Box with Gold Border) - Compact */
+.personnel-card__info {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: rgba(18, 16, 20, 0.94);
+  border: 1.5px solid #d4a642;
+  border-radius: 14px;
+  padding: 11px 16px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.personnel-card:hover .personnel-card__info {
+  transform: translateY(-2px);
+  border-color: #f7d879;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.55), 0 0 16px rgba(212, 166, 66, 0.2);
+}
+
+/* Interactive phone and email rows */
+.personnel-card__contact-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease, transform 0.2s ease;
+  min-width: 0;
+}
+
+.personnel-card__contact-row:hover {
+  transform: translateX(2px);
+}
+
+.personnel-card__contact-icon {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #d4a642;
+}
+
+.personnel-card__contact-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Phone number styling */
+.personnel-card__phone-num {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+}
+
+.personnel-card__contact-row--phone:hover .personnel-card__phone-num {
+  color: #ffd772;
+}
+
+/* Name */
+.personnel-card__name {
+  margin: 1px 0 0;
+  color: #e5b33d;
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 15.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
+/* Roles */
+.personnel-card__roles {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.personnel-card__role {
+  color: #ded6cc;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.personnel-card__org {
+  color: #aba195;
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+/* Email text */
+.personnel-card__email-text {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 12px;
+  color: #dfd5c8;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.personnel-card__contact-row--email:hover .personnel-card__email-text {
+  color: #ffd772;
+  text-decoration: underline;
+}
+
+/* Roles */
+.personnel-card__roles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.personnel-card__role {
+  color: #ded6cc;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.personnel-card__org {
+  color: #aba195;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+/* Email text */
+.personnel-card__email-text {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 13.5px;
+  color: #dfd5c8;
+  letter-spacing: 0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.personnel-card__contact-row--email:hover .personnel-card__email-text {
+  color: #ffd772;
+  text-decoration: underline;
+}
+
 .about-page__bottom-actions {
   display: flex;
   align-items: center;
@@ -1340,6 +1614,189 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .about-page__personnel-grid {
+    gap: 24px 20px;
+  }
+
+  .personnel-card__photo-wrap {
+    flex: 0 0 145px;
+    width: 145px;
+    height: 180px;
+  }
+
+  .personnel-card__info {
+    padding: 16px 18px;
+  }
+
+  .personnel-card__phone-num {
+    font-size: 15px;
+  }
+
+  .personnel-card__name {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-page__personnel {
+    justify-content: flex-start;
+    min-height: auto;
+    padding: 48px 0 34px;
+  }
+
+  .about-page__personnel-content {
+    padding: 0 20px;
+  }
+
+  .about-page__personnel-title {
+    font-size: clamp(2rem, 9.5vw, 3.4rem);
+    margin-bottom: 8px;
+  }
+
+  .about-page__personnel-subtitle {
+    font-size: 13.5px;
+    margin-bottom: 26px;
+  }
+
+  .about-page__personnel-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    max-width: 580px;
+    margin: 0 auto;
+  }
+
+  .personnel-card {
+    gap: 16px;
+    background: rgba(22, 19, 24, 0.55);
+    border: 1px solid rgba(213, 164, 62, 0.2);
+    border-radius: 20px;
+    padding: 14px;
+  }
+
+  .personnel-card__photo-wrap {
+    flex: 0 0 130px;
+    width: 130px;
+    height: 160px;
+    border-radius: 18px;
+  }
+
+  .personnel-card__info {
+    padding: 14px 16px;
+    border-radius: 16px;
+    gap: 6px;
+  }
+
+  .personnel-card__phone-num {
+    font-size: 15px;
+  }
+
+  .personnel-card__name {
+    font-size: 17px;
+  }
+
+  .personnel-card__role {
+    font-size: 13px;
+  }
+
+  .personnel-card__org {
+    font-size: 12.5px;
+  }
+
+  .personnel-card__email-text {
+    font-size: 12.5px;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 560px) {
+  .about-page__personnel {
+    padding: 40px 0 28px;
+  }
+
+  .about-page__personnel-content {
+    padding: 0 16px;
+  }
+
+  .about-page__personnel-title {
+    font-size: clamp(1.85rem, 9vw, 2.6rem);
+  }
+
+  .about-page__personnel-subtitle {
+    font-size: 12.5px;
+    margin-bottom: 22px;
+  }
+
+  .about-page__personnel-grid {
+    gap: 18px;
+    max-width: 100%;
+  }
+
+  .personnel-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    background: rgba(22, 19, 24, 0.7);
+    border: 1px solid rgba(213, 164, 62, 0.28);
+    border-radius: 20px;
+    padding: 18px 14px;
+  }
+
+  .personnel-card__photo-wrap {
+    flex: none;
+    width: 145px;
+    height: 175px;
+    margin: 0 auto;
+    border-radius: 18px;
+  }
+
+  .personnel-card__info {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 14px;
+    border-radius: 14px;
+    border-width: 1.5px;
+    text-align: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .personnel-card__contact-row--phone {
+    justify-content: center;
+    padding: 4px 8px;
+  }
+
+  .personnel-card__contact-row--email {
+    justify-content: center;
+    width: 100%;
+    padding: 4px 8px;
+  }
+
+  .personnel-card__phone-num {
+    font-size: 15.5px;
+  }
+
+  .personnel-card__name {
+    font-size: 18px;
+  }
+
+  .personnel-card__role {
+    font-size: 13.5px;
+  }
+
+  .personnel-card__org {
+    font-size: 12.5px;
+  }
+
+  .personnel-card__email-text {
+    font-size: 12.5px;
+    white-space: normal;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+  }
+}
+
 @media (max-width: 380px) {
   .about-page__nav-inner {
     padding: 0 10px;
@@ -1355,5 +1812,18 @@
 
   .about-page__register-button {
     padding: 7px 12px;
+  }
+
+  .personnel-card__photo-wrap {
+    width: 130px;
+    height: 155px;
+  }
+
+  .personnel-card__phone-num {
+    font-size: 14px;
+  }
+
+  .personnel-card__name {
+    font-size: 16.5px;
   }
 }

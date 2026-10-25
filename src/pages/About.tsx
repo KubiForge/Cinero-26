@@ -521,6 +521,353 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
             </article>
             </div>
           </div>
+        </section>
+
+        {/* Key Personnel Section */}
+        <section id="about-personnel" className="about-page__personnel">
+          <picture className="about-page__background" aria-hidden="true">
+            <source
+              type="image/webp"
+              media="(max-width: 768px)"
+              srcSet="/images/about-background-480.webp 480w, /images/about-background-960.webp 960w"
+              sizes="100vw"
+            />
+            <source
+              type="image/webp"
+              srcSet="/images/about-background-960.webp 960w, /images/about-background-1600.webp 1600w"
+              sizes="100vw"
+            />
+            <img
+              src="/images/background%20for%20about%20section%20and%20page.png"
+              alt=""
+              width={1672}
+              height={941}
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
+          <div className="about-page__personnel-overlay" aria-hidden="true" />
+
+          <div className="about-page__personnel-content">
+            <h2 className="about-page__personnel-title">KEY PERSONNEL</h2>
+            <p className="about-page__personnel-subtitle">
+              Leadership &amp; Organizing Committee of CINERO’26
+            </p>
+
+            <div className="about-page__personnel-grid">
+              {/* Row 1, Member 1: Michael Fernando */}
+              <article className="personnel-card">
+                <div className="personnel-card__photo-wrap">
+                  <img
+                    src="/images/personnel/michael-fernando.png"
+                    alt="Michael Fernando"
+                    className="personnel-card__photo"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      if (target.parentElement) {
+                        target.parentElement.classList.add('personnel-card__photo-wrap--fallback');
+                        target.parentElement.setAttribute('data-initials', 'MF');
+                      }
+                    }}
+                  />
+                </div>
+                <div className="personnel-card__info">
+                  <a
+                    href="tel:+94768071233"
+                    className="personnel-card__contact-row personnel-card__contact-row--phone"
+                  >
+                    <span className="personnel-card__contact-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                      </svg>
+                    </span>
+                    <span className="personnel-card__phone-num">+94 76 807 1233</span>
+                  </a>
+
+                  <h3 className="personnel-card__name">Michael Fernando</h3>
+                  <div className="personnel-card__roles">
+                    <span className="personnel-card__role">Divisional Head – Term 25/26</span>
+                    <span className="personnel-card__org">Filming Division</span>
+                  </div>
+
+                  <a
+                    href="mailto:michaelfer0114nando@gmail.com"
+                    className="personnel-card__contact-row personnel-card__contact-row--email"
+                  >
+                    <span className="personnel-card__contact-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                      </svg>
+                    </span>
+                    <span className="personnel-card__email-text">michaelfer0114nando@gmail.com</span>
+                  </a>
+                </div>
+              </article>
+
+              {/* Row 1, Member 2: Asintha Diwan */}
+              <article className="personnel-card">
+                <div className="personnel-card__photo-wrap">
+                  <img
+                    src="/images/personnel/asintha-diwan.png"
+                    alt="Asintha Diwan"
+                    className="personnel-card__photo"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      if (target.parentElement) {
+                        target.parentElement.classList.add('personnel-card__photo-wrap--fallback');
+                        target.parentElement.setAttribute('data-initials', 'AD');
+                      }
+                    }}
+                  />
+                </div>
+                <div className="personnel-card__info">
+                  <a
+                    href="tel:+94712552174"
+                    className="personnel-card__contact-row personnel-card__contact-row--phone"
+                  >
+                    <span className="personnel-card__contact-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                      </svg>
+                    </span>
+                    <span className="personnel-card__phone-num">+94 71 255 2174</span>
+                  </a>
+
+                  <h3 className="personnel-card__name">Asintha Diwan</h3>
+                  <div className="personnel-card__roles">
+                    <span className="personnel-card__role">Assistant Divisional Head – Term 25/26</span>
+                    <span className="personnel-card__org">Filming Division</span>
+                  </div>
+
+                  <a
+                    href="mailto:asinthadiw@gmail.com"
+                    className="personnel-card__contact-row personnel-card__contact-row--email"
+                  >
+                    <span className="personnel-card__contact-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                      </svg>
+                    </span>
+                    <span className="personnel-card__email-text">asinthadiw@gmail.com</span>
+                  </a>
+                </div>
+              </article>
+
+              {/* Row 2, Member 3: Rishini Wijethilaka */}
+              <article className="personnel-card">
+                <div className="personnel-card__photo-wrap">
+                  <img
+                    src="/images/personnel/rishini-wijethilaka.png"
+                    alt="Rishini Wijethilaka"
+                    className="personnel-card__photo"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      if (target.parentElement) {
+                        target.parentElement.classList.add('personnel-card__photo-wrap--fallback');
+                        target.parentElement.setAttribute('data-initials', 'RW');
+                      }
+                    }}
+                  />
+                </div>
+                <div className="personnel-card__info">
+                  <a
+                    href="tel:+94714850920"
+                    className="personnel-card__contact-row personnel-card__contact-row--phone"
+                  >
+                    <span className="personnel-card__contact-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                      </svg>
+                    </span>
+                    <span className="personnel-card__phone-num">+94 71 485 0920</span>
+                  </a>
+
+                  <h3 className="personnel-card__name">Rishini Wijethilaka</h3>
+                  <div className="personnel-card__roles">
+                    <span className="personnel-card__role">Task Master – Term 25/26</span>
+                    <span className="personnel-card__org">Filming Division</span>
+                  </div>
+
+                  <a
+                    href="mailto:rishinisewwandi16@gmail.com"
+                    className="personnel-card__contact-row personnel-card__contact-row--email"
+                  >
+                    <span className="personnel-card__contact-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                      </svg>
+                    </span>
+                    <span className="personnel-card__email-text">rishinisewwandi16@gmail.com</span>
+                  </a>
+                </div>
+              </article>
+
+              {/* Row 2, Member 4: Isuri Sathyangana */}
+              <article className="personnel-card">
+                <div className="personnel-card__photo-wrap">
+                  <img
+                    src="/images/personnel/isuri-sathyangana.png"
+                    alt="Isuri Sathyangana"
+                    className="personnel-card__photo"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      if (target.parentElement) {
+                        target.parentElement.classList.add('personnel-card__photo-wrap--fallback');
+                        target.parentElement.setAttribute('data-initials', 'IS');
+                      }
+                    }}
+                  />
+                </div>
+                <div className="personnel-card__info">
+                  <a
+                    href="tel:+94712938590"
+                    className="personnel-card__contact-row personnel-card__contact-row--phone"
+                  >
+                    <span className="personnel-card__contact-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                      </svg>
+                    </span>
+                    <span className="personnel-card__phone-num">+94 71 293 8590</span>
+                  </a>
+
+                  <h3 className="personnel-card__name">Isuri Sathyangana</h3>
+                  <div className="personnel-card__roles">
+                    <span className="personnel-card__role">Task Master – Term 25/26</span>
+                    <span className="personnel-card__org">Filming Division</span>
+                  </div>
+
+                  <a
+                    href="mailto:isuriekanayake111@gmail.com"
+                    className="personnel-card__contact-row personnel-card__contact-row--email"
+                  >
+                    <span className="personnel-card__contact-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                      </svg>
+                    </span>
+                    <span className="personnel-card__email-text">isuriekanayake111@gmail.com</span>
+                  </a>
+                </div>
+              </article>
+
+              {/* Row 3, Member 5: Nuwan Sampath */}
+              <article className="personnel-card">
+                <div className="personnel-card__photo-wrap">
+                  <img
+                    src="/images/personnel/nuwan-sampath.png"
+                    alt="Nuwan Sampath"
+                    className="personnel-card__photo"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      if (target.parentElement) {
+                        target.parentElement.classList.add('personnel-card__photo-wrap--fallback');
+                        target.parentElement.setAttribute('data-initials', 'NS');
+                      }
+                    }}
+                  />
+                </div>
+                <div className="personnel-card__info">
+                  <a
+                    href="tel:+94712741085"
+                    className="personnel-card__contact-row personnel-card__contact-row--phone"
+                  >
+                    <span className="personnel-card__contact-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                      </svg>
+                    </span>
+                    <span className="personnel-card__phone-num">+94 71 274 1085</span>
+                  </a>
+
+                  <h3 className="personnel-card__name">Nuwan Sampath</h3>
+                  <div className="personnel-card__roles">
+                    <span className="personnel-card__role">Project Director</span>
+                    <span className="personnel-card__org">CINERO’26</span>
+                  </div>
+
+                  <a
+                    href="mailto:nuwansjayalal@gmail.com"
+                    className="personnel-card__contact-row personnel-card__contact-row--email"
+                  >
+                    <span className="personnel-card__contact-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                      </svg>
+                    </span>
+                    <span className="personnel-card__email-text">nuwansjayalal@gmail.com</span>
+                  </a>
+                </div>
+              </article>
+
+              {/* Row 3, Member 6: Dumini Rasnayake */}
+              <article className="personnel-card">
+                <div className="personnel-card__photo-wrap">
+                  <img
+                    src="/images/personnel/dumini-rasnayake.png"
+                    alt="Dumini Rasnayake"
+                    className="personnel-card__photo"
+                    loading="lazy"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      if (target.parentElement) {
+                        target.parentElement.classList.add('personnel-card__photo-wrap--fallback');
+                        target.parentElement.setAttribute('data-initials', 'DR');
+                      }
+                    }}
+                  />
+                </div>
+                <div className="personnel-card__info">
+                  <a
+                    href="tel:+94713733206"
+                    className="personnel-card__contact-row personnel-card__contact-row--phone"
+                  >
+                    <span className="personnel-card__contact-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                      </svg>
+                    </span>
+                    <span className="personnel-card__phone-num">+94 71 373 3206</span>
+                  </a>
+
+                  <h3 className="personnel-card__name">Dumini Rasnayake</h3>
+                  <div className="personnel-card__roles">
+                    <span className="personnel-card__role">Project Secretary</span>
+                    <span className="personnel-card__org">CINERO’26</span>
+                  </div>
+
+                  <a
+                    href="mailto:dumini.rasnayake@gmail.com"
+                    className="personnel-card__contact-row personnel-card__contact-row--email"
+                  >
+                    <span className="personnel-card__contact-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <polyline points="22,6 12,13 2,6" />
+                      </svg>
+                    </span>
+                    <span className="personnel-card__email-text">dumini.rasnayake@gmail.com</span>
+                  </a>
+                </div>
+              </article>
+            </div>
+          </div>
 
           <div className="about-page__bottom-actions">
             <button
