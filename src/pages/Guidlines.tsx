@@ -286,11 +286,15 @@ export const GuidlinesPage: React.FC<GuidlinesPageProps> = ({
               type="button"
               className="guidelines-page__submit-btn"
               onClick={() => {
-                onBack();
-                setTimeout(() => {
-                  const el = document.getElementById('register');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
+                if (onRegisterClick) {
+                  onRegisterClick();
+                } else {
+                  onBack();
+                  setTimeout(() => {
+                    const el = document.getElementById('register');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }
               }}
             >
               Proceed to Registration

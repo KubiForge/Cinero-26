@@ -8,7 +8,25 @@ import Footer from './components/Footer';
 import AboutPage from './pages/About';
 import GuidlinesPage from './pages/Guidlines';
 import RegistrationPage from './pages/Registration';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 import './App.css';
+
+// Registration opens automatically on 27 October 2026 at 00:00 AM (SL Time / UTC+5:30)
+const REGISTRATION_OPEN_TIME = new Date('2026-10-27T00:00:00+05:30').getTime();
+
+const isRegistrationOpen = () => Date.now() >= REGISTRATION_OPEN_TIME;
+
+const showRegistrationNotOpenAlert = () => {
+  void Swal.fire({
+    title: 'Registration not started yet',
+    icon: 'error',
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#d4a642',
+    background: '#171518',
+    color: '#fff',
+  });
+};
 
 function App() {
   const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'guidelines' | 'register'>('home');
@@ -59,8 +77,26 @@ function App() {
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash;
-      if (hash === '#register' || hash === '#register-form') {
-        setCurrentPage('register');
+      if (hash === '#register-page' || hash === '#register-form') {
+        if (!isRegistrationOpen()) {
+          showRegistrationNotOpenAlert();
+          window.location.hash = '#register';
+          setCurrentPage('home');
+          window.setTimeout(() => {
+            document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
+          }, 80);
+        } else {
+          setCurrentPage('register');
+        }
+      } else if (hash === '#register') {
+        if (currentPage !== 'home') {
+          setCurrentPage('home');
+          window.setTimeout(() => {
+            document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
+          }, 80);
+        } else {
+          document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
+        }
       } else if (hash === '#guidelines-university') {
         setSelectedCategory('university');
         setCurrentPage('guidelines');
@@ -101,9 +137,30 @@ function App() {
   };
 
   const handleNavClick = (href: string) => {
-    if (href === '#register' || href === '#register-form') {
+    if (href === '#register-page' || href === '#register-form') {
+      if (!isRegistrationOpen()) {
+        showRegistrationNotOpenAlert();
+        return;
+      }
       setCurrentPage('register');
+      window.location.hash = '#register-page';
+      return;
+    }
+
+    if (href === '#register') {
+      const scrollToRegisterSection = () => {
+        document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
+      };
+
+      if (currentPage !== 'home') {
+        setCurrentPage('home');
+        window.location.hash = '#register';
+        window.setTimeout(scrollToRegisterSection, 80);
+        return;
+      }
+
       window.location.hash = '#register';
+      scrollToRegisterSection();
       return;
     }
 
@@ -146,8 +203,7 @@ function App() {
           initialCategory={selectedCategory}
           onBack={handleBackToHome}
           onRegisterClick={() => {
-            setCurrentPage('register');
-            window.location.hash = '#register';
+            handleNavClick('#register');
           }}
         />
       </>
@@ -305,9 +361,10 @@ function App() {
               <button
                 type="button"
                 className="register-btn"
-                onClick={() => handleNavClick('#register')}
+                onClick={() => handleNavClick('#register-page')}
               >
-                Register Your Team
+                <span>Register Your Team</span>
+                <span className="about-preview__button-arrow" aria-hidden="true">→</span>
               </button>
             </div>
           </div>

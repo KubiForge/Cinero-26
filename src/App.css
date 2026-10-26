@@ -419,6 +419,7 @@ main {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 12px;
   padding: 16px 48px;
   border-radius: 999px;
   background: linear-gradient(135deg, #e6b755 0%, #d5a43e 50%, #b88628 100%);
@@ -436,6 +437,10 @@ main {
 .register-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 14px 40px rgba(213, 164, 62, 0.6);
+}
+
+.register-btn:hover .about-preview__button-arrow {
+  transform: translateX(4px);
 }
 
 /* Contact Section */

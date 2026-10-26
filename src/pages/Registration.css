@@ -662,47 +662,180 @@
 }
 
 .reg-bank-card {
-  background: rgba(14, 13, 16, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 1.35rem;
-  margin-bottom: 1.75rem;
+  background: linear-gradient(135deg, rgba(26, 23, 18, 0.95) 0%, rgba(18, 16, 21, 0.95) 100%);
+  border: 1px solid rgba(212, 166, 66, 0.4);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(212, 166, 66, 0.08);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.reg-bank-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #d4a642, #f5e4a8, #d4a642);
+}
+
+.reg-bank-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.reg-bank-card__icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(212, 166, 66, 0.15);
+  border: 1px solid rgba(212, 166, 66, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
 }
 
 .reg-bank-card__title {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #e5c366;
-  margin: 0 0 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
+  color: #f2cb73;
+  margin: 0 0 0.2rem;
+}
+
+.reg-bank-card__subtitle {
+  font-size: 0.78rem;
+  color: #a39ea8;
+  margin: 0;
+  line-height: 1.35;
 }
 
 .reg-bank-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.85rem;
+  gap: 1rem;
 }
 
 .reg-bank-item {
+  background: rgba(10, 9, 12, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.35rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.reg-bank-item:hover {
+  background: rgba(14, 13, 17, 0.8);
+  border-color: rgba(212, 166, 66, 0.25);
+}
+
+.reg-bank-item--account-num {
+  border-color: rgba(212, 166, 66, 0.35);
+  background: rgba(212, 166, 66, 0.06);
 }
 
 .reg-bank-item__label {
-  font-size: 0.75rem;
-  color: #7d7a85;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8e8a94;
+  font-weight: 500;
+}
+
+.reg-bank-item__value-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .reg-bank-item__val {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #fff;
-  font-family: monospace;
+}
+
+.reg-bank-item__val--highlight {
+  color: #6ee7b7;
+  font-weight: 700;
+}
+
+.reg-bank-item__val--name {
+  color: #f9fafb;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.reg-bank-item__val--acc {
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  color: #fcd34d;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 12px rgba(252, 211, 77, 0.3);
+}
+
+.reg-bank-copy-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #dcd8e0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.reg-bank-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.reg-bank-copy-btn--gold {
+  background: rgba(212, 166, 66, 0.2);
+  border-color: rgba(212, 166, 66, 0.5);
+  color: #fcd34d;
+}
+
+.reg-bank-copy-btn--gold:hover {
+  background: #d4a642;
+  color: #121013;
+  border-color: #d4a642;
+}
+
+.reg-bank-note {
+  margin-top: 1rem;
+  padding: 0.65rem 0.85rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 3px solid #d4a642;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  color: #b8b3be;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1.4;
+}
+
+.reg-bank-note__icon {
+  color: #d4a642;
+  font-weight: bold;
 }
 
 /* File Upload Drop Zone */

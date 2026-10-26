@@ -1192,26 +1192,89 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
 
               {/* Official Committee Bank Account Details Card */}
               <div className="reg-bank-card">
-                <div className="reg-bank-card__title">
-                  <span>🏛 Official Organizing Committee Bank Account</span>
+                <div className="reg-bank-card__header">
+                  <div className="reg-bank-card__icon-wrap" aria-hidden="true">
+                    🏛
+                  </div>
+                  <div>
+                    <h3 className="reg-bank-card__title">Official Committee Bank Account</h3>
+                    <p className="reg-bank-card__subtitle">Transfer or deposit the exact registration fee to the following verified account</p>
+                  </div>
                 </div>
+
                 <div className="reg-bank-grid">
                   <div className="reg-bank-item">
                     <span className="reg-bank-item__label">Bank Name</span>
-                    <span className="reg-bank-item__val">Bank of Ceylon (BOC)</span>
+                    <div className="reg-bank-item__value-wrap">
+                      <span className="reg-bank-item__val reg-bank-item__val--highlight">Commercial Bank</span>
+                    </div>
                   </div>
+
                   <div className="reg-bank-item">
-                    <span className="reg-bank-item__label">Account Name</span>
-                    <span className="reg-bank-item__val">J'PURA VOICE FILMING DIVISION</span>
+                    <span className="reg-bank-item__label">Account Name (Beneficiary)</span>
+                    <div className="reg-bank-item__value-wrap">
+                      <span className="reg-bank-item__val reg-bank-item__val--name">W.M.R.S.Wijethilaka</span>
+                      <button
+                        type="button"
+                        className="reg-bank-copy-btn"
+                        title="Copy Account Name"
+                        onClick={() => {
+                          navigator.clipboard.writeText('W.M.R.S.Wijethilaka');
+                          void Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Account Name copied!',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            background: '#1c1a1e',
+                            color: '#fff',
+                          });
+                        }}
+                      >
+                        Copy
+                      </button>
+                    </div>
                   </div>
-                  <div className="reg-bank-item">
+
+                  <div className="reg-bank-item reg-bank-item--account-num">
                     <span className="reg-bank-item__label">Account Number</span>
-                    <span className="reg-bank-item__val">000000000</span>
+                    <div className="reg-bank-item__value-wrap">
+                      <span className="reg-bank-item__val reg-bank-item__val--acc">8016703199</span>
+                      <button
+                        type="button"
+                        className="reg-bank-copy-btn reg-bank-copy-btn--gold"
+                        title="Copy Account Number"
+                        onClick={() => {
+                          navigator.clipboard.writeText('8016703199');
+                          void Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Account Number 8016703199 copied!',
+                            showConfirmButton: false,
+                            timer: 2000,
+                            background: '#1c1a1e',
+                            color: '#fff',
+                          });
+                        }}
+                      >
+                        Copy Number
+                      </button>
+                    </div>
                   </div>
+
                   <div className="reg-bank-item">
                     <span className="reg-bank-item__label">Branch</span>
-                    <span className="reg-bank-item__val">Gangodawila Branch</span>
+                    <div className="reg-bank-item__value-wrap">
+                      <span className="reg-bank-item__val">Maharagama Branch</span>
+                    </div>
                   </div>
+                </div>
+
+                <div className="reg-bank-note">
+                  <span className="reg-bank-note__icon">ℹ</span>
+                  <span>Please mention your <strong>Team Name</strong> or Leader's Phone Number as the payment reference or remark.</span>
                 </div>
               </div>
 
