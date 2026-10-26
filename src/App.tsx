@@ -14,18 +14,45 @@ import './App.css';
 
 // Registration opens automatically on 27 October 2026 at 00:00 AM (SL Time / UTC+5:30)
 const REGISTRATION_OPEN_TIME = new Date('2026-10-27T00:00:00+05:30').getTime();
+// Registration closes automatically on 8 November 2026 at 00:00 AM (SL Time / UTC+5:30)
+const REGISTRATION_CLOSE_TIME = new Date('2026-11-08T00:00:00+05:30').getTime();
 
-const isRegistrationOpen = () => Date.now() >= REGISTRATION_OPEN_TIME;
+const ENFORCE_REGISTRATION_DATES = true;
+
+const isRegistrationClosed = () => Date.now() >= REGISTRATION_CLOSE_TIME;
+const isRegistrationOpen = () =>
+  !isRegistrationClosed() && (!ENFORCE_REGISTRATION_DATES || Date.now() >= REGISTRATION_OPEN_TIME);
 
 const showRegistrationNotOpenAlert = () => {
   void Swal.fire({
     title: 'Registration not started yet',
+    text: 'Registration opens on 27 October 2026 at 12:00 AM Sri Lanka time.',
     icon: 'error',
     confirmButtonText: 'OK',
     confirmButtonColor: '#d4a642',
     background: '#171518',
     color: '#fff',
   });
+};
+
+const showRegistrationClosedAlert = () => {
+  void Swal.fire({
+    title: 'Registration closed',
+    text: 'The registration deadline has passed. We are no longer accepting registrations.',
+    icon: 'error',
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#d4a642',
+    background: '#171518',
+    color: '#fff',
+  });
+};
+
+const showRegistrationUnavailableAlert = () => {
+  if (isRegistrationClosed()) {
+    showRegistrationClosedAlert();
+  } else {
+    showRegistrationNotOpenAlert();
+  }
 };
 
 function App() {
@@ -61,6 +88,24 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (currentPage !== 'register') return;
+
+    const closeRegistrationPage = () => {
+      showRegistrationClosedAlert();
+      setCurrentPage('home');
+      window.location.hash = '#register';
+      window.setTimeout(() => {
+        document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
+      }, 80);
+    };
+
+    const timeUntilClose = Math.max(0, REGISTRATION_CLOSE_TIME - Date.now());
+    const closeTimer = window.setTimeout(closeRegistrationPage, timeUntilClose);
+
+    return () => window.clearTimeout(closeTimer);
+  }, [currentPage]);
+
   const pageLoader = showLoader ? (
     <div
       className={`site-loader${isLoading ? '' : ' site-loader--dismissed'}`}
@@ -79,7 +124,7 @@ function App() {
       const hash = window.location.hash;
       if (hash === '#register-page' || hash === '#register-form') {
         if (!isRegistrationOpen()) {
-          showRegistrationNotOpenAlert();
+          showRegistrationUnavailableAlert();
           window.location.hash = '#register';
           setCurrentPage('home');
           window.setTimeout(() => {
@@ -139,7 +184,7 @@ function App() {
   const handleNavClick = (href: string) => {
     if (href === '#register-page' || href === '#register-form') {
       if (!isRegistrationOpen()) {
-        showRegistrationNotOpenAlert();
+        showRegistrationUnavailableAlert();
         return;
       }
       setCurrentPage('register');

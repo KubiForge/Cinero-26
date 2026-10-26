@@ -480,14 +480,24 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
         background: '#171518',
         color: '#fff',
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Registration submission failed:', error);
 
       setIsSubmitting(false);
 
+      const errorMessage = error instanceof Error ? error.message : '';
+      const registrationNotStarted = errorMessage.toLowerCase().includes('registration has not started');
+      const registrationClosed = errorMessage.toLowerCase().includes('registration closed');
+
       await Swal.fire({
-        title: 'Registration Unsuccessful',
-        text: 'Something went wrong while processing your registration. Please check your connection and try again, or reach out to our support team.',
+        title: registrationClosed
+          ? 'Registration closed'
+          : registrationNotStarted
+            ? 'Registration not started yet'
+            : 'Registration Unsuccessful',
+        text: error instanceof Error
+          ? error.message
+          : 'Something went wrong while processing your registration. Please check your connection and try again, or reach out to our support team.',
         icon: 'error',
         confirmButtonText: 'Try Again',
         confirmButtonColor: '#d4a642',

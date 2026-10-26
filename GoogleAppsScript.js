@@ -2,6 +2,22 @@
 var SPREADSHEET_ID = "18sPX0nKl4IKDqBf1zRhDSpfNcGUStvw-DhCddBmwoQw";
 
 function doPost(e) {
+  var registrationOpenTime = new Date("2026-10-27T00:00:00+05:30").getTime();
+  var registrationCloseTime = new Date("2026-11-08T00:00:00+05:30").getTime();
+  if (Date.now() < registrationOpenTime) {
+    return jsonResponse({
+      status: "error",
+      message: "Registration has not started yet. Registration opens on 27 October 2026 at 12:00 AM Sri Lanka time."
+    });
+  }
+
+  if (Date.now() >= registrationCloseTime) {
+    return jsonResponse({
+      status: "error",
+      message: "Registration closed. The deadline has passed."
+    });
+  }
+
   var lock = LockService.getScriptLock();
   var locked = false;
 

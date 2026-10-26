@@ -314,6 +314,95 @@
   line-height: 1.5;
 }
 
+.guidelines-page__download-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin: -12px 0 28px;
+  padding: 22px 24px;
+  border: 1px solid rgba(213, 164, 62, 0.24);
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(197, 41, 42, 0.16), transparent 58%),
+    linear-gradient(135deg, rgba(32, 23, 25, 0.96), rgba(22, 20, 26, 0.94));
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+}
+
+.guidelines-page__download-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.guidelines-page__download-eyebrow {
+  color: #d5a43e;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.guidelines-page__download-copy strong {
+  color: #f7ede1;
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.guidelines-page__download-copy > span:last-child {
+  color: #b8aba0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.guidelines-page__download-btn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 13px 20px;
+  border: 1px solid rgba(255, 213, 126, 0.7);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #d93b3f 0%, #b72229 100%);
+  color: #fff8ef;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  box-shadow: 0 6px 18px rgba(150, 26, 31, 0.28);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.guidelines-page__download-btn svg {
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+}
+
+.guidelines-page__download-format {
+  padding: 4px 6px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.guidelines-page__download-btn:hover,
+.guidelines-page__download-btn:focus-visible {
+  background: linear-gradient(135deg, #ed4c50 0%, #c5292a 100%);
+  border-color: #ffe0a1;
+  box-shadow: 0 9px 24px rgba(150, 26, 31, 0.4);
+  transform: translateY(-1px);
+}
+
+.guidelines-page__download-btn:focus-visible {
+  outline: 3px solid rgba(240, 195, 85, 0.7);
+  outline-offset: 3px;
+}
+
 /* Guidelines Content Blocks */
 .guidelines-block {
   background: rgba(22, 20, 26, 0.65);
@@ -387,6 +476,28 @@
 
 .guidelines-list li strong {
   color: #ffffff;
+}
+
+.guidelines-list-group + .guidelines-list-group {
+  margin-top: 22px;
+}
+
+.guidelines-list-introduction,
+.guidelines-list-notes p {
+  margin: 0 0 12px;
+  color: #dfd5c8;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.guidelines-list-notes {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.guidelines-list-notes p {
+  margin: 0;
 }
 
 /* Bottom Footer Bar */
@@ -489,6 +600,12 @@
     padding: 0 18px;
   }
 
+  .guidelines-page__download-card {
+    margin-top: -8px;
+    gap: 16px;
+    padding: 20px;
+  }
+
   .guidelines-block {
     padding: 22px 20px;
     margin-bottom: 18px;
@@ -533,6 +650,22 @@
   .guidelines-page__brand-logo {
     height: 22px;
     max-width: 95px;
+  }
+
+  .guidelines-page__download-card {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+    padding: 18px;
+  }
+
+  .guidelines-page__download-btn {
+    width: 100%;
+    min-height: 52px;
+  }
+
+  .guidelines-page__download-copy strong {
+    font-size: 16px;
   }
 
   .guidelines-page__register-btn {
