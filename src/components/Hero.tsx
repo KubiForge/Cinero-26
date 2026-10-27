@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Hero.css';
 import BrandLogo from './BrandLogo';
 
@@ -8,6 +8,101 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onRegisterClick, onExploreClick }) => {
+  const heroRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMobile, setIsMobile] = useState(() =>
+    window.matchMedia('(max-width: 768px)').matches
+  );
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+  const [failedVideoSrc, setFailedVideoSrc] = useState<string | null>(null);
+  const videoSrc = prefersReducedMotion
+    ? null
+    : isMobile
+      ? '/video/mobile-bg.mp4'
+      : '/video/deckstop-bg.mp4';
+
+  useEffect(() => {
+    const mobileViewport = window.matchMedia('(max-width: 768px)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const updateViewport = () => setIsMobile(mobileViewport.matches);
+    const updateMotionPreference = () => setPrefersReducedMotion(reducedMotion.matches);
+
+    mobileViewport.addEventListener('change', updateViewport);
+    reducedMotion.addEventListener('change', updateMotionPreference);
+    return () => {
+      mobileViewport.removeEventListener('change', updateViewport);
+      reducedMotion.removeEventListener('change', updateMotionPreference);
+    };
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !videoSrc) return;
+
+    let active = true;
+    const playback = video.play();
+    if (playback) {
+      void playback.catch(() => {
+        if (active) setFailedVideoSrc(videoSrc);
+      });
+    }
+
+    return () => {
+      active = false;
+    };
+  }, [videoSrc]);
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero) return;
+
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!finePointer.matches || reducedMotion.matches) return;
+
+    let animationFrame = 0;
+    const setParallax = (x = 0, y = 0) => {
+      hero.style.setProperty('--hero-parallax-x', `${x}px`);
+      hero.style.setProperty('--hero-parallax-y', `${y}px`);
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (event.pointerType !== 'mouse' || reducedMotion.matches) return;
+
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(() => {
+        const bounds = hero.getBoundingClientRect();
+        if (!bounds.width || !bounds.height) return;
+
+        const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+        const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+        setParallax(x * -12, y * -10);
+      });
+    };
+
+    const resetParallax = () => {
+      cancelAnimationFrame(animationFrame);
+      setParallax();
+    };
+
+    const handleMotionChange = (event: MediaQueryListEvent) => {
+      if (event.matches) resetParallax();
+    };
+
+    hero.addEventListener('pointermove', handlePointerMove, { passive: true });
+    hero.addEventListener('pointerleave', resetParallax);
+    reducedMotion.addEventListener('change', handleMotionChange);
+
+    return () => {
+      hero.removeEventListener('pointermove', handlePointerMove);
+      hero.removeEventListener('pointerleave', resetParallax);
+      reducedMotion.removeEventListener('change', handleMotionChange);
+      cancelAnimationFrame(animationFrame);
+    };
+  }, []);
+
   const handleScrollTo = (id: string, customHandler?: () => void) => {
     if (customHandler) {
       customHandler();
@@ -20,7 +115,7 @@ export const Hero: React.FC<HeroProps> = ({ onRegisterClick, onExploreClick }) =
   };
 
   return (
-    <section id="home" className="hero-section">
+    <section id="home" className="hero-section" ref={heroRef}>
       {/* Background layer with responsive backdrop handling */}
       <div className="hero__bg" aria-hidden="true">
         <picture className="hero__bg-art">
@@ -44,6 +139,21 @@ export const Hero: React.FC<HeroProps> = ({ onRegisterClick, onExploreClick }) =
             decoding="async"
           />
         </picture>
+        {videoSrc && failedVideoSrc !== videoSrc && (
+          <video
+            key={videoSrc}
+            ref={videoRef}
+            className="hero__bg-video"
+            src={videoSrc}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster={isMobile ? '/images/hero-mobile-940.webp' : '/images/hero-bg-1600.webp'}
+            onError={() => setFailedVideoSrc(videoSrc)}
+          />
+        )}
         <div className="hero__overlay-radial" />
         <div className="hero__overlay-linear" />
         <div className="hero__overlay-bottom" />

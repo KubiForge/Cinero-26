@@ -195,6 +195,8 @@
     display: flex;
     position: relative;
     z-index: 3;
+    width: 44px;
+    height: 44px;
   }
 
   .navbar__menu {
@@ -247,8 +249,10 @@
   }
 
   .navbar__link {
-    display: block;
-    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+    padding: 0 14px;
     border-radius: 11px;
     font-size: 15px;
     transition:

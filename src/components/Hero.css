@@ -36,6 +36,29 @@
   object-position: 82% center;
 }
 
+.hero__bg-video {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 82% center;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .hero__bg-art img {
+    transform: translate3d(var(--hero-parallax-x, 0px), var(--hero-parallax-y, 0px), 0) scale(1.035);
+    transition: transform 180ms ease-out;
+    will-change: transform;
+  }
+
+  .hero-section:not(:hover) .hero__bg-art img {
+    transition-duration: 800ms;
+  }
+}
+
 /* Gradients to blend artwork and elevate typography readability */
 .hero__overlay-linear {
   position: absolute;
@@ -54,14 +77,30 @@
 
 .hero__overlay-radial {
   position: absolute;
-  top: 15%;
-  left: 5%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(213, 164, 62, 0.12) 0%, rgba(213, 164, 62, 0) 70%);
-  filter: blur(40px);
+  inset: -10%;
+  background: radial-gradient(
+    ellipse at 68% 48%,
+    rgba(245, 141, 57, 0.2) 0%,
+    rgba(213, 123, 45, 0.1) 24%,
+    rgba(213, 164, 62, 0.02) 46%,
+    transparent 64%
+  );
+  opacity: 0.72;
   z-index: 2;
   pointer-events: none;
+  animation: heroSpotlightDrift 12s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+@keyframes heroSpotlightDrift {
+  from {
+    transform: translate3d(-1.5%, -0.5%, 0) scale(0.96);
+    opacity: 0.58;
+  }
+  to {
+    transform: translate3d(1.5%, 1%, 0) scale(1.04);
+    opacity: 0.82;
+  }
 }
 
 .hero__overlay-bottom {
@@ -406,6 +445,10 @@
     object-position: 88% center;
   }
 
+  .hero__bg-video {
+    object-position: 88% center;
+  }
+
   .hero__logo-image {
     max-width: 400px;
   }
@@ -426,6 +469,10 @@
     object-position: center top;
   }
 
+  .hero__bg-video {
+    object-position: center center;
+  }
+
   /* Keep the text area dark while letting the artwork and subject show below. */
   .hero__overlay-linear {
     background: linear-gradient(
@@ -440,18 +487,15 @@
   }
 
   .hero__overlay-radial {
-    top: auto;
-    bottom: 2%;
-    left: 18%;
-    width: 420px;
-    height: 420px;
+    inset: -4%;
     background: radial-gradient(
-      circle,
-      rgba(213, 164, 62, 0.18) 0%,
-      rgba(213, 164, 62, 0.07) 38%,
-      rgba(213, 164, 62, 0) 72%
+      ellipse at 52% 62%,
+      rgba(245, 141, 57, 0.16) 0%,
+      rgba(213, 123, 45, 0.07) 30%,
+      transparent 68%
     );
-    filter: blur(22px);
+    opacity: 0.6;
+    animation-duration: 14s;
   }
 
   .hero__overlay-bottom {
@@ -541,6 +585,7 @@
     justify-content: center;
     font-size: 11px;
     gap: 14px;
+    color: #f3efe8;
   }
 }
 
@@ -576,6 +621,21 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hero__overlay-radial {
+    animation: none;
+    will-change: auto;
+  }
+
+  .hero__bg-art img {
+    transform: none;
+    transition: none;
+    will-change: auto;
+  }
+
+  .hero__content {
+    animation: none;
+  }
+
   .site-loader__spinner,
   .site-loader__spinner::after {
     animation: none;
