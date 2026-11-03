@@ -16,9 +16,69 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       {
-        name: 'local-api-registration',
+        name: 'local-api',
         configureServer(server) {
           server.middlewares.use(async (req, res, next) => {
+
+            // ── /api/crew-login local proxy ───────────────────────────────
+            if (req.url === '/api/crew-login' && req.method === 'POST') {
+              let body = ''
+              req.on('data', (chunk: Buffer) => { body += chunk })
+              req.on('end', async () => {
+                const crewUsername = env.CREW_USERNAME
+                const crewPasswordHash = env.CREW_PASSWORD_HASH
+
+                if (!crewUsername || !crewPasswordHash) {
+                  res.statusCode = 503
+                  res.setHeader('Content-Type', 'application/json')
+                  return res.end(JSON.stringify({
+                    success: false,
+                    message: 'Auth not configured. Add CREW_USERNAME and CREW_PASSWORD_HASH to your .env file.',
+                  }))
+                }
+
+                try {
+                  const parsed = JSON.parse(body) as { identifier?: string; password?: string }
+                  const { identifier, password } = parsed
+
+                  if (!identifier || !password) {
+                    res.statusCode = 400
+                    res.setHeader('Content-Type', 'application/json')
+                    return res.end(JSON.stringify({ success: false, message: 'Credentials are required.' }))
+                  }
+
+                  const { createHash } = await import('crypto')
+                  const inputHash = createHash('sha256').update(password, 'utf8').digest('hex')
+                  const usernameMatch = identifier.trim().toLowerCase() === crewUsername.trim().toLowerCase()
+                  const passwordMatch = inputHash === crewPasswordHash.toLowerCase()
+
+                  if (!usernameMatch || !passwordMatch) {
+                    await new Promise(r => setTimeout(r, 500))
+                    res.statusCode = 401
+                    res.setHeader('Content-Type', 'application/json')
+                    return res.end(JSON.stringify({ success: false, message: 'Incorrect credentials. Please try again.' }))
+                  }
+
+                  const { createHash: ch2 } = await import('crypto')
+                  const token = ch2('sha256').update(`${crewUsername}:${Date.now()}`).digest('hex')
+                  res.statusCode = 200
+                  res.setHeader('Content-Type', 'application/json')
+                  return res.end(JSON.stringify({
+                    success: true,
+                    message: 'Login successful.',
+                    token,
+                    user: { username: crewUsername, role: 'crew' },
+                  }))
+                } catch {
+                  res.statusCode = 400
+                  res.setHeader('Content-Type', 'application/json')
+                  return res.end(JSON.stringify({ success: false, message: 'Invalid request.' }))
+                }
+              })
+              return
+            }
+
+            // ── /api/registration local proxy ─────────────────────────────
             if (req.url === '/api/registration' && req.method === 'POST') {
               if (Date.now() < REGISTRATION_OPEN_TIME) {
                 res.statusCode = 403
@@ -112,6 +172,7 @@ export default defineConfig(({ mode }) => {
               })
               return
             }
+
             next()
           })
         },

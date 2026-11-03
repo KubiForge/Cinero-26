@@ -1,0 +1,234 @@
+/* ==========================================================================
+   CINERO'26 — CREW DASHBOARD (PLACEHOLDER)
+   ========================================================================== */
+
+.crew-dash {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: #08070a;
+  font-family: var(--font-body, 'Outfit', sans-serif);
+}
+
+/* ── Header ── */
+.crew-dash__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  background: rgba(10, 8, 12, 0.95);
+  border-bottom: 1px solid rgba(213, 164, 62, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.crew-dash__logo {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
+
+.crew-dash__header-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.crew-dash__header-title {
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: rgba(213, 164, 62, 0.75);
+  text-transform: uppercase;
+}
+
+.crew-dash__logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 18px 8px 14px;
+  background: rgba(22, 18, 26, 0.7);
+  border: 1px solid rgba(197, 41, 42, 0.35);
+  border-radius: 999px;
+  color: rgba(255, 170, 170, 0.85);
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  letter-spacing: 0.02em;
+}
+
+.crew-dash__logout svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.crew-dash__logout:hover {
+  background: rgba(197, 41, 42, 0.15);
+  border-color: rgba(197, 41, 42, 0.6);
+  color: #ffb3b3;
+  transform: translateX(2px);
+}
+
+/* ── Main content ── */
+.crew-dash__main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(213, 164, 62, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(197, 41, 42, 0.04) 0%, transparent 60%),
+    #08070a;
+}
+
+/* ── Placeholder card ── */
+.crew-dash__placeholder {
+  text-align: center;
+  max-width: 520px;
+  width: 100%;
+  animation: dashFadeIn 0.6s ease forwards;
+}
+
+@keyframes dashFadeIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.crew-dash__icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.crew-dash__clapper {
+  width: 80px;
+  height: 80px;
+  filter: drop-shadow(0 6px 20px rgba(213, 164, 62, 0.2));
+  animation: clapperFloat 4s ease-in-out infinite;
+}
+
+@keyframes clapperFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+.crew-dash__badge {
+  display: inline-block;
+  padding: 4px 16px;
+  background: rgba(213, 164, 62, 0.1);
+  border: 1px solid rgba(213, 164, 62, 0.3);
+  border-radius: 999px;
+  color: #d5a43e;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.crew-dash__title {
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, #fff 0%, #fae2b1 35%, #e0b457 70%, #b98829 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 14px;
+}
+
+.crew-dash__subtitle {
+  font-size: 16px;
+  line-height: 1.65;
+  color: #dfd5c8;
+  margin: 0 0 12px;
+}
+
+.crew-dash__note {
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(184, 171, 160, 0.65);
+  margin: 0 0 28px;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.crew-dash__divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto 28px;
+  max-width: 280px;
+}
+
+.crew-dash__divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(213, 164, 62, 0.35), transparent);
+}
+
+.crew-dash__divider-diamond {
+  font-size: 8px;
+  color: #d5a43e;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.crew-dash__back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 28px;
+  background: rgba(22, 18, 26, 0.7);
+  border: 1.2px solid rgba(213, 164, 62, 0.32);
+  border-radius: 999px;
+  color: #d5a43e;
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.crew-dash__back-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.crew-dash__back-btn:hover {
+  background: rgba(213, 164, 62, 0.12);
+  border-color: rgba(213, 164, 62, 0.6);
+  color: #f5d77f;
+  transform: translateX(-2px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .crew-dash__header {
+    padding: 14px 16px;
+  }
+
+  .crew-dash__header-title {
+    font-size: 11px;
+  }
+
+  .crew-dash__main {
+    padding: 36px 16px;
+    align-items: flex-start;
+  }
+}
+

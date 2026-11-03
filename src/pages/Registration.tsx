@@ -1,6 +1,6 @@
 import React, { useState, useId } from 'react';
 import './Registration.css';
-import BrandLogo from '../components/BrandLogo';
+import PageHeader from '../components/PageHeader';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -519,29 +519,13 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
         <div className="reg-page__bg-overlay" />
       </div>
 
-      {/* Header bar with Back button & Logo */}
-      <header className="reg-page__header">
-        <div className="reg-page__header-inner">
-          <button type="button" className="reg-page__back-btn" onClick={onBack} aria-label="Back to Home">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
-            <span className="reg-page__back-text-full">Back to Home</span>
-            <span className="reg-page__back-text-short">Back</span>
-          </button>
-
-          <div className="reg-page__logo-link">
-            <BrandLogo
-              variant="withoutCaption"
-              sizes="160px"
-              alt="CINERO'26"
-              className="reg-page__logo-img"
-              decoding="async"
-            />
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        onBack={onBack}
+        showRegisterButton={false}
+        onRegisterClick={() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
 
       <section className="reg-hero">
         <picture className="reg-hero__background" aria-hidden="true">

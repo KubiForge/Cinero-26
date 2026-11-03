@@ -82,7 +82,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </div>
 
             <p className="footer-tagline">
-              CINERO’26 is a stage for every story, celebrating visionary filmmakers across Sri Lanka.
+              CINERO'26 is a stage for every story, celebrating visionary filmmakers across Sri Lanka.
             </p>
 
             <div className="footer-university-badge">
@@ -124,7 +124,33 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               Follow our official media channels for trailers, behind-the-scenes, and updates.
             </p>
 
-            <SocialLinks className="footer-social-icons" linkClassName="footer-social-btn" />
+            <div className="footer-social-actions">
+              <SocialLinks className="footer-social-icons" linkClassName="footer-social-btn" />
+
+              {/* HR Crew Login — styled like Kubi Forge badge */}
+              <a
+                href="#hr-crew-login"
+                className="footer-login"
+                onClick={(e) => handleLinkClick('#hr-crew-login', e)}
+                title="HR Crew Login"
+              >
+                <span className="footer-login__dot" aria-hidden="true" />
+                <span className="footer-login__label">HR Crew Login</span>
+                <svg
+                  className="footer-login__arrow"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <line x1="7" y1="17" x2="17" y2="7" />
+                  <polyline points="7 7 17 7 17 17" />
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -134,7 +160,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         {/* Bottom Credits Bar */}
         <div className="footer-bottom-bar">
           <div className="footer-copyright">
-            © {currentYear} <strong>CINERO’26</strong>. Organized by <strong>J'PURA VOICE FILMING DIVISION</strong>, University of Sri Jayewardenepura.
+            © {currentYear} <strong>CINERO'26</strong>. Organized by <strong>J'PURA VOICE FILMING DIVISION</strong>, University of Sri Jayewardenepura.
           </div>
 
           {/* Developer Credit: Kubi Forge */}

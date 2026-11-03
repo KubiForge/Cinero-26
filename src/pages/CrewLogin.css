@@ -1,0 +1,628 @@
+﻿/* ==========================================================================
+   CINERO'26 — CREW LOGIN PAGE
+   ========================================================================== */
+
+.crew-login-page {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background:
+    linear-gradient(90deg, rgba(9, 7, 6, 0.54) 0%, rgba(9, 7, 6, 0.18) 38%, rgba(9, 7, 6, 0.68) 100%),
+    url('/images/CINERO%E2%80%9926%20Cinematic%20Film%20Festival%20Login.png') center center / cover no-repeat;
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  overflow-x: hidden;
+}
+
+.crew-login__header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(8, 7, 10, 0.95);
+  border-bottom: 1px solid rgba(213, 164, 62, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.crew-login__header-inner {
+  max-width: 1560px;
+  margin: 0 auto;
+  padding: 14px 28px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  min-height: 64px;
+}
+
+.crew-login__back-btn {
+  grid-column: 1;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(28, 24, 29, 0.7);
+  border: 1px solid rgba(213, 164, 62, 0.3);
+  border-radius: 999px;
+  color: #f0d79c;
+  padding: 8px 16px 8px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.crew-login__back-btn:hover {
+  background: rgba(213, 164, 62, 0.1);
+  border-color: rgba(213, 164, 62, 0.6);
+  color: #f8e3a0;
+  transform: translateX(-2px);
+}
+
+.crew-login__back-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.crew-login__back-text-short {
+  display: none;
+}
+
+.crew-login__header-logo {
+  grid-column: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.crew-login__header-logo-img {
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.8));
+}
+
+.crew-login__body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  min-height: calc(100vh - 64px);
+  align-items: flex-start;
+  gap: clamp(20px, 4vw, 80px);
+  padding: 28px 48px 28px 52px;
+}
+
+.crew-login__left {
+  position: relative;
+  min-height: 680px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-top: 66px;
+  padding-left: clamp(12px, 3vw, 26px);
+}
+
+.crew-login__left-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(10, 7, 6, 0.14) 0%,
+    rgba(10, 7, 6, 0.08) 38%,
+    rgba(10, 7, 6, 0.34) 100%
+  );
+  pointer-events: none;
+}
+
+.crew-login__branding {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: min(100%, 620px);
+  padding-top: 10px;
+  padding-left: 10px;
+  pointer-events: none;
+}
+
+.crew-login__division-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+
+.crew-login__division-name {
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #f5d77f;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+}
+
+.crew-login__division-sub {
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: rgba(230, 210, 170, 0.8);
+  text-transform: uppercase;
+}
+
+.crew-login__brand-logo {
+  height: 150px;
+  width: auto;
+  object-fit: contain;
+  max-width: 560px;
+  filter: drop-shadow(0 8px 30px rgba(0, 0, 0, 0.82));
+  transform: translateX(-8px);
+}
+
+.crew-login__tagline-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 340px;
+  margin-top: 18px;
+}
+
+.crew-login__tagline-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(213, 164, 62, 0.8), rgba(213, 164, 62, 0.2));
+}
+
+.crew-login__tagline-diamond {
+  font-size: 9px;
+  color: #d5a43e;
+  line-height: 1;
+}
+
+.crew-login__tagline {
+  margin: 12px 0 0;
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: rgba(236, 218, 176, 0.9);
+  text-transform: uppercase;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+}
+
+.crew-login__right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 24px 0;
+}
+
+.crew-login__right::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -40px;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(197, 41, 42, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.crew-login__card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 500px);
+  padding: 34px 38px 30px;
+  background: rgba(12, 10, 14, 0.7);
+  border: 1.2px solid rgba(213, 164, 62, 0.38);
+  border-radius: 22px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    inset 0 0 0 1px rgba(213, 164, 62, 0.1),
+    0 0 0 1px rgba(213, 164, 62, 0.06),
+    0 24px 60px rgba(0, 0, 0, 0.7),
+    0 0 32px rgba(197, 41, 42, 0.08);
+  animation: cardFadeIn 0.45s ease;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.crew-login__icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.crew-login__clapper-icon {
+  width: 70px;
+  height: 70px;
+  filter: drop-shadow(0 6px 18px rgba(197, 41, 42, 0.5));
+}
+
+.crew-login__heading {
+  margin: 0 0 10px;
+  text-align: center;
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: clamp(2.3rem, 2.4vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  color: #f3ebdf;
+}
+
+.crew-login__heading-accent {
+  color: #f5d77f;
+}
+
+.crew-login__desc {
+  margin: 0 0 20px;
+  text-align: center;
+  font-size: 14px;
+  color: rgba(210, 195, 180, 0.82);
+  letter-spacing: 0.01em;
+}
+
+.crew-login__divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
+.crew-login__divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(213, 164, 62, 0.5), transparent);
+}
+
+.crew-login__divider-diamond {
+  color: #d5a43e;
+  font-size: 9px;
+  line-height: 1;
+}
+
+.crew-login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cl-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cl-input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(189, 174, 160, 0.7);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cl-input-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.cl-input {
+  width: 100%;
+  background: rgba(20, 16, 20, 0.8);
+  border: 1.2px solid rgba(213, 164, 62, 0.22);
+  border-radius: 12px;
+  color: #efe4d7;
+  font-size: 15px;
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  padding: 15px 16px 15px 44px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.cl-input::placeholder {
+  color: rgba(181, 167, 157, 0.7);
+}
+
+.cl-input:focus {
+  background: rgba(24, 18, 20, 0.9);
+  border-color: rgba(213, 164, 62, 0.58);
+  box-shadow: 0 0 0 3px rgba(213, 164, 62, 0.12);
+}
+
+.cl-input--password {
+  padding-right: 48px;
+}
+
+.cl-btn-eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  color: rgba(189, 174, 160, 0.7);
+  cursor: pointer;
+  z-index: 1;
+  border-radius: 6px;
+}
+
+.cl-btn-eye svg {
+  width: 18px;
+  height: 18px;
+}
+
+.cl-btn-eye:hover {
+  color: #d5a43e;
+}
+
+.cl-checkbox-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.cl-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cl-checkbox-native {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.cl-checkbox-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 1.2px solid rgba(213, 164, 62, 0.5);
+  border-radius: 4px;
+  background: rgba(18, 14, 18, 0.8);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.cl-checkbox-native:checked + .cl-checkbox-box {
+  background: rgba(213, 164, 62, 0.9);
+  border-color: #d5a43e;
+}
+
+.cl-checkbox-native:checked + .cl-checkbox-box::after {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 7px;
+  border: 2px solid #0d0b0e;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.cl-checkbox-text,
+.cl-forgot {
+  font-size: 13px;
+  color: rgba(221, 211, 203, 0.9);
+}
+
+.cl-forgot {
+  color: #d5a43e;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.cl-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(197, 41, 42, 0.35);
+  background: rgba(197, 41, 42, 0.08);
+  color: #ffb1b1;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.cl-error__icon {
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  flex-shrink: 0;
+  color: #c5292a;
+}
+
+.cl-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 54px;
+  margin-top: 6px;
+  border: 1px solid rgba(255, 110, 110, 0.2);
+  border-radius: 14px;
+  background: linear-gradient(135deg, #c5292a 0%, #d93434 42%, #a51d1d 100%);
+  color: #fff;
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 10px 24px rgba(197, 41, 42, 0.38);
+}
+
+.cl-submit-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+
+.cl-submit-arrow {
+  width: 18px;
+  height: 18px;
+}
+
+.cl-submit-btn--loading {
+  background: linear-gradient(135deg, #8b1d1d 0%, #a51d1d 100%);
+}
+
+.cl-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: cl-spin 0.8s linear infinite;
+}
+
+@keyframes cl-spin {
+  to { transform: rotate(360deg); }
+}
+
+.cl-badge-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.cl-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border: 1px solid rgba(213, 164, 62, 0.28);
+  border-radius: 999px;
+  background: rgba(15, 12, 15, 0.8);
+  color: rgba(218, 205, 192, 0.8);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.cl-badge__icon {
+  width: 14px;
+  height: 14px;
+  color: #d5a43e;
+}
+
+@media (max-width: 1024px) {
+  .crew-login__body {
+    padding: 24px 26px 24px 30px;
+    gap: 28px;
+  }
+
+  .crew-login__brand-logo {
+    height: 84px;
+  }
+
+  .crew-login__card {
+    padding: 30px 30px 26px;
+  }
+}
+
+@media (max-width: 900px) {
+  .crew-login__header-inner {
+    padding: 12px 18px;
+  }
+
+  .crew-login__body {
+    grid-template-columns: 1fr;
+    min-height: calc(100vh - 0px);
+    padding: 24px 20px 40px;
+    align-items: center;
+  }
+
+  .crew-login__left {
+    display: none;
+  }
+
+  .crew-login__right {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .crew-login__card {
+    width: min(100%, 480px);
+  }
+
+  .crew-login__back-text-full {
+    display: none;
+  }
+
+  .crew-login__back-text-short {
+    display: inline;
+  }
+}
+
+@media (max-width: 480px) {
+  .crew-login__body {
+    padding: 20px 16px 36px;
+  }
+
+  .crew-login__card {
+    padding: 22px 18px 22px;
+    border-radius: 18px;
+  }
+
+  .crew-login__heading {
+    font-size: 2rem;
+  }
+
+  .crew-login__clapper-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .cl-input {
+    font-size: 16px;
+    padding: 14px 14px 14px 42px;
+  }
+
+  .cl-submit-btn {
+    min-height: 52px;
+  }
+
+  .cl-checkbox-text,
+  .cl-forgot {
+    font-size: 12px;
+  }
+}

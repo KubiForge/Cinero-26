@@ -192,6 +192,7 @@
 .footer-social-col {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
 
 .footer-social-desc {
@@ -200,6 +201,15 @@
   line-height: 1.55;
   color: #a89f95;
   margin: 0 0 16px 0;
+}
+
+.footer-social-actions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .footer-social-icons {
@@ -238,6 +248,77 @@
 .footer-social-btn.social-link--disabled {
   cursor: not-allowed;
   opacity: 0.55;
+}
+
+/* HR Crew Login — Kubi Forge badge style */
+.footer-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 14px;
+  background: rgba(18, 16, 22, 0.95);
+  border: 1.2px solid rgba(213, 164, 62, 0.35);
+  border-radius: 999px;
+  color: #f5d77f;
+  text-decoration: none;
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.footer-login:hover {
+  background: rgba(213, 164, 62, 0.16);
+  border-color: #ffd060;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(213, 164, 62, 0.35);
+}
+
+/* Animated status dot (red — private/restricted access) */
+.footer-login__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f87171;
+  box-shadow: 0 0 8px #f87171;
+  flex-shrink: 0;
+  animation: loginDotPulse 2.2s infinite ease-in-out;
+}
+
+.footer-login__label {
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+.footer-login__arrow {
+  width: 12px;
+  height: 12px;
+  opacity: 0.8;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  flex-shrink: 0;
+}
+
+.footer-login:hover .footer-login__arrow {
+  transform: translate(2px, -2px);
+  opacity: 1;
+}
+
+@keyframes loginDotPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 6px #f87171;
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.85);
+    box-shadow: 0 0 2px #f87171;
+  }
 }
 
 /* ==========================================================================
@@ -425,6 +506,10 @@
   .footer-social-col {
     text-align: center;
     align-items: center;
+  }
+
+  .footer-social-actions {
+    justify-content: center;
   }
 
   .footer-social-icons {

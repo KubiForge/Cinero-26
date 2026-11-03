@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Guidlines.css';
-import BrandLogo from '../components/BrandLogo';
+import PageHeader from '../components/PageHeader';
 
 interface GuidelineSection {
   title: string;
@@ -273,55 +273,16 @@ export const GuidlinesPage: React.FC<GuidlinesPageProps> = ({
 
   return (
     <div className={`guidelines-page guidelines-page--${activeCategory}`}>
-      {/* Top Navigation Bar with Back Button */}
-      <header className="guidelines-page__nav">
-        <div className="guidelines-page__nav-inner">
-          <button
-            type="button"
-            className="guidelines-page__back-btn"
-            onClick={onBack}
-            aria-label="Back to Home"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
-            <span className="back-text-full">Back to Home</span>
-            <span className="back-text-short">Back</span>
-          </button>
-
-          <div className="guidelines-page__brand">
-            <BrandLogo
-              variant="withoutCaption"
-              sizes="160px"
-              alt="CINERO'26"
-              className="guidelines-page__brand-logo"
-              decoding="async"
-            />
-          </div>
-
-          <div className="guidelines-page__actions">
-            <a
-              href="#register"
-              className="guidelines-page__register-btn"
-              onClick={(e) => {
-                e.preventDefault();
-                if (onRegisterClick) {
-                  onRegisterClick();
-                } else {
-                  onBack();
-                  setTimeout(() => {
-                    const el = document.getElementById('register');
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                  }, 100);
-                }
-              }}
-            >
-              Register
-            </a>
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        onBack={onBack}
+        onRegisterClick={onRegisterClick ?? (() => {
+          onBack();
+          setTimeout(() => {
+            const el = document.getElementById('register');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+        })}
+      />
 
       {/* Hero Banner for Category */}
       <section className="guidelines-page__hero">

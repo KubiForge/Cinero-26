@@ -8,6 +8,8 @@ import Footer from './components/Footer';
 import AboutPage from './pages/About';
 import GuidlinesPage from './pages/Guidlines';
 import RegistrationPage from './pages/Registration';
+import CrewLoginPage from './pages/CrewLogin';
+import CrewDashboardPage from './pages/CrewDashboard';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import './App.css';
@@ -55,8 +57,10 @@ const showRegistrationUnavailableAlert = () => {
   }
 };
 
+type PageName = 'home' | 'about' | 'guidelines' | 'register' | 'crew-login' | 'crew-dashboard';
+
 function App() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'guidelines' | 'register'>('home');
+  const [currentPage, setCurrentPage] = useState<PageName>('home');
   const [selectedCategory, setSelectedCategory] = useState<'university' | 'school'>('university');
   const [isLoading, setIsLoading] = useState(true);
   const [showLoader, setShowLoader] = useState(true);
@@ -122,6 +126,17 @@ function App() {
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash;
+
+      if (hash === '#hr-crew-login' || hash === '#crew-login') {
+        setCurrentPage('crew-login');
+        return;
+      }
+
+      if (hash === '#crew-dashboard') {
+        setCurrentPage('crew-dashboard');
+        return;
+      }
+
       if (hash === '#register-page' || hash === '#register-form') {
         if (!isRegistrationOpen()) {
           showRegistrationUnavailableAlert();
@@ -173,6 +188,13 @@ function App() {
     window.location.hash = `#guidelines-${category}`;
   };
 
+  const clearAuthState = () => {
+    localStorage.removeItem('crewToken');
+    localStorage.removeItem('crewUser');
+    sessionStorage.removeItem('crewToken');
+    sessionStorage.removeItem('crewUser');
+  };
+
   const handleBackToHome = () => {
     setCurrentPage('home');
     window.location.hash = '#home';
@@ -181,7 +203,20 @@ function App() {
     }, 50);
   };
 
+  const handleLogout = () => {
+    clearAuthState();
+    handleBackToHome();
+  };
+
   const handleNavClick = (href: string) => {
+    // Crew Login route
+    if (href === '#hr-crew-login' || href === '#crew-login') {
+      setCurrentPage('crew-login');
+      window.location.hash = '#crew-login';
+      window.scrollTo({ top: 0 });
+      return;
+    }
+
     if (href === '#register-page' || href === '#register-form') {
       if (!isRegistrationOpen()) {
         showRegistrationUnavailableAlert();
@@ -238,7 +273,35 @@ function App() {
     scrollToTarget();
   };
 
-  // If viewing the dedicated guidelines page
+  // ── CREW LOGIN PAGE ──
+  if (currentPage === 'crew-login') {
+    return (
+      <>
+        {pageLoader}
+        <CrewLoginPage
+          onBack={handleBackToHome}
+          onRegisterClick={() => handleNavClick('#register-page')}
+          onLoginSuccess={() => {
+            setCurrentPage('crew-dashboard');
+            window.location.hash = '#crew-dashboard';
+            window.scrollTo({ top: 0 });
+          }}
+        />
+      </>
+    );
+  }
+
+  // ── CREW DASHBOARD (placeholder) ──
+  if (currentPage === 'crew-dashboard') {
+    return (
+      <>
+        {pageLoader}
+        <CrewDashboardPage onLogout={handleLogout} />
+      </>
+    );
+  }
+
+  // ── GUIDELINES PAGE ──
   if (currentPage === 'guidelines') {
     return (
       <>
@@ -255,6 +318,7 @@ function App() {
     );
   }
 
+  // ── ABOUT PAGE ──
   if (currentPage === 'about') {
     return (
       <>
@@ -265,6 +329,7 @@ function App() {
     );
   }
 
+  // ── REGISTRATION PAGE ──
   if (currentPage === 'register') {
     return (
       <>
@@ -274,7 +339,7 @@ function App() {
     );
   }
 
-  // Home Page View
+  // ── HOME PAGE ──
   return (
     <>
       {pageLoader}
@@ -315,12 +380,12 @@ function App() {
           <div className="section-container">
             <div className="about-section__header">
               <div className="about-section__eyebrow">
-                <span>CINERO’26</span>
+                <span>CINERO'26</span>
                 <span className="about-section__eyebrow-line" aria-hidden="true" />
               </div>
               <h2 className="about-section__title">ABOUT</h2>
               <p className="section-desc">
-                CINERO’26 is an inter-school and inter-university short film festival celebrating
+                CINERO'26 is an inter-school and inter-university short film festival celebrating
                 the stories, ideas, and creative voices of emerging filmmakers.
               </p>
             </div>
@@ -395,7 +460,7 @@ function App() {
           <div className="section-container">
             <div className="register-card">
               <div className="guidelines-section__eyebrow register-card__eyebrow">
-                <span className="eyebrow-text">CINERO’26</span>
+                <span className="eyebrow-text">CINERO'26</span>
                 <span className="eyebrow-line" />
               </div>
               <h2 className="register-card__title">REGISTRATION</h2>
