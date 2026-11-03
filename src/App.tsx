@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+// src/App.tsx
+import { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TimelineSection from './components/TimelineSection';
@@ -8,6 +9,10 @@ import Footer from './components/Footer';
 import AboutPage from './pages/About';
 import GuidlinesPage from './pages/Guidlines';
 import RegistrationPage from './pages/Registration';
+import CrewLogin from './pages/CrewLogin';
+import CrewDashboard from './pages/CrewDashboard';
+import ProtectedCrewRoute from './components/ProtectedCrewRoute';
+import { clearCrewToken } from './lib/crewApi';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import './App.css';
@@ -56,11 +61,17 @@ const showRegistrationUnavailableAlert = () => {
 };
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'guidelines' | 'register'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'about' | 'guidelines' | 'register' | 'crew-login' | 'crew-dashboard'>(() => {
+    if (window.location.pathname === '/crew/dashboard') return 'crew-dashboard';
+    if (window.location.pathname === '/crew/login' || window.location.pathname === '/crew') return 'crew-login';
+    if (window.location.pathname.startsWith('/admin/')) return 'crew-login';
+    return 'home';
+  });
   const [selectedCategory, setSelectedCategory] = useState<'university' | 'school'>('university');
   const [isLoading, setIsLoading] = useState(true);
   const [showLoader, setShowLoader] = useState(true);
 
+  // Loader effect
   useEffect(() => {
     const minimumDisplayTime = 450;
     const startedAt = Date.now();
@@ -88,6 +99,7 @@ function App() {
     };
   }, []);
 
+  // Registration timer effect – unchanged
   useEffect(() => {
     if (currentPage !== 'register') return;
 
@@ -107,21 +119,35 @@ function App() {
   }, [currentPage]);
 
   const pageLoader = showLoader ? (
-    <div
-      className={`site-loader${isLoading ? '' : ' site-loader--dismissed'}`}
-      role="status"
-      aria-live="polite"
-      aria-hidden={!isLoading}
-    >
+    <div className={`site-loader${isLoading ? '' : ' site-loader--dismissed'}`} role="status" aria-live="polite" aria-hidden={!isLoading}>
       <span className="site-loader__spinner" aria-hidden="true" />
       <span className="site-loader__label">Loading...</span>
     </div>
   ) : null;
 
-  // Synchronize with URL hash for back/forward navigation and direct links
+  // Synchronize with URL hash / pathname
   useEffect(() => {
     const handleHash = () => {
+      const path = window.location.pathname;
       const hash = window.location.hash;
+
+      // Direct pathname routes
+      if (path === '/admin' || path.startsWith('/admin/')) {
+        window.history.replaceState({}, '', '/crew/login');
+        setCurrentPage('crew-login');
+        return;
+      }
+      if (path === '/crew/dashboard') {
+        setCurrentPage('crew-dashboard');
+        return;
+      }
+      if (path === '/crew' || path.startsWith('/crew/')) {
+        window.history.replaceState({}, '', '/crew/login');
+        setCurrentPage('crew-login');
+        return;
+      }
+
+      // Hash based routes
       if (hash === '#register-page' || hash === '#register-form') {
         if (!isRegistrationOpen()) {
           showRegistrationUnavailableAlert();
@@ -130,18 +156,23 @@ function App() {
           window.setTimeout(() => {
             document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
           }, 80);
-        } else {
-          setCurrentPage('register');
+          return;
         }
+        setCurrentPage('register');
+        window.location.hash = '#register-page';
+        return;
       } else if (hash === '#register') {
         if (currentPage !== 'home') {
           setCurrentPage('home');
+          window.location.hash = '#register';
           window.setTimeout(() => {
             document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
           }, 80);
-        } else {
-          document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
+          return;
         }
+        window.location.hash = '#register';
+        document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
+        return;
       } else if (hash === '#guidelines-university') {
         setSelectedCategory('university');
         setCurrentPage('guidelines');
@@ -164,7 +195,11 @@ function App() {
 
     handleHash();
     window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
+    window.addEventListener('popstate', handleHash);
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('popstate', handleHash);
+    };
   }, [currentPage]);
 
   const handleOpenCategoryGuidelines = (category: 'university' | 'school') => {
@@ -175,13 +210,36 @@ function App() {
 
   const handleBackToHome = () => {
     setCurrentPage('home');
+    window.history.pushState({}, '', '/');
     window.location.hash = '#home';
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 50);
   };
 
+  const handleCrewLoginSuccess = () => {
+    window.history.pushState({}, '', '/crew/dashboard');
+    setCurrentPage('crew-dashboard');
+  };
+
+  const handleCrewLogout = () => {
+    clearCrewToken();
+    window.history.replaceState({}, '', '/crew/login');
+    setCurrentPage('crew-login');
+  };
+
+  const handleCrewSessionExpired = useCallback(() => {
+    clearCrewToken();
+    window.history.replaceState({}, '', '/crew/login');
+    setCurrentPage('crew-login');
+  }, []);
+
   const handleNavClick = (href: string) => {
+    if (href === '/crew/login' || href === '/admin/login') {
+      setCurrentPage('crew-login');
+      window.history.pushState({}, '', '/crew/login');
+      return;
+    }
     if (href === '#register-page' || href === '#register-form') {
       if (!isRegistrationOpen()) {
         showRegistrationUnavailableAlert();
@@ -191,29 +249,24 @@ function App() {
       window.location.hash = '#register-page';
       return;
     }
-
     if (href === '#register') {
       const scrollToRegisterSection = () => {
         document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
       };
-
       if (currentPage !== 'home') {
         setCurrentPage('home');
         window.location.hash = '#register';
         window.setTimeout(scrollToRegisterSection, 80);
         return;
       }
-
       window.location.hash = '#register';
       scrollToRegisterSection();
       return;
     }
-
     if (href === '#guidelines-university' || href === '#guidelines-school') {
       handleOpenCategoryGuidelines(href.endsWith('university') ? 'university' : 'school');
       return;
     }
-
     if (href === '#about' || href.startsWith('#about-')) {
       setCurrentPage('about');
       window.location.hash = href;
@@ -222,23 +275,40 @@ function App() {
       }, 80);
       return;
     }
-
     const scrollToTarget = () => {
       document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth' });
     };
-
     if (currentPage !== 'home') {
       setCurrentPage('home');
       window.location.hash = href;
       window.setTimeout(scrollToTarget, 80);
       return;
     }
-
     window.location.hash = href;
     scrollToTarget();
   };
 
-  // If viewing the dedicated guidelines page
+  if (currentPage === 'crew-login') {
+    return (
+      <>
+        {pageLoader}
+        <CrewLogin onBack={handleBackToHome} onLogin={handleCrewLoginSuccess} />
+      </>
+    );
+  }
+
+  if (currentPage === 'crew-dashboard') {
+    return (
+      <>
+        {pageLoader}
+        <ProtectedCrewRoute onSessionExpired={handleCrewSessionExpired}>
+          <CrewDashboard onLogout={handleCrewLogout} onSessionExpired={handleCrewSessionExpired} />
+        </ProtectedCrewRoute>
+      </>
+    );
+  }
+
+  // Guidelines page view
   if (currentPage === 'guidelines') {
     return (
       <>
@@ -288,7 +358,6 @@ function App() {
           }}
           onRegisterClick={() => handleNavClick('#register')}
         />
-
         {/* About Section */}
         <section id="about-preview" className="section section--about">
           <picture className="section-bg-art section-bg-art--about" aria-hidden="true">
@@ -324,7 +393,6 @@ function App() {
                 the stories, ideas, and creative voices of emerging filmmakers.
               </p>
             </div>
-
             <div className="about-grid">
               <div className="about-card">
                 <span className="about-card__num">01 / SPOTLIGHT</span>
@@ -333,7 +401,6 @@ function App() {
                   Every story deserves to be told, and every vision deserves the chance to be seen.
                 </p>
               </div>
-
               <div className="about-card">
                 <span className="about-card__num">02 / MASTERY</span>
                 <h3 className="about-card__title">Our Purpose</h3>
@@ -341,7 +408,6 @@ function App() {
                   Encourage creativity, celebrate diverse perspectives, and support the next generation of filmmakers.
                 </p>
               </div>
-
               <div className="about-card">
                 <span className="about-card__num">03 / HORIZONS</span>
                 <h3 className="about-card__title">Two Categories</h3>
@@ -362,13 +428,10 @@ function App() {
             </div>
           </div>
         </section>
-
         {/* Timeline Section */}
         <TimelineSection />
-
         {/* Guidelines Section on Home Page */}
         <GuidelinesSection onSelectCategory={handleOpenCategoryGuidelines} />
-
         {/* Register Section */}
         <section id="register" className="section section--register">
           <picture className="section-bg-art section-bg-art--register" aria-hidden="true">
@@ -414,11 +477,9 @@ function App() {
             </div>
           </div>
         </section>
-
         {/* Contact Section */}
         <ContactSection />
       </main>
-
       {/* Professional Industry-Level Footer */}
       <Footer onNavigate={handleNavClick} />
     </>

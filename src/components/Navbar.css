@@ -65,6 +65,12 @@
   gap: 40px;
 }
 
+.navbar__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .navbar__links {
   list-style: none;
   margin: 0;
@@ -110,25 +116,49 @@
 }
 
 /* Register button – outlined gold pill, no arrow */
-.navbar__register {
+.navbar__register,
+.navbar__crew-login {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 30px;
-  border: 1.5px solid var(--nav-gold);
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 22px;
   border-radius: 999px;
-  color: var(--nav-gold);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.02em;
   text-decoration: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.navbar__register {
+  border: 1.5px solid var(--nav-gold);
+  color: var(--nav-gold);
   background: transparent;
-  transition: background 0.25s ease, color 0.25s ease;
 }
 
 .navbar__register:hover {
   background: var(--nav-gold);
   color: var(--nav-black);
+  transform: translateY(-2px);
+}
+
+.navbar__crew-login {
+  border: 1px solid rgba(213, 164, 62, 0.6);
+  color: #f5d77f;
+  background: rgba(17, 15, 17, 0.56);
+}
+
+.navbar__crew-login svg {
+  color: #f5d77f;
+}
+
+.navbar__crew-login:hover {
+  transform: translateY(-2px);
+  border-color: #f5d77f;
+  background: rgba(213, 164, 62, 0.13);
+  box-shadow: 0 8px 22px rgba(213, 164, 62, 0.14);
 }
 
 /* Hamburger (mobile only) */
@@ -173,7 +203,21 @@
     gap: 28px;
   }
   .navbar__links {
-    gap: 24px;
+    gap: 18px;
+  }
+  .navbar__menu {
+    gap: 16px;
+  }
+  .navbar__actions {
+    gap: 6px;
+  }
+  .navbar__register,
+  .navbar__crew-login {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+  .navbar__crew-login span {
+    display: none;
   }
 }
 
@@ -269,9 +313,22 @@
     background: rgba(213, 164, 62, 0.12);
   }
 
-  .navbar__register {
+  .navbar__actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .navbar__register,
+  .navbar__crew-login {
     min-height: 48px;
+    width: 100%;
     border-radius: 12px;
+    justify-content: center;
+  }
+
+  .navbar__register {
     background: linear-gradient(135deg, #f2cd70, #d5a43e);
     color: #1b1919;
     font-weight: 700;
@@ -280,6 +337,10 @@
   .navbar__register:hover {
     background: #f5d77f;
     color: #1b1919;
+  }
+
+  .navbar__crew-login {
+    background: rgba(213, 164, 62, 0.09);
   }
 
   .navbar__backdrop {

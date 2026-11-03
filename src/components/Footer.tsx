@@ -16,6 +16,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
   const handleLinkClick = (href: string, e: React.MouseEvent) => {
     e.preventDefault();
+    if (href.startsWith('/')) {
+      if (onNavigate) {
+        onNavigate(href);
+      } else {
+        window.history.pushState({}, '', href);
+      }
+      return;
+    }
+
     if (onNavigate) {
       onNavigate(href);
     } else {
@@ -125,6 +134,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </p>
 
             <SocialLinks className="footer-social-icons" linkClassName="footer-social-btn" />
+
           </div>
         </div>
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ShieldCheck } from 'lucide-react';
 import "./Navbar.css";
 import BrandLogo from './BrandLogo';
 import { siteNavigationLinks } from '../data/siteLinks';
@@ -77,13 +78,31 @@ export default function Navbar({ onNavigate }: NavbarProps = {}) {
               </li>
             ))}
           </ul>
-          <a
-            href="#register"
-            className="navbar__register"
-            onClick={() => handleNav("#register")}
-          >
-            Register
-          </a>
+          <div className="navbar__actions">
+            <a
+              href="#register"
+              className="navbar__register"
+              onClick={(event) => {
+                event.preventDefault();
+                handleNav("#register");
+              }}
+            >
+              Register
+            </a>
+            <a
+              href="/crew/login"
+              className="navbar__crew-login"
+              aria-label="Crew Login"
+              title="Crew Login"
+              onClick={(event) => {
+                event.preventDefault();
+                handleNav('/crew/login');
+              }}
+            >
+              <ShieldCheck size={14} strokeWidth={2.2} />
+              <span>CREW LOGIN</span>
+            </a>
+          </div>
         </nav>
       </div>
     </header>
