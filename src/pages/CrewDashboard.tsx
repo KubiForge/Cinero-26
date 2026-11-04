@@ -22,7 +22,7 @@ type DashboardConfig = {
   subtitle: string;
 };
 
-type RegistrationRecord = Record<string, string | undefined>;
+type RegistrationRecord = Record<string, unknown>;
 
 type SummaryState = {
   records: RegistrationRecord[];
@@ -43,8 +43,8 @@ const normalizeCategory = (value?: string): 'School' | 'University' | 'Other' =>
 const getRecordValue = (record: RegistrationRecord, keys: string[]) => {
   for (const key of keys) {
     const value = record[key];
-    if (typeof value === 'string' && value.trim()) {
-      return value.trim();
+    if ((typeof value === 'string' || typeof value === 'number') && String(value).trim()) {
+      return String(value).trim();
     }
   }
 
@@ -124,7 +124,8 @@ export const CrewDashboardPage: React.FC<CrewDashboardProps> = ({ onLogout, onOp
 
   const config = useMemo(() => buildDashboardConfig(view), [view]);
   const totalParticipants = summary.records.reduce((total, record) => {
-    const teamSize = Number(getRecordValue(record, ['Team Size', 'teamSize']));
+    const rawTeamSize = getRecordValue(record, ['Team Size', 'teamSize']);
+    const teamSize = /^\d+$/.test(rawTeamSize) ? Number(rawTeamSize) : 0;
     return total + (Number.isFinite(teamSize) && teamSize > 0 ? teamSize : 0);
   }, 0);
   const stats = [

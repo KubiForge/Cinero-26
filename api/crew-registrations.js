@@ -37,6 +37,11 @@ const verifySessionToken = (token, username, sessionSecret) => {
   return crypto.timingSafeEqual(Buffer.from(signature, 'hex'), Buffer.from(expectedSignature, 'hex'));
 };
 
+const isPrivateFileLinkField = (key) => {
+  const normalizedKey = String(key).toLowerCase().replace(/[^a-z0-9]/g, '');
+  return normalizedKey === 'studentidlink' || normalizedKey === 'paymentsliplink';
+};
+
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
@@ -102,7 +107,14 @@ export default async function handler(req, res) {
       throw new Error('Google Sheets denied the registration data request.');
     }
 
-    const records = Array.isArray(result?.records) ? result.records : [];
+    const records = Array.isArray(result?.records)
+      ? result.records.map((record) => {
+          if (!record || typeof record !== 'object' || Array.isArray(record)) return record;
+          return Object.fromEntries(
+            Object.entries(record).filter(([key]) => !isPrivateFileLinkField(key)),
+          );
+        })
+      : [];
 
     return res.status(200).json({
       success: true,
