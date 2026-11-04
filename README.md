@@ -108,7 +108,19 @@ VITE_WEB3FORMS_ACCESS_KEY=your_web3forms_key_here
 
 # Google Apps Script Webhook Endpoint
 GOOGLE_SHEET_WEBHOOK_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
+
+# Crew Login (required for the committee login screen)
+CREW_USERNAME=crew-admin
+CREW_PASSWORD_HASH=replace_with_sha256_hex_of_password
 ```
+
+To generate the password hash for `CREW_PASSWORD_HASH`, run:
+
+```bash
+node -e "console.log(require('crypto').createHash('sha256').update('your-password').digest('hex'))"
+```
+
+Then set the same values in the Vercel dashboard under `Settings → Environment Variables` before deploying.
 
 ---
 
@@ -156,7 +168,11 @@ npm run preview
 3. In **Settings ➔ Environment Variables**, add:
    - `GOOGLE_SHEET_WEBHOOK_URL`: Your Google Apps Script Web App URL.
    - `VITE_WEB3FORMS_ACCESS_KEY`: Your Web3Forms access token.
+   - `CREW_USERNAME`: The committee username for the protected login.
+   - `CREW_PASSWORD_HASH`: The SHA-256 hash of the committee password in lowercase hex.
 4. Click **Deploy**. Vercel will automatically configure both the Vite SPA and `/api/registration` serverless function.
+
+If the login page shows `Authentication service not configured`, it means one or both of the `CREW_*` variables are missing in Vercel. Add them in the dashboard and redeploy.
 
 ### 2. Connecting Custom Domain (`cinero-26.live`)
 1. Go to your Vercel Project Dashboard ➔ **Settings** ➔ **Domains**.

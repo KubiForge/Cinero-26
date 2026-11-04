@@ -33,7 +33,7 @@ export default defineConfig(({ mode }) => {
                   res.setHeader('Content-Type', 'application/json')
                   return res.end(JSON.stringify({
                     success: false,
-                    message: 'Auth not configured. Add CREW_USERNAME and CREW_PASSWORD_HASH to your .env file.',
+                    message: 'Auth not configured. Add CREW_USERNAME and CREW_PASSWORD_HASH to your .env.local file or Vercel environment variables.',
                   }))
                 }
 

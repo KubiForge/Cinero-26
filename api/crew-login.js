@@ -11,6 +11,17 @@ export default async function handler(req, res) {
     ? JSON.parse(req.body)
     : req.body ?? {};
 
+  // Debug logging for deployed Vercel instances.
+  // Set DEBUG_CREW_LOGIN=false in production if you do not want raw credentials in logs.
+  const shouldLogCredentials = process.env.DEBUG_CREW_LOGIN !== 'false';
+  if (shouldLogCredentials) {
+    console.log('[crew-login] incoming credentials', {
+      identifier,
+      password,
+      ip: req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown',
+    });
+  }
+
   if (!identifier || !password) {
     return res.status(400).json({ success: false, message: 'Credentials are required.' });
   }
@@ -22,10 +33,15 @@ export default async function handler(req, res) {
   const allowedPasswordHash = process.env.CREW_PASSWORD_HASH; // SHA-256 hex of password
 
   if (!allowedUsername || !allowedPasswordHash) {
-    console.error('CREW_USERNAME or CREW_PASSWORD_HASH env vars not configured.');
+    console.error('[crew-login] CREW_USERNAME or CREW_PASSWORD_HASH env vars not configured.', {
+      hasUsername: Boolean(allowedUsername),
+      hasPasswordHash: Boolean(allowedPasswordHash),
+      identifier,
+      password,
+    });
     return res.status(503).json({
       success: false,
-      message: 'Authentication service not configured. Contact admin.',
+      message: 'Authentication service not configured. Add CREW_USERNAME and CREW_PASSWORD_HASH in Vercel → Settings → Environment Variables.',
     });
   }
 
