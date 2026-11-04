@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TimelineSection from './components/TimelineSection';
@@ -10,6 +10,7 @@ import GuidlinesPage from './pages/Guidlines';
 import RegistrationPage from './pages/Registration';
 import CrewLoginPage from './pages/CrewLogin';
 import CrewDashboardPage from './pages/CrewDashboard';
+import { SchoolRegistrationsPage, UniversityRegistrationsPage } from './pages/RegistrationManagement';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import './App.css';
@@ -57,7 +58,17 @@ const showRegistrationUnavailableAlert = () => {
   }
 };
 
-type PageName = 'home' | 'about' | 'guidelines' | 'register' | 'crew-login' | 'crew-dashboard';
+type PageName =
+  | 'home'
+  | 'about'
+  | 'guidelines'
+  | 'register'
+  | 'crew-login'
+  | 'crew-dashboard'
+  | 'crew-dashboard-school'
+  | 'crew-dashboard-university'
+  | 'crew-school-registrations'
+  | 'crew-university-registrations';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageName>('home');
@@ -122,65 +133,141 @@ function App() {
     </div>
   ) : null;
 
-  // Synchronize with URL hash for back/forward navigation and direct links
+  const resolveRouteFromLocation = useCallback((): PageName => {
+    const path = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+    const hash = window.location.hash.toLowerCase();
+
+    if (path === '/crew/login' || path === '/crew/login/' || hash === '#hr-crew-login' || hash === '#crew-login') {
+      return 'crew-login';
+    }
+
+    if ((path === '/crew/dashboard/school' || path === '/crew/dashboard/school/') || hash === '#crew-dashboard-school') {
+      return 'crew-dashboard-school';
+    }
+
+    if ((path === '/crew/dashboard/university' || path === '/crew/dashboard/university/') || hash === '#crew-dashboard-university') {
+      return 'crew-dashboard-university';
+    }
+
+    if (path === '/crew/dashboard' || path === '/crew/dashboard/' || hash === '#crew-dashboard') {
+      return 'crew-dashboard';
+    }
+
+    if ((path === '/crew/registrations/school' || path === '/crew/registrations/school/') || hash === '#crew-school-registrations') {
+      return 'crew-school-registrations';
+    }
+
+    if ((path === '/crew/registrations/university' || path === '/crew/registrations/university/') || hash === '#crew-university-registrations') {
+      return 'crew-university-registrations';
+    }
+
+    if (hash === '#register-page' || hash === '#register-form') {
+      if (!isRegistrationOpen()) {
+        showRegistrationUnavailableAlert();
+        window.location.hash = '#register';
+        return 'home';
+      }
+      return 'register';
+    }
+
+    if (hash === '#register') {
+      return 'home';
+    }
+
+    if (hash === '#guidelines-university') {
+      setSelectedCategory('university');
+      return 'guidelines';
+    }
+
+    if (hash === '#guidelines-school') {
+      setSelectedCategory('school');
+      return 'guidelines';
+    }
+
+    if (hash === '#guidelines-detail') {
+      return 'guidelines';
+    }
+
+    if (hash === '#about' || hash.startsWith('#about-')) {
+      return 'about';
+    }
+
+    if (hash === '#home' || hash === '' || hash === '#guidelines' || hash === '#timeline' || hash === '#contact') {
+      return 'home';
+    }
+
+    return currentPage;
+  }, [currentPage]);
+
+  const clearAuthState = useCallback(() => {
+    localStorage.removeItem('crewToken');
+    localStorage.removeItem('crewUser');
+    sessionStorage.removeItem('crewToken');
+    sessionStorage.removeItem('crewUser');
+    document.cookie = 'crew_session=; Path=/; Max-Age=0; SameSite=Lax';
+  }, []);
+
+  const verifyCrewSession = useCallback(async (): Promise<boolean> => {
+    try {
+      const res = await fetch(`${window.location.origin}/api/crew-session`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: { Accept: 'application/json' },
+      });
+
+      const payload = await res.json().catch(() => ({}));
+      if (!res.ok || !payload?.success) {
+        console.warn('[crew-session] verification failed', {
+          ok: res.ok,
+          status: res.status,
+          message: payload?.message || 'session invalid',
+        });
+        clearAuthState();
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.warn('[crew-session] verification error', {
+        message: error instanceof Error ? error.message : 'unknown error',
+      });
+      clearAuthState();
+      return false;
+    }
+  }, [clearAuthState]);
+
   useEffect(() => {
-    const handleHash = () => {
-      const hash = window.location.hash;
-
-      if (hash === '#hr-crew-login' || hash === '#crew-login') {
-        setCurrentPage('crew-login');
-        return;
+    const handleRouteChange = async () => {
+      const nextPage = resolveRouteFromLocation();
+      if (
+        nextPage === 'crew-dashboard'
+        || nextPage === 'crew-dashboard-school'
+        || nextPage === 'crew-dashboard-university'
+        || nextPage === 'crew-school-registrations'
+        || nextPage === 'crew-university-registrations'
+      ) {
+        const isVerified = await verifyCrewSession();
+        if (!isVerified) {
+          setCurrentPage('crew-login');
+          window.history.pushState({}, '', '/crew/login');
+          window.dispatchEvent(new PopStateEvent('popstate'));
+          return;
+        }
       }
 
-      if (hash === '#crew-dashboard') {
-        setCurrentPage('crew-dashboard');
-        return;
-      }
-
-      if (hash === '#register-page' || hash === '#register-form') {
-        if (!isRegistrationOpen()) {
-          showRegistrationUnavailableAlert();
-          window.location.hash = '#register';
-          setCurrentPage('home');
-          window.setTimeout(() => {
-            document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
-          }, 80);
-        } else {
-          setCurrentPage('register');
-        }
-      } else if (hash === '#register') {
-        if (currentPage !== 'home') {
-          setCurrentPage('home');
-          window.setTimeout(() => {
-            document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
-          }, 80);
-        } else {
-          document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' });
-        }
-      } else if (hash === '#guidelines-university') {
-        setSelectedCategory('university');
-        setCurrentPage('guidelines');
-      } else if (hash === '#guidelines-school') {
-        setSelectedCategory('school');
-        setCurrentPage('guidelines');
-      } else if (hash === '#guidelines-detail') {
-        setCurrentPage('guidelines');
-      } else if (hash === '#about' || hash.startsWith('#about-')) {
-        setCurrentPage('about');
-        if (hash !== '#about') {
-          window.setTimeout(() => {
-            document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth' });
-          }, 80);
-        }
-      } else if (currentPage !== 'home' && (hash === '#home' || hash === '' || hash === '#guidelines' || hash === '#timeline' || hash === '#contact')) {
-        setCurrentPage('home');
+      if (nextPage !== currentPage) {
+        setCurrentPage(nextPage);
       }
     };
 
-    handleHash();
-    window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
-  }, [currentPage]);
+    void handleRouteChange();
+    window.addEventListener('hashchange', handleRouteChange);
+    window.addEventListener('popstate', handleRouteChange);
+    return () => {
+      window.removeEventListener('hashchange', handleRouteChange);
+      window.removeEventListener('popstate', handleRouteChange);
+    };
+  }, [currentPage, resolveRouteFromLocation, verifyCrewSession]);
 
   const handleOpenCategoryGuidelines = (category: 'university' | 'school') => {
     setSelectedCategory(category);
@@ -188,15 +275,9 @@ function App() {
     window.location.hash = `#guidelines-${category}`;
   };
 
-  const clearAuthState = () => {
-    localStorage.removeItem('crewToken');
-    localStorage.removeItem('crewUser');
-    sessionStorage.removeItem('crewToken');
-    sessionStorage.removeItem('crewUser');
-  };
-
   const handleBackToHome = () => {
     setCurrentPage('home');
+    window.history.pushState({}, '', '/');
     window.location.hash = '#home';
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -205,14 +286,26 @@ function App() {
 
   const handleLogout = () => {
     clearAuthState();
-    handleBackToHome();
+    setCurrentPage('crew-login');
+    window.history.pushState({}, '', '/crew/login');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0 });
+  };
+
+  const handleOpenRegistrations = (category: 'school' | 'university') => {
+    const nextPage = category === 'school' ? 'crew-school-registrations' : 'crew-university-registrations';
+    setCurrentPage(nextPage);
+    window.history.pushState({}, '', category === 'school' ? '/crew/registrations/school' : '/crew/registrations/university');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNavClick = (href: string) => {
     // Crew Login route
     if (href === '#hr-crew-login' || href === '#crew-login') {
       setCurrentPage('crew-login');
-      window.location.hash = '#crew-login';
+      window.history.pushState({}, '', '/crew/login');
+      window.dispatchEvent(new PopStateEvent('popstate'));
       window.scrollTo({ top: 0 });
       return;
     }
@@ -283,20 +376,62 @@ function App() {
           onRegisterClick={() => handleNavClick('#register-page')}
           onLoginSuccess={() => {
             setCurrentPage('crew-dashboard');
-            window.location.hash = '#crew-dashboard';
-            window.scrollTo({ top: 0 });
+            const dashboardPath = '/crew/dashboard';
+            if (window.location.pathname !== dashboardPath) {
+              window.history.pushState({}, '', dashboardPath);
+            }
+            window.dispatchEvent(new PopStateEvent('popstate'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         />
       </>
     );
   }
 
-  // ── CREW DASHBOARD (placeholder) ──
-  if (currentPage === 'crew-dashboard') {
+  // ── CREW DASHBOARD ──
+  if (currentPage === 'crew-dashboard' || currentPage === 'crew-dashboard-school' || currentPage === 'crew-dashboard-university') {
     return (
       <>
         {pageLoader}
-        <CrewDashboardPage onLogout={handleLogout} />
+        <CrewDashboardPage
+          onLogout={handleLogout}
+          onOpenRegistrations={handleOpenRegistrations}
+          view={currentPage === 'crew-dashboard-school' ? 'school' : currentPage === 'crew-dashboard-university' ? 'university' : 'all'}
+        />
+      </>
+    );
+  }
+
+  if (currentPage === 'crew-school-registrations') {
+    return (
+      <>
+        {pageLoader}
+        <SchoolRegistrationsPage
+          onLogout={handleLogout}
+          onBack={() => {
+            setCurrentPage('crew-dashboard');
+            window.history.pushState({}, '', '/crew/dashboard');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
+      </>
+    );
+  }
+
+  if (currentPage === 'crew-university-registrations') {
+    return (
+      <>
+        {pageLoader}
+        <UniversityRegistrationsPage
+          onLogout={handleLogout}
+          onBack={() => {
+            setCurrentPage('crew-dashboard');
+            window.history.pushState({}, '', '/crew/dashboard');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
       </>
     );
   }

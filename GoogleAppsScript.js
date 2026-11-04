@@ -259,9 +259,81 @@ function jsonResponse(data) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-function doGet() {
+function doGet(e) {
+  var params = e && e.parameter ? e.parameter : {};
+  var action = String(params.action || "").toLowerCase();
+  var category = String(params.category || "all").toLowerCase();
+
+  if (action === "read") {
+    var expectedReadToken = PropertiesService.getScriptProperties().getProperty("GOOGLE_SHEET_READ_TOKEN");
+    var suppliedReadToken = String(params.readToken || "");
+    if (!expectedReadToken || !suppliedReadToken || suppliedReadToken !== expectedReadToken) {
+      return jsonResponse({
+        status: "error",
+        message: "Unauthorized."
+      });
+    }
+
+    var records = readRegistrations(category);
+    return jsonResponse({
+      status: "success",
+      category: category,
+      total: records.length,
+      records: records
+    });
+  }
+
   return jsonResponse({
     status: "active",
     message: "CINERO'26 registration service is running."
   });
+}
+
+function readRegistrations(category) {
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var targetSheets = [
+    { name: "School Registrations", key: "school" },
+    { name: "University Registrations", key: "university" }
+  ];
+
+  var results = [];
+  var requestedCategory = String(category || "all").toLowerCase();
+
+  for (var i = 0; i < targetSheets.length; i++) {
+    var sheetConfig = targetSheets[i];
+    var sheet = spreadsheet.getSheetByName(sheetConfig.name);
+    if (!sheet) continue;
+
+    var values = sheet.getDataRange().getValues();
+    if (values.length < 2) continue;
+
+    var headers = values[0].map(function (header) {
+      return String(header || "").trim();
+    });
+
+    for (var rowIndex = 1; rowIndex < values.length; rowIndex++) {
+      var row = values[rowIndex];
+      if (!row || row.every(function (cell) {
+        return String(cell || "").trim() === "";
+      })) {
+        continue;
+      }
+
+      var record = {};
+      for (var colIndex = 0; colIndex < headers.length; colIndex++) {
+        record[headers[colIndex]] = row[colIndex] !== undefined ? row[colIndex] : "";
+      }
+
+      var categoryName = String(record["Category"] || "").toLowerCase();
+      var matchesCategory = requestedCategory === "all"
+        || (requestedCategory === "school" && categoryName.indexOf("school") !== -1)
+        || (requestedCategory === "university" && categoryName.indexOf("university") !== -1);
+
+      if (matchesCategory) {
+        results.push(record);
+      }
+    }
+  }
+
+  return results;
 }

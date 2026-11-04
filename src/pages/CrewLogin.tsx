@@ -60,16 +60,40 @@ export const CrewLoginPage: React.FC<CrewLoginProps> = ({ onBack, onLoginSuccess
         return;
       }
 
+      const credentials = {
+        token: data.token ?? '',
+        user: data.user ?? {},
+      };
+
       if (rememberMe) {
-        localStorage.setItem('crewToken', data.token ?? '');
-        localStorage.setItem('crewUser', JSON.stringify(data.user ?? {}));
+        localStorage.setItem('crewToken', credentials.token);
+        localStorage.setItem('crewUser', JSON.stringify(credentials.user));
       } else {
-        sessionStorage.setItem('crewToken', data.token ?? '');
-        sessionStorage.setItem('crewUser', JSON.stringify(data.user ?? {}));
+        sessionStorage.setItem('crewToken', credentials.token);
+        sessionStorage.setItem('crewUser', JSON.stringify(credentials.user));
       }
+
+      const sessionCheck = await fetch(`${window.location.origin}/api/crew-session`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: { Accept: 'application/json' },
+      });
 
       clearFormState();
       setIsLoading(false);
+
+      const sessionPayload = await sessionCheck.json().catch(() => ({}));
+      if (!sessionCheck.ok || !sessionPayload?.success) {
+        console.warn('[crew-login] session verification failed after login', {
+          ok: sessionCheck.ok,
+          status: sessionCheck.status,
+          message: sessionPayload?.message || 'session invalid',
+        });
+        setError('Session could not be verified. Please try again.');
+        setIsLoading(false);
+        return;
+      }
+
       onLoginSuccess();
     } catch {
       setIsLoading(false);

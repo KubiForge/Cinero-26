@@ -108,10 +108,12 @@ VITE_WEB3FORMS_ACCESS_KEY=your_web3forms_key_here
 
 # Google Apps Script Webhook Endpoint
 GOOGLE_SHEET_WEBHOOK_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
+GOOGLE_SHEET_READ_TOKEN=replace_with_a_random_64_character_hex_secret
 
 # Crew Login (required for the committee login screen)
 CREW_USERNAME=crew-admin
 CREW_PASSWORD_HASH=replace_with_sha256_hex_of_password
+CREW_SESSION_SECRET=replace_with_a_random_64_character_hex_secret
 ```
 
 To generate the password hash for `CREW_PASSWORD_HASH`, run:
@@ -120,7 +122,15 @@ To generate the password hash for `CREW_PASSWORD_HASH`, run:
 node -e "console.log(require('crypto').createHash('sha256').update('your-password').digest('hex'))"
 ```
 
-Then set the same values in the Vercel dashboard under `Settings → Environment Variables` before deploying.
+Generate independent 32-byte random secrets for `CREW_SESSION_SECRET` and `GOOGLE_SHEET_READ_TOKEN` with:
+
+```bash
+node -e "const crypto = require('crypto'); console.log('CREW_SESSION_SECRET=' + crypto.randomBytes(32).toString('hex')); console.log('GOOGLE_SHEET_READ_TOKEN=' + crypto.randomBytes(32).toString('hex'))"
+```
+
+Set these values in `.env.local` for local development and in the Vercel dashboard under `Settings → Environment Variables` before deploying. Keep both secrets server-side; do not prefix them with `VITE_`.
+
+For the read token, also set the exact `GOOGLE_SHEET_READ_TOKEN` value in the Google Apps Script project's **Project Settings → Script Properties**. Deploy the updated Apps Script code as a new web app version. The public registration `doPost` remains unchanged; only the read action requires this token.
 
 ---
 
@@ -170,9 +180,11 @@ npm run preview
    - `VITE_WEB3FORMS_ACCESS_KEY`: Your Web3Forms access token.
    - `CREW_USERNAME`: The committee username for the protected login.
    - `CREW_PASSWORD_HASH`: The SHA-256 hash of the committee password in lowercase hex.
+   - `CREW_SESSION_SECRET`: A random secret of at least 32 characters for signing HR sessions.
+   - `GOOGLE_SHEET_READ_TOKEN`: A random token shared with the Apps Script project's Script Properties to authorize read-only registration requests.
 4. Click **Deploy**. Vercel will automatically configure both the Vite SPA and `/api/registration` serverless function.
 
-If the login page shows `Authentication service not configured`, it means one or both of the `CREW_*` variables are missing in Vercel. Add them in the dashboard and redeploy.
+If the login page shows `Authentication service not configured`, verify that `CREW_USERNAME`, `CREW_PASSWORD_HASH`, and `CREW_SESSION_SECRET` are set in Vercel. Add any missing values and redeploy.
 
 ### 2. Connecting Custom Domain (`cinero-26.live`)
 1. Go to your Vercel Project Dashboard ➔ **Settings** ➔ **Domains**.
