@@ -2,7 +2,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv } from 'vite'
 
 const REGISTRATION_OPEN_TIME = new Date('2026-10-27T00:00:00+05:30').getTime()
-const REGISTRATION_CLOSE_TIME = new Date('2026-11-08T00:00:00+05:30').getTime()
+const REGISTRATION_CLOSE_TIME = new Date('2026-11-15T00:00:00+05:30').getTime()
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null

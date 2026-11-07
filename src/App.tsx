@@ -17,8 +17,8 @@ import './App.css';
 
 // Registration opens automatically on 27 October 2026 at 00:00 AM (SL Time / UTC+5:30)
 const REGISTRATION_OPEN_TIME = new Date('2026-10-27T00:00:00+05:30').getTime();
-// Registration closes automatically on 8 November 2026 at 00:00 AM (SL Time / UTC+5:30)
-const REGISTRATION_CLOSE_TIME = new Date('2026-11-08T00:00:00+05:30').getTime();
+// Registration closes automatically on 15 November 2026 at 00:00 AM (SL Time / UTC+5:30)
+const REGISTRATION_CLOSE_TIME = new Date('2026-11-15T00:00:00+05:30').getTime();
 
 const ENFORCE_REGISTRATION_DATES = true;
 

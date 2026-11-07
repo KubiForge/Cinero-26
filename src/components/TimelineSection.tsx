@@ -24,8 +24,8 @@ const TIMELINE_EVENTS: TimelineEvent[] = [
   {
     id: 2,
     stepNumber: '02',
-    dateLabel: '07 NOV 2026',
-    startDate: '2026-11-07',
+    dateLabel: '14 NOV 2026',
+    startDate: '2026-11-14',
     title: 'Registration Closes',
     description: 'Final day to register for CINERO’26.',
     iconType: 'registration',
@@ -33,8 +33,8 @@ const TIMELINE_EVENTS: TimelineEvent[] = [
   {
     id: 3,
     stepNumber: '03',
-    dateLabel: '09 NOV 2026',
-    startDate: '2026-11-09',
+    dateLabel: '15 NOV 2026',
+    startDate: '2026-11-15',
     title: 'Submission Opens',
     description: 'Submit your short film to CINERO’26.',
     iconType: 'document',
