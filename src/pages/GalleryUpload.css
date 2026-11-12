@@ -11,10 +11,10 @@
 .gallery-upload__hero {
   position: relative;
   display: grid;
-  min-height: clamp(420px, 64vh, 650px);
+  min-height: clamp(500px, 70svh, 660px);
   place-items: center;
   overflow: hidden;
-  padding: 48px 24px 58px;
+  padding: 112px 24px 54px;
   border-bottom: 1px solid rgba(213, 164, 62, 0.22);
   background-color: #111014;
   background-image: url('/images/holybg.jpg');
@@ -34,7 +34,7 @@
 }
 
 .gallery-upload__hero-content {
-  width: min(100%, 840px);
+  width: min(100%, 1120px);
   animation: gallery-rise-in 850ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
 }
 
@@ -61,11 +61,12 @@
   margin: 0;
   color: #fffaf0;
   font-family: var(--font-display, 'Cinzel', Georgia, serif);
-  font-size: clamp(2.35rem, 6vw, 5.3rem);
+  font-size: clamp(2.2rem, 5vw, 4.7rem);
   font-weight: 600;
-  letter-spacing: 0.085em;
+  letter-spacing: 0.06em;
   line-height: 1.08;
   text-shadow: 0 4px 28px rgba(0, 0, 0, 0.72);
+  white-space: nowrap;
 }
 
 .gallery-upload__hero h1 span {
@@ -598,8 +599,8 @@
 
 @media (max-width: 600px) {
   .gallery-upload__hero {
-    min-height: 410px;
-    padding: 42px 19px 56px;
+    min-height: 455px;
+    padding: 100px 19px 48px;
     background-position: 54% center;
   }
 
@@ -614,8 +615,9 @@
   }
 
   .gallery-upload__hero h1 {
-    font-size: clamp(2rem, 9vw, 3rem);
-    letter-spacing: 0.055em;
+    font-size: clamp(1.65rem, 8.5vw, 2.8rem);
+    letter-spacing: 0.025em;
+    white-space: normal;
   }
 
   .gallery-upload__intro {
@@ -745,8 +747,9 @@
 
 @media (max-width: 360px) {
   .gallery-upload__hero {
-    min-height: 390px;
+    min-height: 430px;
     padding-right: 15px;
+    padding-top: 96px;
     padding-left: 15px;
   }
 

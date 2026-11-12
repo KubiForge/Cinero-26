@@ -491,7 +491,7 @@ function App() {
     return (
       <>
         {pageLoader}
-        <Navbar onNavigate={handleNavClick} />
+        <Navbar onNavigate={handleNavClick} variant="solid" />
         <GalleryUploadPage />
         <Footer onNavigate={handleNavClick} />
       </>

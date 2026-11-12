@@ -21,6 +21,15 @@
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
 }
 
+.navbar--solid,
+.navbar--solid.navbar--scrolled {
+  padding: 12px 0;
+  background: rgba(16, 14, 18, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+}
+
 .navbar__inner {
   max-width: 1280px;
   margin: 0 auto;

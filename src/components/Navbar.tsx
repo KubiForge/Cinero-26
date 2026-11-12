@@ -5,9 +5,10 @@ import { siteNavigationLinks } from '../data/siteLinks';
 
 interface NavbarProps {
   onNavigate?: (href: string) => void;
+  variant?: 'overlay' | 'solid';
 }
 
-export default function Navbar({ onNavigate }: NavbarProps = {}) {
+export default function Navbar({ onNavigate, variant = 'overlay' }: NavbarProps = {}) {
   const [active, setActive] = useState(() => window.location.hash || "#home");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -28,7 +29,7 @@ export default function Navbar({ onNavigate }: NavbarProps = {}) {
   };
 
   return (
-    <header className={`navbar ${scrolled ? "navbar--scrolled" : ""}`}>
+    <header className={`navbar ${scrolled ? "navbar--scrolled" : ""} ${variant === 'solid' ? 'navbar--solid' : ''}`}>
       {open && (
         <button
           className="navbar__backdrop"
