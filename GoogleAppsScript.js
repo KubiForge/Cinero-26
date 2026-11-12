@@ -36,6 +36,15 @@ function doPost(e) {
       throw new Error("Required registration details are missing.");
     }
 
+    if (data.ambassadorCode != null && typeof data.ambassadorCode !== "string") {
+      throw new Error("Ambassador code must be text.");
+    }
+
+    var ambassadorCode = String(data.ambassadorCode || "").trim();
+    if (ambassadorCode.length > 50) {
+      throw new Error("Ambassador code must be 50 characters or fewer.");
+    }
+
     var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
 
     // Determine category and target sheet
@@ -99,7 +108,8 @@ function doPost(e) {
             "Payment Slip Link",
             "Signature",
             "Questions",
-            "Heard From"
+            "Heard From",
+            "Ambassador Code"
           ];
 
       sheet.appendRow(headers);
@@ -110,6 +120,10 @@ function doPost(e) {
 
       sheet.setFrozenRows(1);
     }
+
+    var ambassadorCodeColumn = isSchool
+      ? 0
+      : ensureAmbassadorCodeColumn(sheet);
 
     var studentIdUrl = isSchool
       ? "N/A (School Category)"
@@ -182,6 +196,13 @@ function doPost(e) {
           data.heardFrom || "N/A"
         ];
 
+    if (!isSchool) {
+      while (row.length < ambassadorCodeColumn - 1) {
+        row.push("");
+      }
+      row[ambassadorCodeColumn - 1] = ambassadorCode || "N/A";
+    }
+
     // Save row to category-specific sheet
     sheet.appendRow(row);
     SpreadsheetApp.flush();
@@ -203,6 +224,27 @@ function doPost(e) {
       lock.releaseLock();
     }
   }
+}
+
+function ensureAmbassadorCodeColumn(sheet) {
+  var lastColumn = sheet.getLastColumn();
+  var headers = lastColumn > 0
+    ? sheet.getRange(1, 1, 1, lastColumn).getValues()[0].map(function (header) {
+        return String(header || "").trim();
+      })
+    : [];
+  var existingColumn = headers.indexOf("Ambassador Code");
+  if (existingColumn !== -1) {
+    return existingColumn + 1;
+  }
+
+  var newColumn = lastColumn + 1;
+  sheet.getRange(1, newColumn)
+    .setValue("Ambassador Code")
+    .setFontWeight("bold")
+    .setBackground("#171518")
+    .setFontColor("#f5d77f");
+  return newColumn;
 }
 
 function saveFile(base64, mimeType, fileName, referenceId, label) {

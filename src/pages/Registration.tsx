@@ -116,6 +116,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
   const [leaderName, setLeaderName] = useState('');
   const [leaderPhone, setLeaderPhone] = useState('');
   const [leaderEmail, setLeaderEmail] = useState('');
+  const [ambassadorCode, setAmbassadorCode] = useState('');
   const [teamSize, setTeamSize] = useState<number>(4);
   const [members, setMembers] = useState<TeamMember[]>([
     { name: '', gradeOrYear: '', phone: '', institution: '' },
@@ -420,6 +421,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
       leaderName: leaderName.trim(),
       leaderPhone: leaderPhone.trim(),
       leaderEmail: leaderEmail.trim(),
+      ambassadorCode: category === 'university' ? ambassadorCode.trim() : '',
       teamSize,
       otherMembers: otherMembersText || 'None',
       institution: category === 'school' ? schoolName.trim() : (university === 'Other' ? customUniversity.trim() : university),
@@ -1557,6 +1559,25 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                 </div>
               </div>
 
+              {category === 'university' && (
+                <div className="reg-field" style={{ marginTop: '1.25rem' }}>
+                  <label htmlFor="reg-ambassador-code" className="reg-label">
+                    University Ambassador Code <span className="reg-label__optional">(Optional)</span>
+                  </label>
+                  <input
+                    id="reg-ambassador-code"
+                    type="text"
+                    className="reg-input"
+                    placeholder="Enter code if referred by an ambassador"
+                    value={ambassadorCode}
+                    onChange={(e) => setAmbassadorCode(e.target.value)}
+                    maxLength={50}
+                    autoComplete="off"
+                  />
+                  <span className="reg-hint">Leave blank if your team was not referred by a university ambassador.</span>
+                </div>
+              )}
+
               <div className="reg-actions">
                 <button type="button" className="reg-btn reg-btn--prev" onClick={handlePrev} disabled={isSubmitting}>
                   ← Back to Payment
@@ -1674,6 +1695,12 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                       <span className="reg-doc__label">Leader Email</span>
                       <span className="reg-doc__val">{leaderEmail}</span>
                     </div>
+                    {category === 'university' && ambassadorCode.trim() && (
+                      <div className="reg-doc__field">
+                        <span className="reg-doc__label">University Ambassador Code</span>
+                        <span className="reg-doc__val">{ambassadorCode.trim()}</span>
+                      </div>
+                    )}
                     <div className="reg-doc__field">
                       <span className="reg-doc__label">Institution / Faculty</span>
                       <span className="reg-doc__val">
