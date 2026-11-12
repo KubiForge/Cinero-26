@@ -86,6 +86,8 @@ Cinero'26/
 │   ├── 📁 data/                  # Static constants, links & districts
 │   ├── 📁 pages/
 │   │   ├── 📄 About.tsx          # About festival & organizing body
+│   │   ├── 📄 GalleryUpload.tsx  # Public photo selection and preview page
+│   │   ├── 📄 GalleryUpload.css  # Responsive CINERO'26 photo upload styling
 │   │   ├── 📄 Guidlines.tsx      # Full guidelines documentation
 │   │   └── 📄 Registration.tsx   # 5-Step interactive registration form
 │   ├── 📄 App.tsx                # Main SPA routing and view management
@@ -131,6 +133,16 @@ node -e "const crypto = require('crypto'); console.log('CREW_SESSION_SECRET=' + 
 Set these values in `.env.local` for local development and in the Vercel dashboard under `Settings → Environment Variables` before deploying. Keep both secrets server-side; do not prefix them with `VITE_`.
 
 For the read token, also set the exact `GOOGLE_SHEET_READ_TOKEN` value in the Google Apps Script project's **Project Settings → Script Properties**. Deploy the updated Apps Script code as a new web app version. The public registration `doPost` remains unchanged; only the read action requires this token.
+
+---
+
+## 📷 CINERO'26 Photo Upload Page
+
+The public QR destination is `/gallery/upload`. Vercel's existing SPA rewrite serves this route directly. The page currently supports local photo selection, preview, removal, and validation; **it does not upload or save photos** because no secure gallery upload API is configured. Do not advertise the page as accepting submissions until that backend is deployed.
+
+Before enabling uploads, implement a separate secure upload service that supports the 5 MB per-file and 50 MB per-batch limits. Prefer direct or resumable uploads to a dedicated private media location rather than sending photo binaries through the registration Apps Script or a large Base64 JSON request. The service must write photo metadata to a `Gallery_Photos` sheet with an initial `PENDING` status, keep pending Drive files private, and expose no public URLs before approval. The existing registration integration should remain separate.
+
+`VITE_GALLERY_UPLOAD_API_URL` and its request/response contract are not wired into the page yet. Configure them only after the upload service and its storage permissions are implemented and tested. There is no public gallery or admin approval page in this implementation.
 
 ---
 

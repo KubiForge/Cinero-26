@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import AboutPage from './pages/About';
 import GuidlinesPage from './pages/Guidlines';
 import RegistrationPage from './pages/Registration';
+import GalleryUploadPage from './pages/GalleryUpload';
 import CrewLoginPage from './pages/CrewLogin';
 import CrewDashboardPage from './pages/CrewDashboard';
 import { SchoolRegistrationsPage, UniversityRegistrationsPage } from './pages/RegistrationManagement';
@@ -63,6 +64,7 @@ type PageName =
   | 'about'
   | 'guidelines'
   | 'register'
+  | 'gallery-upload'
   | 'crew-login'
   | 'crew-dashboard'
   | 'crew-dashboard-school'
@@ -136,6 +138,10 @@ function App() {
   const resolveRouteFromLocation = useCallback((): PageName => {
     const path = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
     const hash = window.location.hash.toLowerCase();
+
+    if (path === '/gallery/upload') {
+      return 'gallery-upload';
+    }
 
     if (path === '/crew/login' || path === '/crew/login/' || hash === '#hr-crew-login' || hash === '#crew-login') {
       return 'crew-login';
@@ -301,6 +307,13 @@ function App() {
   };
 
   const handleNavClick = (href: string) => {
+    if (
+      currentPage === 'gallery-upload'
+      && window.location.pathname.toLowerCase().replace(/\/+$/, '') === '/gallery/upload'
+    ) {
+      window.history.pushState({}, '', '/');
+    }
+
     // Crew Login route
     if (href === '#hr-crew-login' || href === '#crew-login') {
       setCurrentPage('crew-login');
@@ -470,6 +483,17 @@ function App() {
       <>
         {pageLoader}
         <RegistrationPage onBack={handleBackToHome} />
+      </>
+    );
+  }
+
+  if (currentPage === 'gallery-upload') {
+    return (
+      <>
+        {pageLoader}
+        <Navbar onNavigate={handleNavClick} />
+        <GalleryUploadPage />
+        <Footer onNavigate={handleNavClick} />
       </>
     );
   }
