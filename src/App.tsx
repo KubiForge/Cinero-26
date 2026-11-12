@@ -17,8 +17,8 @@ import './App.css';
 
 // Registration opens automatically on 27 October 2026 at 00:00 AM (SL Time / UTC+5:30)
 const REGISTRATION_OPEN_TIME = new Date('2026-10-27T00:00:00+05:30').getTime();
-// Registration closes automatically on 15 November 2026 at 00:00 AM (SL Time / UTC+5:30)
-const REGISTRATION_CLOSE_TIME = new Date('2026-11-15T00:00:00+05:30').getTime();
+// Registration stays open through the submission deadline on 14 December 2026 (SL Time / UTC+5:30)
+const REGISTRATION_CLOSE_TIME = new Date('2026-12-15T00:00:00+05:30').getTime();
 
 const ENFORCE_REGISTRATION_DATES = true;
 
@@ -41,7 +41,7 @@ const showRegistrationNotOpenAlert = () => {
 const showRegistrationClosedAlert = () => {
   void Swal.fire({
     title: 'Registration closed',
-    text: 'The registration deadline has passed. We are no longer accepting registrations.',
+    text: 'The submission period has ended. We are no longer accepting registrations.',
     icon: 'error',
     confirmButtonText: 'OK',
     confirmButtonColor: '#d4a642',

@@ -3,7 +3,7 @@ var SPREADSHEET_ID = "18sPX0nKl4IKDqBf1zRhDSpfNcGUStvw-DhCddBmwoQw";
 
 function doPost(e) {
   var registrationOpenTime = new Date("2026-10-27T00:00:00+05:30").getTime();
-  var registrationCloseTime = new Date("2026-11-15T00:00:00+05:30").getTime();
+  var registrationCloseTime = new Date("2026-12-15T00:00:00+05:30").getTime();
   if (Date.now() < registrationOpenTime) {
     return jsonResponse({
       status: "error",
