@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   if (Date.now() >= registrationCloseTime) {
     return res.status(403).json({
       success: false,
-      message: 'Registration closed. The deadline has passed.',
+      message: 'Registration and film submissions closed on 14 December 2026.',
     });
   }
 

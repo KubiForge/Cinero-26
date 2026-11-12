@@ -35,8 +35,8 @@ const TIMELINE_EVENTS: TimelineEvent[] = [
     stepNumber: '03',
     dateLabel: '14 DEC 2026',
     startDate: '2026-12-14',
-    title: 'Submission Closes',
-    description: 'Final day to submit a short film.',
+    title: 'Registration & Submission Close',
+    description: 'Final day to register a team or submit a short film.',
     iconType: 'document',
   },
   {

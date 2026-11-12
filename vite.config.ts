@@ -101,7 +101,7 @@ export default defineConfig(({ mode }) => {
                 return res.end(
                   JSON.stringify({
                     success: false,
-                    message: 'Registration closed. The deadline has passed.',
+                    message: 'Registration and film submissions closed on 14 December 2026.',
                   })
                 )
               }

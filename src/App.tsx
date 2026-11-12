@@ -20,6 +20,7 @@ import './App.css';
 const REGISTRATION_OPEN_TIME = new Date('2026-10-27T00:00:00+05:30').getTime();
 // Registration stays open through the submission deadline on 14 December 2026 (SL Time / UTC+5:30)
 const REGISTRATION_CLOSE_TIME = new Date('2026-12-15T00:00:00+05:30').getTime();
+const MAX_TIMEOUT_DELAY = 2_147_483_647;
 
 const ENFORCE_REGISTRATION_DATES = true;
 
@@ -42,7 +43,7 @@ const showRegistrationNotOpenAlert = () => {
 const showRegistrationClosedAlert = () => {
   void Swal.fire({
     title: 'Registration closed',
-    text: 'The submission period has ended. We are no longer accepting registrations.',
+    text: 'Registration and film submissions closed on 14 December 2026.',
     icon: 'error',
     confirmButtonText: 'OK',
     confirmButtonColor: '#d4a642',
@@ -117,10 +118,25 @@ function App() {
       }, 80);
     };
 
-    const timeUntilClose = Math.max(0, REGISTRATION_CLOSE_TIME - Date.now());
-    const closeTimer = window.setTimeout(closeRegistrationPage, timeUntilClose);
+    let closeTimer: number | undefined;
+    const scheduleRegistrationClose = () => {
+      const timeUntilClose = REGISTRATION_CLOSE_TIME - Date.now();
+      if (timeUntilClose <= 0) {
+        closeRegistrationPage();
+        return;
+      }
 
-    return () => window.clearTimeout(closeTimer);
+      closeTimer = window.setTimeout(
+        scheduleRegistrationClose,
+        Math.min(timeUntilClose, MAX_TIMEOUT_DELAY),
+      );
+    };
+
+    closeTimer = window.setTimeout(scheduleRegistrationClose, 0);
+
+    return () => {
+      if (closeTimer !== undefined) window.clearTimeout(closeTimer);
+    };
   }, [currentPage]);
 
   const pageLoader = showLoader ? (

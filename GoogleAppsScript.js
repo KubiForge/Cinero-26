@@ -14,7 +14,7 @@ function doPost(e) {
   if (Date.now() >= registrationCloseTime) {
     return jsonResponse({
       status: "error",
-      message: "Registration closed. The deadline has passed."
+      message: "Registration and film submissions closed on 14 December 2026."
     });
   }
 

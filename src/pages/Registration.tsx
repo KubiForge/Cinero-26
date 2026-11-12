@@ -557,7 +557,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
           <h1 className="reg-hero__title">Register Your Team</h1>
           <p className="reg-hero__desc">
             Join CINERO’26 and bring your story to the screen. Registration is open from{' '}
-            <strong>October 27 to November 14, 2026</strong>.
+            <strong>October 27 to December 14, 2026</strong>.
           </p>
         </div>
       </section>
