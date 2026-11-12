@@ -363,6 +363,14 @@ main {
   padding: 75px 0 80px;
 }
 
+.section--submission {
+  scroll-margin-top: 84px;
+}
+
+.section--submission .register-card__eyebrow {
+  display: flex;
+}
+
 .section--register::before {
   position: absolute;
   inset: 0;

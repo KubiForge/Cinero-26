@@ -17,7 +17,7 @@
   padding: 112px 24px 54px;
   border-bottom: 1px solid rgba(213, 164, 62, 0.22);
   background-color: #111014;
-  background-image: url('/images/holybg.jpg');
+  background-image: url('/images/gallery-background-960.webp');
   background-position: center 42%;
   background-size: cover;
   isolation: isolate;
@@ -602,6 +602,7 @@
     min-height: 455px;
     padding: 100px 19px 48px;
     background-position: 54% center;
+    background-image: url('/images/gallery-background-480.webp');
   }
 
   .gallery-upload__eyebrow {

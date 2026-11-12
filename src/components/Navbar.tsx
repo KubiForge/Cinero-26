@@ -79,28 +79,22 @@ export default function Navbar({ onNavigate, variant = 'overlay' }: NavbarProps 
             ))}
           </ul>
 
-            <a
-              href="#register"
-              className="navbar__register"
-              onClick={() => handleNav("#register")}
-            >
-              Register
-            </a>
-
             <div className="navbar__actions">
-            <a
-              href="#crew-login"
-              className="navbar__login"
-              onClick={(event) => {
-                event.preventDefault();
-                handleNav("#crew-login");
-              }}
-            >
-              <span className="navbar__login-icon" aria-hidden="true">🔒</span>
-              <span>Crew Login</span>
-            </a>
-            
-          </div>
+              <a
+                href="#register"
+                className="navbar__register"
+                onClick={() => handleNav("#register")}
+              >
+                Register
+              </a>
+              <a
+                href="#submission"
+                className="navbar__submission"
+                onClick={() => handleNav("#submission")}
+              >
+                Submission
+              </a>
+            </div>
         </nav>
       </div>
     </header>

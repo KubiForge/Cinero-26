@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TimelineSection from './components/TimelineSection';
+import SubmissionSection from './components/SubmissionSection';
 import GuidelinesSection from './components/GuidelinesSection';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
@@ -20,6 +21,7 @@ import './App.css';
 const REGISTRATION_OPEN_TIME = new Date('2026-10-27T00:00:00+05:30').getTime();
 // Registration stays open through the submission deadline on 14 December 2026 (SL Time / UTC+5:30)
 const REGISTRATION_CLOSE_TIME = new Date('2026-12-15T00:00:00+05:30').getTime();
+const SUBMISSION_OPEN_TIME = new Date('2026-11-15T00:00:00+05:30').getTime();
 const MAX_TIMEOUT_DELAY = 2_147_483_647;
 
 const ENFORCE_REGISTRATION_DATES = true;
@@ -58,6 +60,33 @@ const showRegistrationUnavailableAlert = () => {
   } else {
     showRegistrationNotOpenAlert();
   }
+};
+
+const showSubmissionPortalAlert = () => {
+  const now = Date.now();
+  const message = now < SUBMISSION_OPEN_TIME
+    ? {
+        title: 'Submission opens soon',
+      text: 'Film submissions open on 15 November 2026.',
+      }
+    : now >= REGISTRATION_CLOSE_TIME
+      ? {
+          title: 'Submission closed',
+          text: 'Film submissions closed on 14 December 2026.',
+        }
+      : {
+          title: 'Submission portal access',
+          text: 'The portal is private. Use the link shared with your verified team through the official CINERO’26 channels.',
+        };
+
+  void Swal.fire({
+    ...message,
+    icon: 'info',
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#d4a642',
+    background: '#171518',
+    color: '#fff',
+  });
 };
 
 type PageName =
@@ -654,6 +683,8 @@ function App() {
             </div>
           </div>
         </section>
+
+        <SubmissionSection onSubmitClick={showSubmissionPortalAlert} />
 
         {/* Contact Section */}
         <ContactSection />

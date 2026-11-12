@@ -558,20 +558,29 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               {/* Row 1, Member 1: Michael Fernando */}
               <article className="personnel-card">
                 <div className="personnel-card__photo-wrap">
-                  <img
-                    src="/images/personnel/michael-fernando.png"
-                    alt="Michael Fernando"
-                    className="personnel-card__photo"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      target.style.display = 'none';
-                      if (target.parentElement) {
-                        target.parentElement.classList.add('personnel-card__photo-wrap--fallback');
-                        target.parentElement.setAttribute('data-initials', 'MF');
-                      }
-                    }}
-                  />
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcSet="/images/personnel/michael-fernando-320.webp 320w, /images/personnel/michael-fernando-480.webp 480w"
+                      sizes="145px"
+                    />
+                    <img
+                      src="/images/personnel/michael-fernando.png"
+                      alt="Michael Fernando"
+                      className="personnel-card__photo"
+                      loading="lazy"
+                      decoding="async"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.style.display = 'none';
+                        const photoWrap = target.closest('.personnel-card__photo-wrap');
+                        if (photoWrap) {
+                          photoWrap.classList.add('personnel-card__photo-wrap--fallback');
+                          photoWrap.setAttribute('data-initials', 'MF');
+                        }
+                      }}
+                    />
+                  </picture>
                 </div>
                 <div className="personnel-card__info">
                   <a
@@ -610,20 +619,29 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               {/* Row 1, Member 2: Asintha Diwan */}
               <article className="personnel-card">
                 <div className="personnel-card__photo-wrap">
-                  <img
-                    src="/images/personnel/asintha-diwan.png"
-                    alt="Asintha Diwan"
-                    className="personnel-card__photo"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      target.style.display = 'none';
-                      if (target.parentElement) {
-                        target.parentElement.classList.add('personnel-card__photo-wrap--fallback');
-                        target.parentElement.setAttribute('data-initials', 'AD');
-                      }
-                    }}
-                  />
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcSet="/images/personnel/asintha-diwan-320.webp 320w, /images/personnel/asintha-diwan-480.webp 480w"
+                      sizes="145px"
+                    />
+                    <img
+                      src="/images/personnel/asintha-diwan.png"
+                      alt="Asintha Diwan"
+                      className="personnel-card__photo"
+                      loading="lazy"
+                      decoding="async"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.style.display = 'none';
+                        const photoWrap = target.closest('.personnel-card__photo-wrap');
+                        if (photoWrap) {
+                          photoWrap.classList.add('personnel-card__photo-wrap--fallback');
+                          photoWrap.setAttribute('data-initials', 'AD');
+                        }
+                      }}
+                    />
+                  </picture>
                 </div>
                 <div className="personnel-card__info">
                   <a
@@ -662,20 +680,29 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               {/* Row 2, Member 3: Rishini Wijethilaka */}
               <article className="personnel-card">
                 <div className="personnel-card__photo-wrap">
-                  <img
-                    src="/images/personnel/rishini-wijethilaka.png"
-                    alt="Rishini Wijethilaka"
-                    className="personnel-card__photo"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      target.style.display = 'none';
-                      if (target.parentElement) {
-                        target.parentElement.classList.add('personnel-card__photo-wrap--fallback');
-                        target.parentElement.setAttribute('data-initials', 'RW');
-                      }
-                    }}
-                  />
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcSet="/images/personnel/rishini-wijethilaka-320.webp 320w, /images/personnel/rishini-wijethilaka-480.webp 480w"
+                      sizes="145px"
+                    />
+                    <img
+                      src="/images/personnel/rishini-wijethilaka.png"
+                      alt="Rishini Wijethilaka"
+                      className="personnel-card__photo"
+                      loading="lazy"
+                      decoding="async"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.style.display = 'none';
+                        const photoWrap = target.closest('.personnel-card__photo-wrap');
+                        if (photoWrap) {
+                          photoWrap.classList.add('personnel-card__photo-wrap--fallback');
+                          photoWrap.setAttribute('data-initials', 'RW');
+                        }
+                      }}
+                    />
+                  </picture>
                 </div>
                 <div className="personnel-card__info">
                   <a
@@ -714,20 +741,29 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               {/* Row 2, Member 4: Isuri Sathyangana */}
               <article className="personnel-card">
                 <div className="personnel-card__photo-wrap">
-                  <img
-                    src="/images/personnel/isuri-sathyangana.png"
-                    alt="Isuri Sathyangana"
-                    className="personnel-card__photo"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      target.style.display = 'none';
-                      if (target.parentElement) {
-                        target.parentElement.classList.add('personnel-card__photo-wrap--fallback');
-                        target.parentElement.setAttribute('data-initials', 'IS');
-                      }
-                    }}
-                  />
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcSet="/images/personnel/isuri-sathyangana-320.webp 320w, /images/personnel/isuri-sathyangana-480.webp 480w"
+                      sizes="145px"
+                    />
+                    <img
+                      src="/images/personnel/isuri-sathyangana.png"
+                      alt="Isuri Sathyangana"
+                      className="personnel-card__photo"
+                      loading="lazy"
+                      decoding="async"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.style.display = 'none';
+                        const photoWrap = target.closest('.personnel-card__photo-wrap');
+                        if (photoWrap) {
+                          photoWrap.classList.add('personnel-card__photo-wrap--fallback');
+                          photoWrap.setAttribute('data-initials', 'IS');
+                        }
+                      }}
+                    />
+                  </picture>
                 </div>
                 <div className="personnel-card__info">
                   <a
@@ -766,20 +802,29 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               {/* Row 3, Member 5: Nuwan Sampath */}
               <article className="personnel-card">
                 <div className="personnel-card__photo-wrap">
-                  <img
-                    src="/images/personnel/nuwan-sampath.png"
-                    alt="Nuwan Sampath"
-                    className="personnel-card__photo"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      target.style.display = 'none';
-                      if (target.parentElement) {
-                        target.parentElement.classList.add('personnel-card__photo-wrap--fallback');
-                        target.parentElement.setAttribute('data-initials', 'NS');
-                      }
-                    }}
-                  />
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcSet="/images/personnel/nuwan-sampath-320.webp 320w, /images/personnel/nuwan-sampath-480.webp 480w"
+                      sizes="145px"
+                    />
+                    <img
+                      src="/images/personnel/nuwan-sampath.png"
+                      alt="Nuwan Sampath"
+                      className="personnel-card__photo"
+                      loading="lazy"
+                      decoding="async"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.style.display = 'none';
+                        const photoWrap = target.closest('.personnel-card__photo-wrap');
+                        if (photoWrap) {
+                          photoWrap.classList.add('personnel-card__photo-wrap--fallback');
+                          photoWrap.setAttribute('data-initials', 'NS');
+                        }
+                      }}
+                    />
+                  </picture>
                 </div>
                 <div className="personnel-card__info">
                   <a
@@ -818,20 +863,29 @@ const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               {/* Row 3, Member 6: Dumini Rasnayake */}
               <article className="personnel-card">
                 <div className="personnel-card__photo-wrap">
-                  <img
-                    src="/images/personnel/dumini-rasnayake.png"
-                    alt="Dumini Rasnayake"
-                    className="personnel-card__photo"
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      target.style.display = 'none';
-                      if (target.parentElement) {
-                        target.parentElement.classList.add('personnel-card__photo-wrap--fallback');
-                        target.parentElement.setAttribute('data-initials', 'DR');
-                      }
-                    }}
-                  />
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcSet="/images/personnel/dumini-rasnayake-320.webp 320w, /images/personnel/dumini-rasnayake-480.webp 480w"
+                      sizes="145px"
+                    />
+                    <img
+                      src="/images/personnel/dumini-rasnayake.png"
+                      alt="Dumini Rasnayake"
+                      className="personnel-card__photo"
+                      loading="lazy"
+                      decoding="async"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.style.display = 'none';
+                        const photoWrap = target.closest('.personnel-card__photo-wrap');
+                        if (photoWrap) {
+                          photoWrap.classList.add('personnel-card__photo-wrap--fallback');
+                          photoWrap.setAttribute('data-initials', 'DR');
+                        }
+                      }}
+                    />
+                  </picture>
                 </div>
                 <div className="personnel-card__info">
                   <a

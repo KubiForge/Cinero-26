@@ -124,47 +124,9 @@
   transform: scaleX(1);
 }
 
-/* Login button – red-glow HR crew action */
-.navbar__login {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 22px;
-  border-radius: 999px;
-  border: 1.5px solid rgba(255, 118, 80, 0.9);
-  background: rgba(15, 12, 14, 0.92);
-  color: #fff4f0;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-decoration: none;
-  box-shadow:
-    0 0 0 1px rgba(255, 167, 122, 0.2),
-    0 0 18px rgba(255, 92, 58, 0.38),
-    inset 0 0 18px rgba(255, 118, 80, 0.12);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
-}
-
-.navbar__login:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 0 0 1px rgba(255, 167, 122, 0.3),
-    0 0 24px rgba(255, 92, 58, 0.5),
-    inset 0 0 22px rgba(255, 118, 80, 0.16);
-  filter: brightness(1.04);
-}
-
-.navbar__login-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  filter: drop-shadow(0 0 8px rgba(255, 179, 140, 0.8));
-}
-
-/* Register button – outlined gold pill, no arrow */
-.navbar__register {
+/* Primary navigation actions – outlined gold pills */
+.navbar__register,
+.navbar__submission {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -180,7 +142,8 @@
   transition: background 0.25s ease, color 0.25s ease;
 }
 
-.navbar__register:hover {
+.navbar__register:hover,
+.navbar__submission:hover {
   background: var(--nav-gold);
   color: var(--nav-black);
 }
@@ -299,8 +262,8 @@
     width: 100%;
   }
 
-  .navbar__login,
-  .navbar__register {
+  .navbar__register,
+  .navbar__submission {
     width: 100%;
     justify-content: center;
   }
@@ -336,7 +299,8 @@
     background: rgba(213, 164, 62, 0.12);
   }
 
-  .navbar__register {
+  .navbar__register,
+  .navbar__submission {
     min-height: 48px;
     border-radius: 12px;
     background: linear-gradient(135deg, #f2cd70, #d5a43e);
@@ -344,7 +308,8 @@
     font-weight: 700;
   }
 
-  .navbar__register:hover {
+  .navbar__register:hover,
+  .navbar__submission:hover {
     background: #f5d77f;
     color: #1b1919;
   }

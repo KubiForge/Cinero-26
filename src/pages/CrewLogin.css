@@ -9,7 +9,7 @@
   flex-direction: column;
   background:
     linear-gradient(90deg, rgba(9, 7, 6, 0.54) 0%, rgba(9, 7, 6, 0.18) 38%, rgba(9, 7, 6, 0.68) 100%),
-    url('/images/CINERO%E2%80%9926%20Cinematic%20Film%20Festival%20Login.png') center center / cover no-repeat;
+    url('/images/login-background-1600.webp') center center / cover no-repeat;
   font-family: var(--font-body, 'Outfit', sans-serif);
   overflow-x: hidden;
 }
@@ -559,6 +559,12 @@
 }
 
 @media (max-width: 900px) {
+  .crew-login-page {
+    background-image:
+      linear-gradient(90deg, rgba(9, 7, 6, 0.54) 0%, rgba(9, 7, 6, 0.18) 38%, rgba(9, 7, 6, 0.68) 100%),
+      url('/images/login-background-960.webp');
+  }
+
   .crew-login__header-inner {
     padding: 12px 18px;
   }
