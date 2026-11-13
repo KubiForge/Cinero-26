@@ -150,12 +150,27 @@
   box-shadow: 0 14px 36px rgba(0, 0, 0, 0.3);
 }
 
-.holi-gallery-photo > img {
+.holi-gallery-photo__preview {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: #171518;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.holi-gallery-photo__preview img {
   display: block;
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
   background: #171518;
+}
+
+.holi-gallery-photo__preview:focus-visible {
+  outline: 2px solid #f5d77f;
+  outline-offset: -2px;
 }
 
 .holi-gallery-photo__details {
@@ -187,6 +202,83 @@
   text-decoration: underline;
 }
 
+.holi-gallery-lightbox {
+  position: fixed;
+  z-index: 2100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding:
+    max(16px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
+  box-sizing: border-box;
+  background: rgba(5, 4, 8, 0.88);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+}
+
+.holi-gallery-lightbox__dialog {
+  position: relative;
+  display: grid;
+  place-items: center;
+  max-width: 100%;
+  max-height: 100%;
+  padding: 54px 10px 10px;
+  box-sizing: border-box;
+  border: 1px solid rgba(232, 190, 96, 0.62);
+  border-radius: 16px;
+  background: rgba(15, 13, 17, 0.97);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.62);
+}
+
+.holi-gallery-lightbox__image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: calc(100vw - 56px);
+  max-height: calc(100vh - 100px);
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.holi-gallery-lightbox__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid rgba(242, 210, 145, 0.72);
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(12, 10, 14, 0.88);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.holi-gallery-lightbox__close svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.holi-gallery-lightbox__close:hover {
+  border-color: #f5d77f;
+  color: #171518;
+  background: #f5d77f;
+}
+
+.holi-gallery-lightbox__close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
 @media (max-width: 700px) {
   .holi-gallery-page {
     padding: 118px 18px 64px;
@@ -214,6 +306,18 @@
     grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
     gap: 12px;
     margin-top: 30px;
+  }
+}
+
+@supports (height: 100dvh) {
+  .holi-gallery-lightbox__image {
+    max-height: calc(100dvh - 100px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holi-gallery-lightbox__close {
+    transition-duration: 0.01ms;
   }
 }
 

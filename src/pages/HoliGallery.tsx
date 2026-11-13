@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   fetchApprovedGalleryPhotos,
   getGalleryImageUrl,
@@ -8,7 +9,21 @@ import './HoliGallery.css';
 
 export default function HoliGalleryPage() {
   const [photos, setPhotos] = useState<ApprovedGalleryPhoto[]>([]);
+  const [selectedPhoto, setSelectedPhoto] = useState<ApprovedGalleryPhoto | null>(null);
   const [galleryStatus, setGalleryStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const photoButtonRef = useRef<HTMLButtonElement | null>(null);
+  const scrollPositionRef = useRef(0);
+
+  const closePhoto = useCallback(() => {
+    setSelectedPhoto(null);
+    window.requestAnimationFrame(() => {
+      window.scrollTo({ top: scrollPositionRef.current, behavior: 'auto' });
+      if (photoButtonRef.current?.isConnected) {
+        photoButtonRef.current.focus({ preventScroll: true });
+      }
+    });
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -27,6 +42,30 @@ export default function HoliGalleryPage() {
       active = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (!selectedPhoto) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeButtonRef.current?.focus({ preventScroll: true });
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closePhoto();
+      } else if (event.key === 'Tab') {
+        event.preventDefault();
+        closeButtonRef.current?.focus({ preventScroll: true });
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [closePhoto, selectedPhoto]);
 
   return (
     <main className="holi-gallery-page">
@@ -76,12 +115,23 @@ export default function HoliGalleryPage() {
           <section className="holi-gallery-page__photos" aria-label="Approved Holi Fest photos">
             {photos.map((photo) => (
               <article className="holi-gallery-photo" key={photo.photoId}>
-                <img
-                  src={getGalleryImageUrl(photo.photoId)}
-                  alt={photo.fileName}
-                  loading="lazy"
-                  decoding="async"
-                />
+                <button
+                  type="button"
+                  className="holi-gallery-photo__preview"
+                  aria-label={`View ${photo.fileName} larger`}
+                  onClick={(event) => {
+                    photoButtonRef.current = event.currentTarget;
+                    scrollPositionRef.current = window.scrollY;
+                    setSelectedPhoto(photo);
+                  }}
+                >
+                  <img
+                    src={getGalleryImageUrl(photo.photoId)}
+                    alt={photo.fileName}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </button>
                 <div className="holi-gallery-photo__details">
                   <span title={photo.fileName}>{photo.fileName}</span>
                   <a
@@ -97,6 +147,46 @@ export default function HoliGalleryPage() {
           </section>
         )}
       </div>
+      {selectedPhoto && createPortal(
+        <div
+          className="holi-gallery-lightbox"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) closePhoto();
+          }}
+        >
+          <div
+            className="holi-gallery-lightbox__dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Photo preview: ${selectedPhoto.fileName}`}
+          >
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className="holi-gallery-lightbox__close"
+              aria-label="Close photo preview"
+              onClick={closePhoto}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
+            <img
+              className="holi-gallery-lightbox__image"
+              src={getGalleryImageUrl(selectedPhoto.photoId)}
+              alt={selectedPhoto.fileName}
+            />
+          </div>
+        </div>,
+        document.body,
+      )}
     </main>
   );
 }
