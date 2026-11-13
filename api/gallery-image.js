@@ -32,8 +32,18 @@ export default async function handler(req, res) {
     );
 
     if (!driveResponse.ok || !driveResponse.body) {
-      throw new Error('Google Drive could not return the approved photo.');
-    }
+  const driveError = await driveResponse.text();
+
+  console.error('[gallery-image] Drive API error:', {
+    status: driveResponse.status,
+    statusText: driveResponse.statusText,
+    response: driveError.slice(0, 1500),
+  });
+
+  throw new Error(
+    `Google Drive API failed with status ${driveResponse.status}`
+  );
+}
 
     const mimeType = typeof photo.mimeType === 'string' && photo.mimeType.startsWith('image/')
       ? photo.mimeType
