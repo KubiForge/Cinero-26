@@ -11,7 +11,6 @@ export const footerCategoryLinks = [
   { label: 'Inter-School', href: '#guidelines-school' },
   { label: 'Our Purpose', href: '#about-purpose' },
   { label: 'Registration Portal', href: '#register' },
-  { label: 'Submission', href: '#submission' },
 ] as const;
 
 export const contactEmail = {

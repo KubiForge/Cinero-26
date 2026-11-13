@@ -1,8 +1,29 @@
+import type { IncomingMessage, ServerResponse } from 'node:http'
+import { resolve } from 'node:path'
+import { pathToFileURL } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv } from 'vite'
 
 const REGISTRATION_OPEN_TIME = new Date('2026-10-27T00:00:00+05:30').getTime()
 const REGISTRATION_CLOSE_TIME = new Date('2026-12-15T00:00:00+05:30').getTime()
+const GALLERY_API_BODY_LIMIT = 4.5 * 1024 * 1024
+const GALLERY_SERVER_ENV_KEYS = [
+  'GOOGLE_SHEET_WEBHOOK_URL',
+  'GOOGLE_SHEET_READ_TOKEN',
+  'GALLERY_UPLOAD_TOKEN',
+  'GOOGLE_DRIVE_SERVICE_ACCOUNT_EMAIL',
+  'GOOGLE_DRIVE_SERVICE_ACCOUNT_PRIVATE_KEY',
+]
+
+type GalleryApiRequest = IncomingMessage & {
+  body?: unknown;
+  query?: Record<string, string>;
+}
+
+type GalleryApiResponse = ServerResponse & {
+  status: (code: number) => GalleryApiResponse;
+  json: (body: unknown) => GalleryApiResponse;
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null
@@ -18,7 +39,74 @@ export default defineConfig(({ mode }) => {
       {
         name: 'local-api',
         configureServer(server) {
+          GALLERY_SERVER_ENV_KEYS.forEach((key) => {
+            if (env[key]) process.env[key] = env[key]
+          })
+
           server.middlewares.use(async (req, res, next) => {
+            const requestUrl = new URL(req.url ?? '/', 'http://localhost')
+            const galleryRoutes: Record<string, () => Promise<{ default: (request: GalleryApiRequest, response: GalleryApiResponse) => unknown }>> = {
+              '/api/gallery-upload': () => import(pathToFileURL(resolve(process.cwd(), 'api/gallery-upload.js')).href),
+              '/api/gallery': () => import(pathToFileURL(resolve(process.cwd(), 'api/gallery.js')).href),
+              '/api/gallery-image': () => import(pathToFileURL(resolve(process.cwd(), 'api/gallery-image.js')).href),
+            }
+            const loadGalleryHandler = galleryRoutes[requestUrl.pathname]
+
+            if (loadGalleryHandler) {
+              const apiRequest = req as GalleryApiRequest
+              const apiResponse = res as GalleryApiResponse
+              apiRequest.query = Object.fromEntries(requestUrl.searchParams.entries())
+              apiResponse.status = function setStatus(code) {
+                this.statusCode = code
+                return this
+              }
+              apiResponse.json = function sendJson(payload) {
+                this.setHeader('Content-Type', 'application/json')
+                this.end(JSON.stringify(payload))
+                return this
+              }
+
+              if (req.method === 'POST') {
+                const chunks: Buffer[] = []
+                let bodySize = 0
+                for await (const chunk of req) {
+                  const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
+                  bodySize += buffer.length
+                  if (bodySize > GALLERY_API_BODY_LIMIT) {
+                    apiResponse.statusCode = 413
+                    apiResponse.setHeader('Content-Type', 'application/json')
+                    apiResponse.end(JSON.stringify({
+                      success: false,
+                      message: 'Upload request is too large. Photos must be 3 MB or smaller.',
+                    }))
+                    return
+                  }
+                  chunks.push(buffer)
+                }
+
+                try {
+                  apiRequest.body = JSON.parse(Buffer.concat(chunks).toString('utf8'))
+                } catch {
+                  apiResponse.statusCode = 400
+                  apiResponse.setHeader('Content-Type', 'application/json')
+                  apiResponse.end(JSON.stringify({ success: false, message: 'Invalid request body.' }))
+                  return
+                }
+              }
+
+              try {
+                const handler = await loadGalleryHandler()
+                await handler.default(apiRequest, apiResponse)
+              } catch (error) {
+                console.error('[local-gallery-api] request failed:', error)
+                if (!apiResponse.headersSent) {
+                  apiResponse.statusCode = 500
+                  apiResponse.setHeader('Content-Type', 'application/json')
+                  apiResponse.end(JSON.stringify({ success: false, message: 'Gallery service failed.' }))
+                }
+              }
+              return
+            }
 
             // ── /api/crew-login local proxy ───────────────────────────────
             if (req.url === '/api/crew-login' && req.method === 'POST') {

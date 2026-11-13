@@ -2,6 +2,20 @@
 var SPREADSHEET_ID = "18sPX0nKl4IKDqBf1zRhDSpfNcGUStvw-DhCddBmwoQw";
 
 function doPost(e) {
+  var requestData;
+  try {
+    requestData = JSON.parse(e.postData.contents);
+  } catch (error) {
+    return jsonResponse({
+      status: "error",
+      message: String(error.message || "Invalid request body.")
+    });
+  }
+
+  if (String(requestData.action || "").toLowerCase() === "galleryupload") {
+    return handleGalleryUpload(requestData);
+  }
+
   var registrationOpenTime = new Date("2026-10-27T00:00:00+05:30").getTime();
   var registrationCloseTime = new Date("2026-12-15T00:00:00+05:30").getTime();
   if (Date.now() < registrationOpenTime) {
@@ -25,7 +39,7 @@ function doPost(e) {
     lock.waitLock(30000);
     locked = true;
 
-    var data = JSON.parse(e.postData.contents);
+    var data = requestData;
 
     if (
       !data.referenceId ||
@@ -306,6 +320,37 @@ function doGet(e) {
   var action = String(params.action || "").toLowerCase();
   var category = String(params.category || "all").toLowerCase();
 
+  if (action === "gallery" || action === "galleryphoto") {
+    var expectedGalleryReadToken = PropertiesService.getScriptProperties().getProperty("GOOGLE_SHEET_READ_TOKEN");
+    var suppliedGalleryReadToken = String(params.readToken || "");
+    if (!expectedGalleryReadToken || !suppliedGalleryReadToken || suppliedGalleryReadToken !== expectedGalleryReadToken) {
+      return jsonResponse({
+        status: "error",
+        message: "Unauthorized."
+      });
+    }
+
+    var galleryOpenTime = new Date("2026-11-18T00:00:00+05:30").getTime();
+    if (Date.now() < galleryOpenTime) {
+      return jsonResponse({
+        status: "error",
+        message: "The Holi Gallery opens after the event on 18 November 2026."
+      });
+    }
+
+    if (action === "galleryphoto") {
+      var photo = findApprovedGalleryPhoto(String(params.photoId || ""));
+      return photo
+        ? jsonResponse(photo)
+        : jsonResponse({ status: "error", message: "Photo not found." });
+    }
+
+    return jsonResponse({
+      status: "success",
+      photos: readApprovedGalleryPhotos()
+    });
+  }
+
   if (action === "read") {
     var expectedReadToken = PropertiesService.getScriptProperties().getProperty("GOOGLE_SHEET_READ_TOKEN");
     var suppliedReadToken = String(params.readToken || "");
@@ -378,4 +423,241 @@ function readRegistrations(category) {
   }
 
   return results;
+}
+
+var GALLERY_PHOTOS_SHEET = "Gallery_Photos";
+var GALLERY_PHOTOS_HEADERS = [
+  "Photo_ID",
+  "File_Name",
+  "Drive_File_ID",
+  "Mime_Type",
+  "File_Size_Bytes",
+  "Uploaded_By",
+  "Uploaded_At",
+  "Status",
+  "Reviewed_By",
+  "Reviewed_At"
+];
+var GALLERY_MAX_FILE_BYTES = 3 * 1024 * 1024;
+
+function handleGalleryUpload(data) {
+  var expectedToken = PropertiesService.getScriptProperties().getProperty("GALLERY_UPLOAD_TOKEN");
+  var suppliedToken = String(data.galleryUploadToken || "");
+  if (!expectedToken || !suppliedToken || suppliedToken !== expectedToken) {
+    return jsonResponse({ status: "error", message: "Unauthorized photo upload request." });
+  }
+
+  var fileName = String(data.fileName || "").trim();
+  var mimeType = String(data.mimeType || "").toLowerCase();
+  var base64 = String(data.base64 || "");
+  var uploadedBy = String(data.uploadedBy || "").trim();
+  var allowedMimeTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/heic",
+    "image/heif",
+    "image/heic-sequence",
+    "image/heif-sequence"
+  ];
+
+  if (
+    !fileName ||
+    fileName.length > 180 ||
+    allowedMimeTypes.indexOf(mimeType) === -1 ||
+    !base64 ||
+    uploadedBy.length > 80
+  ) {
+    return jsonResponse({ status: "error", message: "Photo details are invalid or unsupported." });
+  }
+
+  var bytes;
+  try {
+    bytes = Utilities.base64Decode(base64);
+  } catch (error) {
+    return jsonResponse({ status: "error", message: "The photo data is invalid." });
+  }
+
+  if (!bytes || bytes.length === 0 || bytes.length > GALLERY_MAX_FILE_BYTES) {
+    return jsonResponse({ status: "error", message: "Each photo must be smaller than or equal to 3 MB." });
+  }
+
+  var readerEmail = PropertiesService.getScriptProperties().getProperty("GALLERY_DRIVE_READER_EMAIL");
+  if (!readerEmail || readerEmail.indexOf("@") === -1) {
+    return jsonResponse({
+      status: "error",
+      message: "The gallery Drive service account is not configured."
+    });
+  }
+
+  var lock = LockService.getScriptLock();
+  var locked = false;
+  var createdFile = null;
+  try {
+    lock.waitLock(30000);
+    locked = true;
+
+    var folder = getGalleryUploadFolder(readerEmail);
+    var sheet = getGalleryPhotosSheet();
+    var photoId = Utilities.getUuid();
+    var safeName = fileName.replace(/[\\/:*?"<>|]/g, "_").slice(0, 150);
+    if (/^[=+\-@]/.test(safeName)) safeName = "'" + safeName;
+    var blob = Utilities.newBlob(bytes, mimeType, photoId + "_" + safeName);
+    createdFile = folder.createFile(blob);
+    createdFile.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
+
+    var safeUploader = uploadedBy.replace(/[\r\n\t]/g, " ").slice(0, 80);
+    if (/^[=+\-@]/.test(safeUploader)) safeUploader = "'" + safeUploader;
+    var uploadedAt = new Date();
+    sheet.appendRow([
+      photoId,
+      safeName,
+      createdFile.getId(),
+      mimeType,
+      bytes.length,
+      safeUploader,
+      uploadedAt,
+      "PENDING",
+      "",
+      ""
+    ]);
+    SpreadsheetApp.flush();
+
+    return jsonResponse({
+      status: "success",
+      photoId: photoId,
+      reviewStatus: "PENDING"
+    });
+  } catch (error) {
+    if (createdFile) {
+      try {
+        createdFile.setTrashed(true);
+      } catch (cleanupError) {
+        Logger.log("Unable to clean up failed gallery upload: " + cleanupError.message);
+      }
+    }
+    Logger.log("Gallery upload error: " + error.message);
+    return jsonResponse({
+      status: "error",
+      message: "The photo could not be saved. Please try again."
+    });
+  } finally {
+    if (locked) lock.releaseLock();
+  }
+}
+
+function getGalleryUploadFolder(readerEmail) {
+  var properties = PropertiesService.getScriptProperties();
+  var folderId = properties.getProperty("GALLERY_DRIVE_FOLDER_ID");
+  var folder = folderId ? DriveApp.getFolderById(folderId) : null;
+
+  if (!folder) {
+    folder = DriveApp.createFolder("CINERO'26 Holi Gallery Uploads");
+    folder.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
+    properties.setProperty("GALLERY_DRIVE_FOLDER_ID", folder.getId());
+  }
+
+  var viewers = folder.getViewers();
+  var hasReader = viewers.some(function (viewer) {
+    return viewer.getEmail().toLowerCase() === readerEmail.toLowerCase();
+  });
+  if (!hasReader) folder.addViewer(readerEmail);
+
+  return folder;
+}
+
+function getGalleryPhotosSheet() {
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = spreadsheet.getSheetByName(GALLERY_PHOTOS_SHEET);
+
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(GALLERY_PHOTOS_SHEET);
+  }
+
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(GALLERY_PHOTOS_HEADERS);
+    sheet.getRange(1, 1, 1, GALLERY_PHOTOS_HEADERS.length)
+      .setFontWeight("bold")
+      .setBackground("#171518")
+      .setFontColor("#f5d77f");
+    sheet.setFrozenRows(1);
+  }
+
+  return sheet;
+}
+
+function initializeGalleryPhotosSheet() {
+  getGalleryPhotosSheet();
+  Logger.log("Gallery_Photos sheet is ready for pending photo uploads.");
+}
+
+function readApprovedGalleryPhotos() {
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(GALLERY_PHOTOS_SHEET);
+  if (!sheet || sheet.getLastRow() < 2) return [];
+
+  var values = sheet.getDataRange().getValues();
+  var headers = values[0].map(function (header) {
+    return String(header || "").trim();
+  });
+  var column = {};
+  headers.forEach(function (header, index) {
+    column[header] = index;
+  });
+
+  return values.slice(1)
+    .filter(function (row) {
+      return String(row[column.Status] || "").trim().toUpperCase() === "APPROVED";
+    })
+    .map(function (row) {
+      return {
+        status: "success",
+        photoId: String(row[column.Photo_ID] || ""),
+        fileName: String(row[column.File_Name] || "CINERO26-photo"),
+        mimeType: String(row[column.Mime_Type] || "image/jpeg"),
+        uploadedAt: row[column.Uploaded_At] instanceof Date
+          ? row[column.Uploaded_At].toISOString()
+          : String(row[column.Uploaded_At] || "")
+      };
+    })
+    .filter(function (photo) {
+      return Boolean(photo.photoId);
+    })
+    .slice(-100)
+    .reverse();
+}
+
+function findApprovedGalleryPhoto(photoId) {
+  if (!photoId) return null;
+
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(GALLERY_PHOTOS_SHEET);
+  if (!sheet || sheet.getLastRow() < 2) return null;
+
+  var values = sheet.getDataRange().getValues();
+  var headers = values[0].map(function (header) {
+    return String(header || "").trim();
+  });
+  var column = {};
+  headers.forEach(function (header, index) {
+    column[header] = index;
+  });
+
+  for (var index = values.length - 1; index > 0; index--) {
+    var row = values[index];
+    if (
+      String(row[column.Photo_ID] || "") === photoId &&
+      String(row[column.Status] || "").trim().toUpperCase() === "APPROVED" &&
+      String(row[column.Drive_File_ID] || "")
+    ) {
+      return {
+        status: "success",
+        reviewStatus: "APPROVED",
+        photoId: photoId,
+        driveFileId: String(row[column.Drive_File_ID]),
+        fileName: String(row[column.File_Name] || "CINERO26-photo"),
+        mimeType: String(row[column.Mime_Type] || "image/jpeg")
+      };
+    }
+  }
+
+  return null;
 }

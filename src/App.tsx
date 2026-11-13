@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TimelineSection from './components/TimelineSection';
-import SubmissionSection from './components/SubmissionSection';
+import HoliAnnouncementModal from './components/HoliAnnouncementModal';
 import GuidelinesSection from './components/GuidelinesSection';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
@@ -10,6 +10,7 @@ import AboutPage from './pages/About';
 import GuidlinesPage from './pages/Guidlines';
 import RegistrationPage from './pages/Registration';
 import GalleryUploadPage from './pages/GalleryUpload';
+import HoliGalleryPage from './pages/HoliGallery';
 import CrewLoginPage from './pages/CrewLogin';
 import CrewDashboardPage from './pages/CrewDashboard';
 import { SchoolRegistrationsPage, UniversityRegistrationsPage } from './pages/RegistrationManagement';
@@ -21,7 +22,6 @@ import './App.css';
 const REGISTRATION_OPEN_TIME = new Date('2026-10-27T00:00:00+05:30').getTime();
 // Registration stays open through the submission deadline on 14 December 2026 (SL Time / UTC+5:30)
 const REGISTRATION_CLOSE_TIME = new Date('2026-12-15T00:00:00+05:30').getTime();
-const SUBMISSION_OPEN_TIME = new Date('2026-11-15T00:00:00+05:30').getTime();
 const MAX_TIMEOUT_DELAY = 2_147_483_647;
 
 const ENFORCE_REGISTRATION_DATES = true;
@@ -62,39 +62,13 @@ const showRegistrationUnavailableAlert = () => {
   }
 };
 
-const showSubmissionPortalAlert = () => {
-  const now = Date.now();
-  const message = now < SUBMISSION_OPEN_TIME
-    ? {
-        title: 'Submission opens soon',
-      text: 'Film submissions open on 15 November 2026.',
-      }
-    : now >= REGISTRATION_CLOSE_TIME
-      ? {
-          title: 'Submission closed',
-          text: 'Film submissions closed on 14 December 2026.',
-        }
-      : {
-          title: 'Submission portal access',
-          text: 'The portal is private. Use the link shared with your verified team through the official CINERO’26 channels.',
-        };
-
-  void Swal.fire({
-    ...message,
-    icon: 'info',
-    confirmButtonText: 'OK',
-    confirmButtonColor: '#d4a642',
-    background: '#171518',
-    color: '#fff',
-  });
-};
-
 type PageName =
   | 'home'
   | 'about'
   | 'guidelines'
   | 'register'
   | 'gallery-upload'
+  | 'holi-gallery'
   | 'crew-login'
   | 'crew-dashboard'
   | 'crew-dashboard-school'
@@ -186,6 +160,10 @@ function App() {
 
     if (path === '/gallery/upload') {
       return 'gallery-upload';
+    }
+
+    if (path === '/holi-gallery') {
+      return 'holi-gallery';
     }
 
     if (path === '/crew/login' || path === '/crew/login/' || hash === '#hr-crew-login' || hash === '#crew-login') {
@@ -352,11 +330,19 @@ function App() {
   };
 
   const handleNavClick = (href: string) => {
+    const currentPath = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
     if (
-      currentPage === 'gallery-upload'
-      && window.location.pathname.toLowerCase().replace(/\/+$/, '') === '/gallery/upload'
+      (currentPage === 'gallery-upload' && currentPath === '/gallery/upload')
+      || (currentPage === 'holi-gallery' && currentPath === '/holi-gallery')
     ) {
       window.history.pushState({}, '', '/');
+    }
+
+    if (href === '/holi-gallery') {
+      setCurrentPage('holi-gallery');
+      window.history.pushState({}, '', href);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
     }
 
     // Crew Login route
@@ -543,10 +529,22 @@ function App() {
     );
   }
 
+  if (currentPage === 'holi-gallery') {
+    return (
+      <>
+        {pageLoader}
+        <Navbar onNavigate={handleNavClick} variant="solid" />
+        <HoliGalleryPage />
+        <Footer onNavigate={handleNavClick} />
+      </>
+    );
+  }
+
   // ── HOME PAGE ──
   return (
     <>
       {pageLoader}
+      <HoliAnnouncementModal />
       <Navbar onNavigate={handleNavClick} />
       <main>
         {/* Hero Section */}
@@ -683,8 +681,6 @@ function App() {
             </div>
           </div>
         </section>
-
-        <SubmissionSection onSubmitClick={showSubmissionPortalAlert} />
 
         {/* Contact Section */}
         <ContactSection />

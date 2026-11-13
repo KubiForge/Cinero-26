@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import Swal from 'sweetalert2';
+import { uploadGalleryPhoto } from '../services/galleryService';
 import './GalleryUpload.css';
 
 const MAX_FILES = 10;
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
-const MAX_BATCH_SIZE = 50 * 1024 * 1024;
+const MAX_FILE_SIZE = 3 * 1024 * 1024;
+const MAX_BATCH_SIZE = 30 * 1024 * 1024;
 const ACCEPTED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif']);
 const ACCEPTED_MIME_TYPES = new Set([
   'image/jpeg',
@@ -54,9 +56,10 @@ function isDuplicateFile(file: File, selected: SelectedPhoto[]): boolean {
 interface PhotoCardProps {
   photo: SelectedPhoto;
   onRemove: (id: number) => void;
+  disabled: boolean;
 }
 
-function PhotoCard({ photo, onRemove }: PhotoCardProps) {
+function PhotoCard({ photo, onRemove, disabled }: PhotoCardProps) {
   const [previewFailed, setPreviewFailed] = useState(false);
 
   return (
@@ -84,6 +87,7 @@ function PhotoCard({ photo, onRemove }: PhotoCardProps) {
           type="button"
           className="gallery-photo__remove"
           onClick={() => onRemove(photo.id)}
+          disabled={disabled}
           aria-label={`Remove ${photo.file.name}`}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -108,6 +112,9 @@ export default function GalleryUploadPage() {
   const [uploadedBy, setUploadedBy] = useState('');
   const [validationMessages, setValidationMessages] = useState<string[]>([]);
   const [uploadMessage, setUploadMessage] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadTotal, setUploadTotal] = useState(0);
 
   useEffect(() => () => {
     photosRef.current.forEach(({ previewUrl }) => URL.revokeObjectURL(previewUrl));
@@ -121,6 +128,7 @@ export default function GalleryUploadPage() {
   };
 
   const addFiles = (fileList: FileList | File[]) => {
+    if (isUploading) return;
     const incomingFiles = Array.from(fileList);
     if (incomingFiles.length === 0) return;
 
@@ -135,7 +143,7 @@ export default function GalleryUploadPage() {
       }
 
       if (file.size > MAX_FILE_SIZE) {
-        messages.push(`${file.name}: the maximum file size is 5 MB.`);
+        messages.push(`${file.name}: the maximum file size is 3 MB.`);
         continue;
       }
 
@@ -150,7 +158,7 @@ export default function GalleryUploadPage() {
       }
 
       if (nextTotalSize + file.size > MAX_BATCH_SIZE) {
-        messages.push('The combined photo size cannot exceed 50 MB.');
+        messages.push('The combined photo size cannot exceed 30 MB.');
         continue;
       }
 
@@ -187,16 +195,83 @@ export default function GalleryUploadPage() {
   const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
     setDragActive(false);
+    if (isUploading) return;
     addFiles(event.dataTransfer.files);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (photos.length === 0) return;
+    const selectedPhotos = [...photosRef.current];
+    if (selectedPhotos.length === 0 || isUploading) return;
 
-    setUploadMessage(
-      'Photo uploads are not connected yet. Your selected photos have not been sent or saved. Please try again when the secure upload service is available.',
-    );
+    setIsUploading(true);
+    setUploadProgress(0);
+    setUploadTotal(selectedPhotos.length);
+    setUploadMessage('');
+    setValidationMessages([]);
+
+    const uploadedPhotoIds = new Set<number>();
+    let firstError = '';
+
+    try {
+      for (const [index, photo] of selectedPhotos.entries()) {
+        setUploadProgress(index + 1);
+        try {
+          await uploadGalleryPhoto(photo.file, uploadedBy.trim());
+          uploadedPhotoIds.add(photo.id);
+        } catch (error) {
+          if (!firstError) {
+            firstError = error instanceof Error ? error.message : 'A photo could not be uploaded.';
+          }
+        }
+      }
+
+      const uploadedPhotos = selectedPhotos.filter((photo) => uploadedPhotoIds.has(photo.id));
+      const remainingPhotos = photosRef.current.filter((photo) => !uploadedPhotoIds.has(photo.id));
+
+      uploadedPhotos.forEach(({ previewUrl }) => URL.revokeObjectURL(previewUrl));
+      if (uploadedPhotos.length > 0) {
+        updatePhotos(remainingPhotos);
+      }
+
+      if (uploadedPhotos.length === selectedPhotos.length) {
+        await Swal.fire({
+          title: 'Photos submitted for review',
+          text: 'Your photos are now under review. Once approved, you can view and download the event photos from the official CINERO\'26 site: https://cinero26.live/holi-gallery',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d4a642',
+          background: '#171518',
+          color: '#fff',
+        });
+      } else if (uploadedPhotos.length > 0) {
+        setUploadMessage(firstError);
+        await Swal.fire({
+          title: 'Some photos were submitted',
+          text: `${uploadedPhotos.length} photo${uploadedPhotos.length === 1 ? '' : 's'} are under review. ${remainingPhotos.length} could not be uploaded and remain selected so you can retry. Approved photos will be available at https://cinero26.live/holi-gallery.`,
+          icon: 'warning',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d4a642',
+          background: '#171518',
+          color: '#fff',
+        });
+      } else {
+        setUploadMessage(firstError || 'Your photos could not be uploaded. Please try again.');
+        await Swal.fire({
+          title: 'Upload could not be completed',
+          text: firstError || 'Your photos could not be uploaded. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#d4a642',
+          background: '#171518',
+          color: '#fff',
+        });
+      }
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+      setUploadTotal(0);
+    }
   };
 
   const scrollToUploader = () => {
@@ -244,8 +319,8 @@ export default function GalleryUploadPage() {
             </svg>
           </span>
           <p>
-            <strong>Uploads are not available yet.</strong> You can select and preview photos here, but a secure storage service
-            has not been connected. Nothing will be uploaded or saved from this page yet.
+            <strong>Photos are reviewed before publishing.</strong> Submitted photos stay private while they are under review.
+            Only approved photos will appear in the official Holi Gallery.
           </p>
         </div>
 
@@ -259,13 +334,14 @@ export default function GalleryUploadPage() {
             multiple
             onChange={handleFileInput}
             aria-describedby="gallery-file-guidance"
+            disabled={isUploading}
           />
           <label
             htmlFor="gallery-photo-input"
             className={`gallery-upload__dropzone${dragActive ? ' is-drag-active' : ''}`}
             onDragEnter={(event) => {
               event.preventDefault();
-              setDragActive(true);
+              if (!isUploading) setDragActive(true);
             }}
             onDragOver={(event) => event.preventDefault()}
             onDragLeave={(event) => {
@@ -285,7 +361,7 @@ export default function GalleryUploadPage() {
             <span className="gallery-upload__drop-subtitle">or browse your device</span>
             <span className="gallery-upload__select-button">SELECT PHOTOS</span>
             <span id="gallery-file-guidance" className="gallery-upload__file-guidance">
-              JPG, PNG, WebP, HEIC or HEIF · Up to 10 photos · 5 MB each
+              JPG, PNG, WebP, HEIC or HEIF · Up to 10 photos · 3 MB each
             </span>
           </label>
 
@@ -307,12 +383,12 @@ export default function GalleryUploadPage() {
                 </div>
                 <div className="gallery-upload__photo-actions">
                   <label className="gallery-upload__add-more" htmlFor="gallery-photo-input">Add more</label>
-                  <button type="button" className="gallery-upload__clear" onClick={clearPhotos}>Clear all</button>
+                  <button type="button" className="gallery-upload__clear" onClick={clearPhotos} disabled={isUploading}>Clear all</button>
                 </div>
               </div>
               <div className="gallery-upload__grid">
                 {photos.map((photo) => (
-                  <PhotoCard key={photo.id} photo={photo} onRemove={removePhoto} />
+                  <PhotoCard key={photo.id} photo={photo} onRemove={removePhoto} disabled={isUploading} />
                 ))}
               </div>
             </section>
@@ -332,13 +408,17 @@ export default function GalleryUploadPage() {
           </div>
 
           <div className="gallery-upload__submit-row">
-            <button type="submit" className="gallery-upload__submit" disabled={photos.length === 0}>
-              <span>SHARE YOUR PHOTOS</span>
+            <button type="submit" className="gallery-upload__submit" disabled={photos.length === 0 || isUploading}>
+              <span>
+                {isUploading ? `UPLOADING ${uploadProgress} OF ${uploadTotal}` : 'SHARE YOUR PHOTOS'}
+              </span>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
                 <path d="M7 17 17 7M7 7h10v10" />
               </svg>
             </button>
-            <span className="gallery-upload__submit-hint">Your selected images stay on this device.</span>
+            <span className="gallery-upload__submit-hint">
+              {isUploading ? 'Please keep this page open while photos upload.' : 'Photos stay private until approved.'}
+            </span>
           </div>
           {uploadMessage && <p className="gallery-upload__upload-message" role="alert">{uploadMessage}</p>}
         </form>
