@@ -1,16 +1,9 @@
-import { callGalleryScript, HOLI_GALLERY_OPEN_TIME } from './_gallery.js';
+import { callGalleryScript } from './_gallery.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ success: false, message: 'Method not allowed.' });
-  }
-
-  if (Date.now() < HOLI_GALLERY_OPEN_TIME) {
-    return res.status(403).json({
-      success: false,
-      message: 'The Holi Gallery opens after the event on 18 November 2026.',
-    });
   }
 
   try {

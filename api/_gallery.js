@@ -1,7 +1,5 @@
 import crypto from 'crypto';
 
-export const HOLI_GALLERY_OPEN_TIME = new Date('2026-11-18T00:00:00+05:30').getTime();
-
 export function getGalleryScriptConfig() {
   const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
   const readToken = process.env.GOOGLE_SHEET_READ_TOKEN;

@@ -16,6 +16,10 @@ function doPost(e) {
     return handleGalleryUpload(requestData);
   }
 
+  if (String(requestData.action || "").toLowerCase() === "galleryreview") {
+    return handleGalleryReview(requestData);
+  }
+
   var registrationOpenTime = new Date("2026-10-27T00:00:00+05:30").getTime();
   var registrationCloseTime = new Date("2026-12-15T00:00:00+05:30").getTime();
   if (Date.now() < registrationOpenTime) {
@@ -320,6 +324,25 @@ function doGet(e) {
   var action = String(params.action || "").toLowerCase();
   var category = String(params.category || "all").toLowerCase();
 
+  if (action === "galleryreviewlist" || action === "galleryreviewphoto") {
+    var reviewToken = PropertiesService.getScriptProperties().getProperty("GALLERY_REVIEW_TOKEN");
+    if (!reviewToken || String(params.reviewToken || "") !== reviewToken) {
+      return jsonResponse({ status: "error", message: "Unauthorized photo review request." });
+    }
+
+    if (action === "galleryreviewphoto") {
+      return jsonResponse(findPendingGalleryPhoto(String(params.photoId || "")) || {
+        status: "error",
+        message: "Photo not found."
+      });
+    }
+
+    return jsonResponse({
+      status: "success",
+      photos: readPendingGalleryPhotos()
+    });
+  }
+
   if (action === "gallery" || action === "galleryphoto") {
     var expectedGalleryReadToken = PropertiesService.getScriptProperties().getProperty("GOOGLE_SHEET_READ_TOKEN");
     var suppliedGalleryReadToken = String(params.readToken || "");
@@ -327,14 +350,6 @@ function doGet(e) {
       return jsonResponse({
         status: "error",
         message: "Unauthorized."
-      });
-    }
-
-    var galleryOpenTime = new Date("2026-11-18T00:00:00+05:30").getTime();
-    if (Date.now() < galleryOpenTime) {
-      return jsonResponse({
-        status: "error",
-        message: "The Holi Gallery opens after the event on 18 November 2026."
       });
     }
 
@@ -546,6 +561,121 @@ function handleGalleryUpload(data) {
   }
 }
 
+function handleGalleryReview(data) {
+  var expectedToken = PropertiesService.getScriptProperties().getProperty("GALLERY_REVIEW_TOKEN");
+  var suppliedToken = String(data.galleryReviewToken || "");
+  if (!expectedToken || !suppliedToken || suppliedToken !== expectedToken) {
+    return jsonResponse({ status: "error", message: "Unauthorized photo review request." });
+  }
+
+  var photoId = String(data.photoId || "");
+  var decision = String(data.decision || "").toLowerCase();
+  var reviewedBy = String(data.reviewedBy || "").replace(/[\r\n\t]/g, " ").trim().slice(0, 100);
+  if (!/^[a-f\d-]{36}$/i.test(photoId) || ["approve", "reject", "delete"].indexOf(decision) === -1) {
+    return jsonResponse({ status: "error", message: "The photo review request is invalid." });
+  }
+
+  var lock = LockService.getScriptLock();
+  var locked = false;
+  var trashedFile = null;
+  var rowNumber = 0;
+  var sheet = null;
+  var statusColumn = -1;
+  var reviewerColumn = -1;
+  var reviewedAtColumn = -1;
+  var previousValues = null;
+  try {
+    lock.waitLock(30000);
+    locked = true;
+
+    sheet = getGalleryPhotosSheet();
+    var values = sheet.getDataRange().getValues();
+    if (values.length < 2) {
+      return jsonResponse({ status: "error", message: "Photo not found." });
+    }
+
+    var column = {};
+    values[0].forEach(function (header, index) {
+      column[String(header || "").trim()] = index;
+    });
+    if (
+      column.Photo_ID === undefined ||
+      column.Drive_File_ID === undefined ||
+      column.Status === undefined ||
+      column.Reviewed_By === undefined ||
+      column.Reviewed_At === undefined
+    ) {
+      throw new Error("The gallery photo sheet is missing required review columns.");
+    }
+
+    for (var index = values.length - 1; index > 0; index--) {
+      if (String(values[index][column.Photo_ID] || "") === photoId) {
+        rowNumber = index + 1;
+        if (String(values[index][column.Status] || "").trim().toUpperCase() !== "PENDING") {
+          return jsonResponse({ status: "error", message: "This photo has already been reviewed." });
+        }
+        break;
+      }
+    }
+    if (!rowNumber) return jsonResponse({ status: "error", message: "Photo not found." });
+
+    statusColumn = column.Status;
+    reviewerColumn = column.Reviewed_By;
+    reviewedAtColumn = column.Reviewed_At;
+    previousValues = [
+      values[rowNumber - 1][statusColumn],
+      values[rowNumber - 1][reviewerColumn],
+      values[rowNumber - 1][reviewedAtColumn]
+    ];
+
+    var nextStatus = decision === "approve" ? "APPROVED" : decision === "reject" ? "REJECTED" : "DELETED";
+    if (decision === "delete") {
+      var fileId = String(values[rowNumber - 1][column.Drive_File_ID] || "");
+      if (!fileId) throw new Error("The photo does not have a Drive file.");
+      trashedFile = DriveApp.getFileById(fileId);
+      trashedFile.setTrashed(true);
+    }
+
+    try {
+      sheet.getRange(rowNumber, statusColumn + 1).setValue(nextStatus);
+      sheet.getRange(rowNumber, reviewerColumn + 1).setValue(reviewedBy);
+      sheet.getRange(rowNumber, reviewedAtColumn + 1).setValue(new Date());
+      SpreadsheetApp.flush();
+    } catch (sheetError) {
+      try {
+        sheet.getRange(rowNumber, statusColumn + 1).setValue(previousValues[0]);
+        sheet.getRange(rowNumber, reviewerColumn + 1).setValue(previousValues[1]);
+        sheet.getRange(rowNumber, reviewedAtColumn + 1).setValue(previousValues[2]);
+        SpreadsheetApp.flush();
+      } catch (rollbackError) {
+        Logger.log("Unable to roll back failed gallery review: " + rollbackError.message);
+      }
+      if (trashedFile) {
+        try {
+          trashedFile.setTrashed(false);
+        } catch (restoreError) {
+          Logger.log("Unable to restore photo after failed deletion: " + restoreError.message);
+        }
+      }
+      throw sheetError;
+    }
+
+    return jsonResponse({
+      status: "success",
+      photoId: photoId,
+      reviewStatus: nextStatus
+    });
+  } catch (error) {
+    Logger.log("Gallery review error: " + error.message);
+    return jsonResponse({
+      status: "error",
+      message: "The photo could not be updated. Please try again."
+    });
+  } finally {
+    if (locked) lock.releaseLock();
+  }
+}
+
 function getGalleryUploadFolder(readerEmail) {
   var properties = PropertiesService.getScriptProperties();
   var folderId = properties.getProperty("GALLERY_DRIVE_FOLDER_ID");
@@ -589,6 +719,69 @@ function getGalleryPhotosSheet() {
 function initializeGalleryPhotosSheet() {
   getGalleryPhotosSheet();
   Logger.log("Gallery_Photos sheet is ready for pending photo uploads.");
+}
+
+function readPendingGalleryPhotos() {
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(GALLERY_PHOTOS_SHEET);
+  if (!sheet || sheet.getLastRow() < 2) return [];
+
+  var values = sheet.getDataRange().getValues();
+  var column = {};
+  values[0].forEach(function (header, index) {
+    column[String(header || "").trim()] = index;
+  });
+
+  return values.slice(1)
+    .filter(function (row) {
+      return String(row[column.Status] || "").trim().toUpperCase() === "PENDING";
+    })
+    .map(function (row) {
+      return {
+        photoId: String(row[column.Photo_ID] || ""),
+        fileName: String(row[column.File_Name] || "CINERO26-photo"),
+        mimeType: String(row[column.Mime_Type] || "image/jpeg"),
+        uploadedBy: String(row[column.Uploaded_By] || ""),
+        uploadedAt: row[column.Uploaded_At] instanceof Date
+          ? row[column.Uploaded_At].toISOString()
+          : String(row[column.Uploaded_At] || "")
+      };
+    })
+    .filter(function (photo) {
+      return Boolean(photo.photoId);
+    })
+    .reverse();
+}
+
+function findPendingGalleryPhoto(photoId) {
+  if (!photoId) return null;
+
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(GALLERY_PHOTOS_SHEET);
+  if (!sheet || sheet.getLastRow() < 2) return null;
+
+  var values = sheet.getDataRange().getValues();
+  var column = {};
+  values[0].forEach(function (header, index) {
+    column[String(header || "").trim()] = index;
+  });
+
+  for (var index = values.length - 1; index > 0; index--) {
+    var row = values[index];
+    if (
+      String(row[column.Photo_ID] || "") === photoId &&
+      String(row[column.Status] || "").trim().toUpperCase() === "PENDING" &&
+      String(row[column.Drive_File_ID] || "")
+    ) {
+      return {
+        status: "success",
+        reviewStatus: "PENDING",
+        photoId: photoId,
+        driveFileId: String(row[column.Drive_File_ID]),
+        mimeType: String(row[column.Mime_Type] || "image/jpeg")
+      };
+    }
+  }
+
+  return null;
 }
 
 function readApprovedGalleryPhotos() {

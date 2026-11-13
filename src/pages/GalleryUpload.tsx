@@ -319,8 +319,12 @@ export default function GalleryUploadPage() {
             </svg>
           </span>
           <p>
-            <strong>Photos are reviewed before publishing.</strong> Submitted photos stay private while they are under review.
-            Only approved photos will appear in the official Holi Gallery.
+            <strong>After review, view and download approved photos on the official CINERO&apos;26 website.</strong>{' '}
+            Your submissions stay private until approved. Visit{' '}
+            <a href="https://cinero26.live/holi-gallery" target="_blank" rel="noreferrer">
+              cinero26.live/holi-gallery
+            </a>
+            .
           </p>
         </div>
 

@@ -1,0 +1,311 @@
+.crew-gallery-review {
+  position: relative;
+  min-height: 100vh;
+  color: #f5efe3;
+  font-family: var(--font-body, 'Outfit', sans-serif);
+  background:
+    linear-gradient(180deg, rgba(10, 9, 13, 0.8), rgba(10, 9, 13, 0.9)),
+    url('/images/hero-bg-1600.webp') center / cover fixed no-repeat;
+}
+
+.crew-gallery-review__header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  min-height: 76px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px clamp(16px, 4vw, 52px);
+  border-bottom: 1px solid rgba(213, 164, 62, 0.18);
+  background: rgba(15, 13, 16, 0.94);
+  backdrop-filter: blur(14px);
+}
+
+.crew-gallery-review__brand,
+.crew-gallery-review__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.crew-gallery-review__logo {
+  display: block;
+  width: 110px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.crew-gallery-review__brand > span,
+.crew-gallery-review__kicker {
+  color: #e0b457;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.crew-gallery-review__header-button,
+.crew-gallery-review__refresh {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid rgba(213, 164, 62, 0.28);
+  border-radius: 999px;
+  background: rgba(28, 24, 27, 0.9);
+  color: #f5efe3;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.crew-gallery-review__header-button:hover,
+.crew-gallery-review__refresh:hover:not(:disabled) {
+  border-color: rgba(213, 164, 62, 0.65);
+}
+
+.crew-gallery-review__main {
+  width: min(1200px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 54px 0 72px;
+}
+
+.crew-gallery-review__intro {
+  margin-bottom: 36px;
+}
+
+.crew-gallery-review__intro h1 {
+  margin: 9px 0 0;
+  color: #fff1d1;
+  font-family: var(--font-display, 'Cinzel', serif);
+  font-size: clamp(2rem, 5vw, 3.3rem);
+}
+
+.crew-gallery-review__intro p,
+.crew-gallery-review__queue-heading p {
+  color: rgba(229, 220, 206, 0.76);
+  line-height: 1.6;
+}
+
+.crew-gallery-review__queue-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.crew-gallery-review__queue-heading h2 {
+  margin: 0;
+  color: #f7e6b0;
+  font-family: var(--font-display, 'Cinzel', serif);
+}
+
+.crew-gallery-review__queue-heading p {
+  margin: 5px 0 0;
+  font-size: 13px;
+}
+
+.crew-gallery-review__refresh:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.crew-gallery-review__alert,
+.crew-gallery-review__status {
+  margin: 12px 0;
+  padding: 13px 16px;
+  border: 1px solid rgba(213, 164, 62, 0.3);
+  border-radius: 10px;
+  line-height: 1.5;
+}
+
+.crew-gallery-review__alert {
+  border-color: rgba(197, 65, 58, 0.5);
+  background: rgba(197, 65, 58, 0.1);
+  color: #ffb4a9;
+}
+
+.crew-gallery-review__status {
+  background: rgba(85, 180, 125, 0.1);
+  color: #a4d9b7;
+}
+
+.crew-gallery-review__empty {
+  display: grid;
+  min-height: 240px;
+  place-content: center;
+  justify-items: center;
+  padding: 28px;
+  border: 1px solid rgba(213, 164, 62, 0.18);
+  border-radius: 16px;
+  background: rgba(20, 17, 20, 0.86);
+  text-align: center;
+}
+
+.crew-gallery-review__empty > svg {
+  color: #e0b457;
+  font-size: 30px;
+}
+
+.crew-gallery-review__empty h2 {
+  margin: 14px 0 0;
+  color: #f7e6b0;
+  font-family: var(--font-display, 'Cinzel', serif);
+}
+
+.crew-gallery-review__empty p {
+  margin: 8px 0 0;
+  color: rgba(229, 220, 206, 0.7);
+}
+
+.crew-gallery-review__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  gap: 20px;
+}
+
+.crew-gallery-review__card {
+  overflow: hidden;
+  border: 1px solid rgba(213, 164, 62, 0.2);
+  border-radius: 15px;
+  background: rgba(20, 17, 20, 0.94);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.24);
+}
+
+.crew-gallery-review__photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  background: #100e11;
+}
+
+.crew-gallery-review__details {
+  padding: 16px;
+}
+
+.crew-gallery-review__details h3 {
+  overflow: hidden;
+  margin: 0 0 10px;
+  color: #fff1d1;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.crew-gallery-review__details p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 5px 0;
+  color: rgba(229, 220, 206, 0.68);
+  font-size: 12px;
+}
+
+.crew-gallery-review__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.crew-gallery-review__action {
+  display: inline-flex;
+  min-height: 39px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.crew-gallery-review__action:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.crew-gallery-review__action--approve {
+  flex: 1;
+  background: #236942;
+}
+
+.crew-gallery-review__action--approve:hover:not(:disabled) {
+  background: #2b8151;
+}
+
+.crew-gallery-review__action--reject {
+  flex: 1;
+  background: #75412f;
+}
+
+.crew-gallery-review__action--reject:hover:not(:disabled) {
+  background: #92533a;
+}
+
+.crew-gallery-review__action--delete {
+  width: 40px;
+  border-color: rgba(197, 65, 58, 0.36);
+  background: rgba(197, 65, 58, 0.12);
+  color: #ffb4a9;
+}
+
+.crew-gallery-review__action--delete:hover:not(:disabled) {
+  background: rgba(197, 65, 58, 0.28);
+}
+
+.crew-gallery-review__header-button:focus-visible,
+.crew-gallery-review__refresh:focus-visible,
+.crew-gallery-review__action:focus-visible {
+  outline: 2px solid #f3d37e;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .crew-gallery-review__header {
+    min-height: 64px;
+    padding: 8px 12px;
+  }
+
+  .crew-gallery-review__brand {
+    gap: 7px;
+  }
+
+  .crew-gallery-review__logo {
+    width: 80px;
+    height: 36px;
+  }
+
+  .crew-gallery-review__brand > span {
+    font-size: 8px;
+  }
+
+  .crew-gallery-review__header-actions {
+    gap: 6px;
+  }
+
+  .crew-gallery-review__header-button {
+    min-height: 36px;
+    gap: 5px;
+    padding: 0 9px;
+    font-size: 10px;
+  }
+
+  .crew-gallery-review__main {
+    width: min(100% - 24px, 1200px);
+    padding: 38px 0 52px;
+  }
+
+  .crew-gallery-review__queue-heading {
+    align-items: flex-end;
+  }
+}

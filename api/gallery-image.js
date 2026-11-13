@@ -1,14 +1,10 @@
 import { Readable } from 'node:stream';
-import { callGalleryScript, getDriveAccessToken, HOLI_GALLERY_OPEN_TIME } from './_gallery.js';
+import { callGalleryScript, getDriveAccessToken } from './_gallery.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).end('Method not allowed.');
-  }
-
-  if (Date.now() < HOLI_GALLERY_OPEN_TIME) {
-    return res.status(404).end('Not found.');
   }
 
   const photoId = typeof req.query?.photoId === 'string'

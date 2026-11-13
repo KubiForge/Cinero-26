@@ -199,6 +199,18 @@
   color: #f0d99c;
 }
 
+.gallery-upload__notice a {
+  color: #edc66c;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.gallery-upload__notice a:hover,
+.gallery-upload__notice a:focus-visible {
+  color: #fff0c2;
+}
+
 .gallery-upload__card {
   padding: clamp(18px, 4vw, 36px);
   border: 1px solid rgba(213, 164, 62, 0.2);

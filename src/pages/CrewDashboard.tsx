@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   FiChevronRight,
   FiFolder,
+  FiImage,
   FiLogOut,
   FiShield,
   FiUsers,
@@ -14,6 +15,7 @@ type DashboardView = 'all' | 'school' | 'university';
 type CrewDashboardProps = {
   onLogout: () => void;
   onOpenRegistrations?: (category: 'school' | 'university') => void;
+  onOpenGalleryReview?: () => void;
   view?: DashboardView;
 };
 
@@ -63,7 +65,12 @@ const buildDashboardConfig = (view: DashboardView): DashboardConfig => {
   };
 };
 
-export const CrewDashboardPage: React.FC<CrewDashboardProps> = ({ onLogout, onOpenRegistrations, view = 'all' }) => {
+export const CrewDashboardPage: React.FC<CrewDashboardProps> = ({
+  onLogout,
+  onOpenRegistrations,
+  onOpenGalleryReview,
+  view = 'all',
+}) => {
   const [summary, setSummary] = useState<SummaryState>({ records: [], total: 0, school: 0, university: 0 });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -198,7 +205,7 @@ export const CrewDashboardPage: React.FC<CrewDashboardProps> = ({ onLogout, onOp
           ))}
         </section>
 
-        <section className="crew-dashboard__registration-cards" aria-label="Registration categories">
+        <section className="crew-dashboard__registration-cards" aria-label="Dashboard tools">
           <button
             type="button"
             className="crew-dashboard__registration-card crew-dashboard__registration-card--school"
@@ -231,6 +238,23 @@ export const CrewDashboardPage: React.FC<CrewDashboardProps> = ({ onLogout, onOp
             </span>
             <span className="crew-dashboard__registration-card-action">
               View registrations <FiChevronRight aria-hidden="true" />
+            </span>
+          </button>
+          <button
+            type="button"
+            className="crew-dashboard__registration-card"
+            onClick={onOpenGalleryReview}
+          >
+            <span className="crew-dashboard__registration-card-icon" aria-hidden="true"><FiImage /></span>
+            <span className="crew-dashboard__registration-card-copy">
+              <span className="crew-dashboard__registration-card-kicker">HOLI FEST</span>
+              <strong>Gallery photo review</strong>
+              <span className="crew-dashboard__registration-card-count">
+                Approve, reject, or delete photo submissions
+              </span>
+            </span>
+            <span className="crew-dashboard__registration-card-action">
+              Review photos <FiChevronRight aria-hidden="true" />
             </span>
           </button>
         </section>

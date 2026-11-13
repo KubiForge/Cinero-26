@@ -13,6 +13,7 @@ import GalleryUploadPage from './pages/GalleryUpload';
 import HoliGalleryPage from './pages/HoliGallery';
 import CrewLoginPage from './pages/CrewLogin';
 import CrewDashboardPage from './pages/CrewDashboard';
+import CrewGalleryReviewPage from './pages/CrewGalleryReview';
 import { SchoolRegistrationsPage, UniversityRegistrationsPage } from './pages/RegistrationManagement';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -73,6 +74,7 @@ type PageName =
   | 'crew-dashboard'
   | 'crew-dashboard-school'
   | 'crew-dashboard-university'
+  | 'crew-gallery-review'
   | 'crew-school-registrations'
   | 'crew-university-registrations';
 
@@ -182,6 +184,10 @@ function App() {
       return 'crew-dashboard';
     }
 
+    if (path === '/crew/gallery-review') {
+      return 'crew-gallery-review';
+    }
+
     if ((path === '/crew/registrations/school' || path === '/crew/registrations/school/') || hash === '#crew-school-registrations') {
       return 'crew-school-registrations';
     }
@@ -272,6 +278,7 @@ function App() {
         nextPage === 'crew-dashboard'
         || nextPage === 'crew-dashboard-school'
         || nextPage === 'crew-dashboard-university'
+        || nextPage === 'crew-gallery-review'
         || nextPage === 'crew-school-registrations'
         || nextPage === 'crew-university-registrations'
       ) {
@@ -325,6 +332,13 @@ function App() {
     const nextPage = category === 'school' ? 'crew-school-registrations' : 'crew-university-registrations';
     setCurrentPage(nextPage);
     window.history.pushState({}, '', category === 'school' ? '/crew/registrations/school' : '/crew/registrations/university');
+    window.dispatchEvent(new PopStateEvent('popstate'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenGalleryReview = () => {
+    setCurrentPage('crew-gallery-review');
+    window.history.pushState({}, '', '/crew/gallery-review');
     window.dispatchEvent(new PopStateEvent('popstate'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -440,7 +454,25 @@ function App() {
         <CrewDashboardPage
           onLogout={handleLogout}
           onOpenRegistrations={handleOpenRegistrations}
+          onOpenGalleryReview={handleOpenGalleryReview}
           view={currentPage === 'crew-dashboard-school' ? 'school' : currentPage === 'crew-dashboard-university' ? 'university' : 'all'}
+        />
+      </>
+    );
+  }
+
+  if (currentPage === 'crew-gallery-review') {
+    return (
+      <>
+        {pageLoader}
+        <CrewGalleryReviewPage
+          onLogout={handleLogout}
+          onBack={() => {
+            setCurrentPage('crew-dashboard');
+            window.history.pushState({}, '', '/crew/dashboard');
+            window.dispatchEvent(new PopStateEvent('popstate'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
         />
       </>
     );
