@@ -42,30 +42,42 @@ export async function callGalleryScript(action, params = {}, body) {
   return result;
 }
 
+
+
 export async function getDriveAccessToken() {
   const email = process.env.GOOGLE_DRIVE_SERVICE_ACCOUNT_EMAIL;
-  const privateKey = process.env.GOOGLE_DRIVE_SERVICE_ACCOUNT_PRIVATE_KEY?.replace(/\\n/g, '\n');
+  const privateKey = process.env.GOOGLE_DRIVE_SERVICE_ACCOUNT_PRIVATE_KEY
+    ?.replace(/\\n/g, '\n');
 
   if (!email || !privateKey) {
     throw new Error('Google Drive gallery access is not configured.');
   }
 
-  const base64Url = (value) => Buffer.from(value)
-    .toString('base64')
-    .replace(/=/g, '')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_');
+  const base64Url = (value) =>
+    Buffer.from(value)
+      .toString('base64')
+      .replace(/=/g, '')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_');
 
   const now = Math.floor(Date.now() / 1000);
-  const header = base64Url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
-  const claims = base64Url(JSON.stringify({
-    iss: email,
-    scope: 'https://www.googleapis.com/auth/drive.readonly',
-    aud: 'https://oauth2.googleapis.com/token',
-    iat: now,
-    exp: now + 3600,
-  }));
+
+  const header = base64Url(
+    JSON.stringify({ alg: 'RS256', typ: 'JWT' })
+  );
+
+  const claims = base64Url(
+    JSON.stringify({
+      iss: email,
+      scope: 'https://www.googleapis.com/auth/drive.readonly',
+      aud: 'https://oauth2.googleapis.com/token',
+      iat: now,
+      exp: now + 3600,
+    })
+  );
+
   const unsignedAssertion = `${header}.${claims}`;
+
   const signature = crypto
     .sign('RSA-SHA256', Buffer.from(unsignedAssertion), privateKey)
     .toString('base64')
@@ -73,19 +85,32 @@ export async function getDriveAccessToken() {
     .replace(/\+/g, '-')
     .replace(/\//g, '_');
 
-  const response = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-      assertion: `${unsignedAssertion}.${signature}`,
-    }),
-  });
+  const response = await fetch(
+    'https://oauth2.googleapis.com/token',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        assertion: `${unsignedAssertion}.${signature}`,
+      }),
+    }
+  );
 
   const result = await response.json();
+
   if (!response.ok || typeof result?.access_token !== 'string') {
+    console.error('[gallery-auth] Google OAuth failed:', {
+      status: response.status,
+      error: result?.error,
+      description: result?.error_description,
+    });
+
     throw new Error('Unable to authorize the gallery image service with Google Drive.');
   }
 
   return result.access_token;
 }
+
