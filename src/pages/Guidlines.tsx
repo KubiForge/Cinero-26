@@ -189,7 +189,7 @@ export const GuidlinesPage: React.FC<GuidlinesPageProps> = ({
       subtitle: '2. INTER-UNIVERSITY CATEGORY GUIDELINES — Rules Specifically for University Undergraduates',
       items: [
         'Films must be created on or after 1 January 2026.',
-        'The film must have a running time of 5–15 minutes, including opening and closing credits.',
+        'The film must have a running time of 2–15 minutes, including opening and closing credits.',
         'The topic is open, but pornography, nudity, explicit violence, harmful content, and personal insults are prohibited.',
         'Films must be in Sinhala, Tamil, or English.',
         'Embedded English subtitles are compulsory.',
