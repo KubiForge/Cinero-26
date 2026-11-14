@@ -82,6 +82,52 @@
   text-wrap: pretty;
 }
 
+.gallery-upload__gallery-promo {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0 auto 17px;
+  padding: 12px 21px;
+  border: 1px solid rgba(238, 199, 110, 0.62);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(213, 164, 62, 0.2), rgba(32, 25, 19, 0.78));
+  box-shadow: 0 0 30px rgba(213, 164, 62, 0.16), inset 0 0 22px rgba(213, 164, 62, 0.05);
+  color: #f7e5b5;
+  text-decoration: none;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.gallery-upload__gallery-promo > span {
+  color: #e5c779;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+}
+
+.gallery-upload__gallery-promo strong {
+  color: #fffaf0;
+  font-family: var(--font-display, 'Cinzel', Georgia, serif);
+  font-size: clamp(0.95rem, 2.4vw, 1.2rem);
+  font-weight: 700;
+  letter-spacing: 0.035em;
+  line-height: 1.4;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.42);
+}
+
+.gallery-upload__gallery-promo em {
+  color: #f0cc71;
+  font-style: normal;
+  white-space: nowrap;
+}
+
+.gallery-upload__gallery-promo:hover {
+  transform: translateY(-2px);
+  border-color: #f0cc71;
+  box-shadow: 0 0 36px rgba(213, 164, 62, 0.25), inset 0 0 22px rgba(213, 164, 62, 0.08);
+}
+
 .gallery-upload__scroll-button,
 .gallery-upload__submit {
   display: inline-flex;
@@ -635,9 +681,24 @@
 
   .gallery-upload__intro {
     max-width: 390px;
-    margin: 17px auto 22px;
+    margin: 17px auto 18px;
     font-size: 14px;
     line-height: 1.65;
+  }
+
+  .gallery-upload__gallery-promo {
+    gap: 6px;
+    margin-bottom: 15px;
+    padding: 11px 15px;
+  }
+
+  .gallery-upload__gallery-promo > span {
+    font-size: 8px;
+    letter-spacing: 0.16em;
+  }
+
+  .gallery-upload__gallery-promo strong {
+    font-size: clamp(0.9rem, 4vw, 1.08rem);
   }
 
   .gallery-upload__scroll-button {
@@ -898,6 +959,73 @@
   }
 
   .gallery-upload__size-alert-confirm {
+    width: 100%;
+    margin: 0 !important;
+  }
+}
+
+.swal2-popup.gallery-upload__review-alert {
+  width: min(28rem, calc(100vw - 2rem)) !important;
+  padding: clamp(1.5rem, 5vw, 2.1rem) !important;
+  border: 1px solid rgba(213, 164, 62, 0.34) !important;
+  border-radius: 1.25rem !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(213, 164, 62, 0.14), transparent 58%),
+    #171518 !important;
+  box-shadow: 0 24px 72px rgba(0, 0, 0, 0.48) !important;
+  font-family: var(--font-body, 'Outfit', sans-serif) !important;
+}
+
+.gallery-upload__review-alert-title {
+  color: #fffaf0 !important;
+  font-family: var(--font-display, 'Cinzel', Georgia, serif) !important;
+  font-size: clamp(1.2rem, 4vw, 1.5rem) !important;
+}
+
+.gallery-upload__review-alert-content {
+  display: grid;
+  gap: 12px;
+  color: #ded3c7 !important;
+  font-family: var(--font-body, 'Outfit', sans-serif) !important;
+  font-size: 0.95rem !important;
+  line-height: 1.6 !important;
+}
+
+.gallery-upload__review-alert-copy {
+  margin: 0;
+}
+
+.gallery-upload__review-alert-link {
+  justify-self: center;
+  color: #edc66c;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.gallery-upload__review-alert-link:hover,
+.gallery-upload__review-alert-link:focus-visible {
+  color: #fff0c2;
+}
+
+.gallery-upload__review-alert-confirm {
+  min-height: 2.8rem;
+  padding: 0.7rem 1.5rem !important;
+  border: 0 !important;
+  border-radius: 9999px !important;
+  background: linear-gradient(135deg, #edc66c, #d5a43e 55%, #b8872e) !important;
+  color: #17130b !important;
+  font-family: var(--font-body, 'Outfit', sans-serif) !important;
+  font-weight: 700 !important;
+}
+
+@media (max-width: 480px) {
+  .swal2-popup.gallery-upload__review-alert {
+    width: calc(100vw - 1.5rem) !important;
+    padding: 1.5rem 1.1rem !important;
+  }
+
+  .gallery-upload__review-alert-confirm {
     width: 100%;
     margin: 0 !important;
   }

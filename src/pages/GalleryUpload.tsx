@@ -53,6 +53,32 @@ function isDuplicateFile(file: File, selected: SelectedPhoto[]): boolean {
   ));
 }
 
+function showPhotosReviewAlert(icon: 'success' | 'warning') {
+  return Swal.fire({
+    title: 'Photos are under review',
+    html: `
+      <p class="gallery-upload__review-alert-copy">
+        Approved photos will be available on the official CINERO&apos;26 website.
+      </p>
+      <a class="gallery-upload__review-alert-link" href="https://cinero26.live/holi-gallery" target="_blank" rel="noreferrer">
+        Visit the official gallery
+      </a>
+    `,
+    icon,
+    iconColor: '#d5a43e',
+    confirmButtonText: 'OK',
+    confirmButtonColor: '#d4a642',
+    background: '#171518',
+    color: '#fff',
+    customClass: {
+      popup: 'gallery-upload__review-alert',
+      title: 'gallery-upload__review-alert-title',
+      htmlContainer: 'gallery-upload__review-alert-content',
+      confirmButton: 'gallery-upload__review-alert-confirm',
+    },
+  });
+}
+
 interface PhotoCardProps {
   photo: SelectedPhoto;
   onRemove: (id: number) => void;
@@ -263,26 +289,10 @@ export default function GalleryUploadPage() {
       }
 
       if (uploadedPhotos.length === selectedPhotos.length) {
-        await Swal.fire({
-          title: 'Photos submitted for review',
-          text: 'Your photos are now under review. Once approved, you can view and download the event photos from the official CINERO\'26 site: https://cinero26.live/holi-gallery',
-          icon: 'success',
-          confirmButtonText: 'OK',
-          confirmButtonColor: '#d4a642',
-          background: '#171518',
-          color: '#fff',
-        });
+        await showPhotosReviewAlert('success');
       } else if (uploadedPhotos.length > 0) {
         setUploadMessage(firstError);
-        await Swal.fire({
-          title: 'Some photos were submitted',
-          text: `${uploadedPhotos.length} photo${uploadedPhotos.length === 1 ? '' : 's'} are under review. ${remainingPhotos.length} could not be uploaded and remain selected so you can retry. Approved photos will be available at https://cinero26.live/holi-gallery.`,
-          icon: 'warning',
-          confirmButtonText: 'OK',
-          confirmButtonColor: '#d4a642',
-          background: '#171518',
-          color: '#fff',
-        });
+        await showPhotosReviewAlert('warning');
       } else {
         setUploadMessage(firstError || 'Your photos could not be uploaded. Please try again.');
         await Swal.fire({
@@ -320,6 +330,15 @@ export default function GalleryUploadPage() {
           <p className="gallery-upload__intro">
             Be part of the CINERO&apos;26 memories. Share your photographs and let us celebrate every moment together.
           </p>
+          <a
+            className="gallery-upload__gallery-promo"
+            href="https://cinero26.live/holi-gallery"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span>ALREADY SHARED YOUR PHOTOS?</span>
+            <strong>VIEW APPROVED PHOTOS AT <em>CINERO26.LIVE</em></strong>
+          </a>
           <button type="button" className="gallery-upload__scroll-button" onClick={scrollToUploader}>
             <span>SHARE YOUR PHOTOS</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
