@@ -4,7 +4,7 @@ import { uploadGalleryPhoto } from '../services/galleryService';
 import './GalleryUpload.css';
 
 const MAX_FILES = 10;
-const MAX_FILE_SIZE = 3 * 1024 * 1024;
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const MAX_BATCH_SIZE = 30 * 1024 * 1024;
 const ACCEPTED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'heic', 'heif']);
 const ACCEPTED_MIME_TYPES = new Set([
@@ -135,6 +135,7 @@ export default function GalleryUploadPage() {
     const nextPhotos = [...photosRef.current];
     const messages: string[] = [];
     let nextTotalSize = nextPhotos.reduce((total, photo) => total + photo.file.size, 0);
+    let hasOversizedPhoto = false;
 
     for (const file of incomingFiles) {
       if (!isSupportedImage(file)) {
@@ -143,7 +144,8 @@ export default function GalleryUploadPage() {
       }
 
       if (file.size > MAX_FILE_SIZE) {
-        messages.push(`${file.name}: the maximum file size is 3 MB.`);
+        messages.push(`${file.name}: the maximum file size is 5 MB.`);
+        hasOversizedPhoto = true;
         continue;
       }
 
@@ -172,6 +174,32 @@ export default function GalleryUploadPage() {
 
     updatePhotos(nextPhotos);
     setValidationMessages(messages);
+    if (hasOversizedPhoto) {
+      void Swal.fire({
+        icon: 'warning',
+        iconColor: '#f0ad4e',
+        title: 'Image Too Large',
+        html: `
+          <p class="gallery-upload__size-alert-description">
+            Images larger than 5 MB cannot be added. Please choose an image that is 5 MB or smaller.
+          </p>
+          <div class="gallery-upload__size-alert-limit">
+            <span>Maximum per image:</span>
+            <strong>5 MB</strong>
+          </div>
+        `,
+        confirmButtonText: 'Choose Another Image',
+        confirmButtonColor: '#d5a43e',
+        background: '#171518',
+        color: '#fff',
+        customClass: {
+          popup: 'gallery-upload__size-alert',
+          title: 'gallery-upload__size-alert-title',
+          htmlContainer: 'gallery-upload__size-alert-content',
+          confirmButton: 'gallery-upload__size-alert-confirm',
+        },
+      });
+    }
   };
 
   const removePhoto = (id: number) => {
@@ -365,7 +393,7 @@ export default function GalleryUploadPage() {
             <span className="gallery-upload__drop-subtitle">or browse your device</span>
             <span className="gallery-upload__select-button">SELECT PHOTOS</span>
             <span id="gallery-file-guidance" className="gallery-upload__file-guidance">
-              JPG, PNG, WebP, HEIC or HEIF · Up to 10 photos · 3 MB each
+              JPG, PNG, WebP, HEIC or HEIF · Up to 10 photos · 5 MB each
             </span>
           </label>
 

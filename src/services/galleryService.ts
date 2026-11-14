@@ -18,28 +18,28 @@ interface UploadResponse {
   reviewStatus?: string;
 }
 
-function readFileAsBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = () => reject(new Error(`Could not read ${file.name}.`));
-    reader.onload = () => {
-      const dataUrl = typeof reader.result === 'string' ? reader.result : '';
-      const separatorIndex = dataUrl.indexOf(',');
-      if (separatorIndex === -1) {
-        reject(new Error(`Could not prepare ${file.name} for upload.`));
-        return;
-      }
+interface UploadSessionResponse {
+  success?: boolean;
+  message?: string;
+  uploadUrl?: string;
+}
 
-      resolve(dataUrl.slice(separatorIndex + 1));
-    };
-    reader.readAsDataURL(file);
-  });
+interface DriveChunkResponse {
+  success?: boolean;
+  message?: string;
+  complete?: boolean;
+  nextByte?: number;
+  fileId?: string;
 }
 
 export async function uploadGalleryPhoto(file: File, uploadedBy: string): Promise<void> {
-  const base64 = await readFileAsBase64(file);
+  const maxFileSize = 5 * 1024 * 1024;
+  if (file.size > maxFileSize) {
+    throw new Error('Each photo must be smaller than or equal to 5 MB.');
+  }
+
   const extension = file.name.split('.').pop()?.toLowerCase();
-  const mimeType = file.type || ({
+  const resolvedMimeType = file.type || ({
     jpg: 'image/jpeg',
     jpeg: 'image/jpeg',
     png: 'image/png',
@@ -47,13 +47,80 @@ export async function uploadGalleryPhoto(file: File, uploadedBy: string): Promis
     heic: 'image/heic',
     heif: 'image/heif',
   }[extension ?? ''] ?? '');
+  const mimeType = resolvedMimeType === 'image/heic-sequence'
+    ? 'image/heic'
+    : resolvedMimeType === 'image/heif-sequence'
+      ? 'image/heif'
+      : resolvedMimeType;
+
+  const fileUploadToken = crypto.randomUUID();
+  const sessionResponse = await fetch('/api/gallery-upload-session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      fileName: file.name,
+      mimeType,
+      fileSize: file.size,
+      uploadedBy,
+      fileUploadToken,
+    }),
+  });
+  const sessionResult = await sessionResponse.json().catch(() => null) as UploadSessionResponse | null;
+  if (!sessionResponse.ok || sessionResult?.success !== true || !sessionResult.uploadUrl) {
+    throw new Error(sessionResult?.message || `${file.name} could not be uploaded.`);
+  }
+
+  const chunkSize = 4 * 1024 * 1024;
+  let nextByte = 0;
+  let driveFileId = '';
+  while (nextByte < file.size) {
+    const startByte = nextByte;
+    const endByte = Math.min(startByte + chunkSize, file.size) - 1;
+    const chunkResponse = await fetch('/api/registration-upload-chunk', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/octet-stream',
+        'X-Drive-Upload-Url': sessionResult.uploadUrl,
+        'X-Drive-Content-Type': mimeType,
+        'X-Drive-Content-Range': `bytes ${startByte}-${endByte}/${file.size}`,
+      },
+      body: file.slice(startByte, endByte + 1),
+    });
+    const chunkResult = await chunkResponse.json().catch(() => null) as DriveChunkResponse | null;
+    if (!chunkResponse.ok || chunkResult?.success !== true) {
+      throw new Error(chunkResult?.message || `${file.name} could not be uploaded.`);
+    }
+
+    if (chunkResult.complete) {
+      if (!chunkResult.fileId) {
+        throw new Error(`Google Drive could not confirm ${file.name}.`);
+      }
+      driveFileId = chunkResult.fileId;
+      break;
+    }
+
+    if (
+      typeof chunkResult.nextByte !== 'number'
+      || chunkResult.nextByte <= startByte
+      || chunkResult.nextByte > endByte + 1
+    ) {
+      throw new Error(`Google Drive could not confirm the upload progress for ${file.name}.`);
+    }
+    nextByte = chunkResult.nextByte;
+  }
+
+  if (!driveFileId) {
+    throw new Error(`Google Drive did not complete the upload for ${file.name}.`);
+  }
+
   const response = await fetch('/api/gallery-upload', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       fileName: file.name,
       mimeType,
-      base64,
+      driveFileId,
+      fileUploadToken,
       uploadedBy,
     }),
   });

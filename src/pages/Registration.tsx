@@ -103,6 +103,140 @@ const HEAR_SOURCES = [
   'Other',
 ];
 
+type RegistrationUploadLabel = 'StudentID' | 'PaymentSlip';
+
+const MAX_REGISTRATION_IMAGE_SIZE = 10 * 1024 * 1024;
+
+interface UploadedRegistrationFile {
+  fileId: string;
+  uploadToken: string;
+}
+
+function isRegistrationImageTooLarge(file: File): boolean {
+  const isImage = file.type.toLowerCase().startsWith('image/')
+    || (!file.type && !file.name.toLowerCase().endsWith('.pdf'));
+  return isImage && file.size > MAX_REGISTRATION_IMAGE_SIZE;
+}
+
+function showRegistrationImageSizeWarning(): void {
+  void Swal.fire({
+    icon: 'warning',
+    iconColor: '#f0ad4e',
+    title: 'File Size Too Large!',
+    html: `
+      <p class="registration-file-size-popup__description">
+        The image you selected exceeds the maximum allowed file size. Please choose an image that is 10 MB or smaller.
+      </p>
+      <div class="registration-file-size-popup__limit">
+        <span>Maximum allowed size:</span>
+        <strong>10 MB</strong>
+      </div>
+    `,
+    confirmButtonText: 'Choose Another Image',
+    confirmButtonColor: '#d4a642',
+    background: '#171518',
+    color: '#fff',
+    customClass: {
+      popup: 'registration-file-size-popup',
+      title: 'registration-file-size-popup__title',
+      htmlContainer: 'registration-file-size-popup__content',
+      confirmButton: 'registration-file-size-popup__confirm',
+    },
+  });
+}
+
+function getResponseMessage(value: unknown): string | undefined {
+  if (!value || typeof value !== 'object') return undefined;
+  if ('message' in value && typeof value.message === 'string') return value.message;
+  if ('error' in value && value.error && typeof value.error === 'object'
+    && 'message' in value.error && typeof value.error.message === 'string') {
+    return value.error.message;
+  }
+  return undefined;
+}
+
+async function uploadRegistrationFile(
+  file: File,
+  referenceId: string,
+  fileLabel: RegistrationUploadLabel,
+): Promise<UploadedRegistrationFile> {
+  const mimeType = file.type || 'application/octet-stream';
+  const uploadToken = crypto.randomUUID();
+  const sessionResponse = await fetch('/api/registration-upload-session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      fileName: file.name,
+      mimeType,
+      fileSize: file.size,
+      referenceId,
+      fileLabel,
+      uploadToken,
+    }),
+  });
+  const sessionResult: unknown = await sessionResponse.json().catch(() => null);
+
+  if (
+    !sessionResponse.ok
+    || !sessionResult
+    || typeof sessionResult !== 'object'
+    || !('success' in sessionResult)
+    || sessionResult.success !== true
+    || !('uploadUrl' in sessionResult)
+    || typeof sessionResult.uploadUrl !== 'string'
+  ) {
+    throw new Error(getResponseMessage(sessionResult) || 'Could not start the file upload. Please try again.');
+  }
+
+  const chunkSize = 4 * 1024 * 1024;
+  let nextByte = 0;
+  while (nextByte < file.size) {
+    const startByte = nextByte;
+    const endByte = Math.min(startByte + chunkSize, file.size) - 1;
+    const contentRange = `bytes ${startByte}-${endByte}/${file.size}`;
+    const chunkResponse = await fetch('/api/registration-upload-chunk', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/octet-stream',
+        'X-Drive-Upload-Url': sessionResult.uploadUrl,
+        'X-Drive-Content-Type': mimeType,
+        'X-Drive-Content-Range': contentRange,
+      },
+      body: file.slice(startByte, endByte + 1),
+    });
+    const chunkResult: unknown = await chunkResponse.json().catch(() => null);
+
+    if (
+      !chunkResponse.ok
+      || !chunkResult
+      || typeof chunkResult !== 'object'
+      || !('success' in chunkResult)
+      || chunkResult.success !== true
+    ) {
+      throw new Error(getResponseMessage(chunkResult) || `Could not upload ${file.name}. Please try again.`);
+    }
+
+    if ('complete' in chunkResult && chunkResult.complete === true) {
+      if (!('fileId' in chunkResult) || typeof chunkResult.fileId !== 'string') {
+        throw new Error(`Google Drive could not confirm ${file.name}. Please try again.`);
+      }
+      return { fileId: chunkResult.fileId, uploadToken };
+    }
+
+    if (
+      !('nextByte' in chunkResult)
+      || typeof chunkResult.nextByte !== 'number'
+      || chunkResult.nextByte <= startByte
+      || chunkResult.nextByte > endByte + 1
+    ) {
+      throw new Error(`Google Drive could not confirm the upload progress for ${file.name}. Please try again.`);
+    }
+    nextByte = chunkResult.nextByte;
+  }
+
+  throw new Error(`Google Drive did not complete the upload for ${file.name}. Please try again.`);
+}
+
 export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const studentIdInputId = useId();
@@ -363,19 +497,6 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
     window.scrollTo({ top: 120, behavior: 'smooth' });
   };
 
-  const fileToBase64 = (file: File): Promise<{ base64: string; mime: string }> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const result = reader.result as string;
-        const base64 = result.split(',')[1] || '';
-        resolve({ base64, mime: file.type || 'application/octet-stream' });
-      };
-      reader.onerror = (err) => reject(err);
-    });
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateStep4()) return;
@@ -389,69 +510,53 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
       .map((m, i) => `${i + 2}. ${m.name} | ${m.gradeOrYear || '-'} | ${m.phone || '-'} | ${m.institution || '-'}`)
       .join('\n');
 
-    let studentIdBase64 = '';
-    let studentIdMime = '';
-    if (studentIdFile) {
-      try {
-        const converted = await fileToBase64(studentIdFile);
-        studentIdBase64 = converted.base64;
-        studentIdMime = converted.mime;
-      } catch (err) {
-        console.warn('Could not encode student ID to base64:', err);
-      }
-    }
-
-    let paymentSlipBase64 = '';
-    let paymentSlipMime = '';
-    if (paymentSlipFile) {
-      try {
-        const converted = await fileToBase64(paymentSlipFile);
-        paymentSlipBase64 = converted.base64;
-        paymentSlipMime = converted.mime;
-      } catch (err) {
-        console.warn('Could not encode payment slip to base64:', err);
-      }
-    }
-
-    const payload = {
-      timestamp: new Date().toLocaleString(),
-      referenceId: generatedRef,
-      category: category === 'school' ? 'Inter-School Category' : 'Inter-University Category',
-      teamName: teamName.trim(),
-      leaderName: leaderName.trim(),
-      leaderPhone: leaderPhone.trim(),
-      leaderEmail: leaderEmail.trim(),
-      ambassadorCode: category === 'university' ? ambassadorCode.trim() : '',
-      teamSize,
-      otherMembers: otherMembersText || 'None',
-      institution: category === 'school' ? schoolName.trim() : (university === 'Other' ? customUniversity.trim() : university),
-      districtOrFaculty: category === 'school' ? district : faculty.trim(),
-      gradeOrYear: category === 'school' ? leaderGrade : yearOfStudy,
-      teacherOrRegNo: category === 'school' ? `${teacherName.trim()} (${teacherPhone.trim()})` : studentRegNo.trim(),
-      guardianOrDegree: category === 'school' ? guardianDetails.trim() : degree.trim(),
-      consentOrEligibility: category === 'school'
-        ? `Parent/guardian consent: ${parentConsent ? 'Yes' : 'No'}; Declarations accepted: Yes`
-        : `Undergraduate eligibility: ${universityEligibility ? 'Yes' : 'No'}; Declarations accepted: Yes`,
-      amountPaid: calculatedFee,
-      paymentMethod,
-      paymentDate,
-      paymentRef: paymentRef.trim() || 'N/A',
-      studentIdFileName: studentIdFileName || 'N/A',
-      studentIdBase64,
-      studentIdMime,
-      paymentSlipFileName: paymentSlipFileName || 'N/A',
-      paymentSlipBase64,
-      paymentSlipMime,
-      signature: signature.trim(),
-      questions: questions.trim() || 'None',
-      heardFrom: selectedSources.join(', ') || 'N/A',
-    };
-
-
-    const apiUrl = '/api/registration';
-
     try {
-      const response = await fetch(apiUrl, {
+      if (!paymentSlipFile) {
+        throw new Error('Please select a payment receipt before submitting.');
+      }
+
+      const [studentIdUpload, paymentSlipUpload] = await Promise.all([
+        studentIdFile
+          ? uploadRegistrationFile(studentIdFile, generatedRef, 'StudentID')
+          : Promise.resolve(null),
+        uploadRegistrationFile(paymentSlipFile, generatedRef, 'PaymentSlip'),
+      ]);
+
+      const payload = {
+        timestamp: new Date().toLocaleString(),
+        referenceId: generatedRef,
+        category: category === 'school' ? 'Inter-School Category' : 'Inter-University Category',
+        teamName: teamName.trim(),
+        leaderName: leaderName.trim(),
+        leaderPhone: leaderPhone.trim(),
+        leaderEmail: leaderEmail.trim(),
+        ambassadorCode: category === 'university' ? ambassadorCode.trim() : '',
+        teamSize,
+        otherMembers: otherMembersText || 'None',
+        institution: category === 'school' ? schoolName.trim() : (university === 'Other' ? customUniversity.trim() : university),
+        districtOrFaculty: category === 'school' ? district : faculty.trim(),
+        gradeOrYear: category === 'school' ? leaderGrade : yearOfStudy,
+        teacherOrRegNo: category === 'school' ? `${teacherName.trim()} (${teacherPhone.trim()})` : studentRegNo.trim(),
+        guardianOrDegree: category === 'school' ? guardianDetails.trim() : degree.trim(),
+        consentOrEligibility: category === 'school'
+          ? `Parent/guardian consent: ${parentConsent ? 'Yes' : 'No'}; Declarations accepted: Yes`
+          : `Undergraduate eligibility: ${universityEligibility ? 'Yes' : 'No'}; Declarations accepted: Yes`,
+        amountPaid: calculatedFee,
+        paymentMethod,
+        paymentDate,
+        paymentRef: paymentRef.trim() || 'N/A',
+        studentIdFileName: studentIdFileName || 'N/A',
+        studentIdDriveFileId: studentIdUpload?.fileId || '',
+        studentIdUploadToken: studentIdUpload?.uploadToken || '',
+        paymentSlipFileName: paymentSlipFileName || 'N/A',
+        paymentSlipDriveFileId: paymentSlipUpload.fileId,
+        paymentSlipUploadToken: paymentSlipUpload.uploadToken,
+        signature: signature.trim(),
+        questions: questions.trim() || 'None',
+        heardFrom: selectedSources.join(', ') || 'N/A',
+      };
+
+      const response = await fetch('/api/registration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -459,11 +564,23 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
         body: JSON.stringify(payload),
       });
 
-      const result = await response.json();
+      const responseText = await response.text();
+      let result: unknown;
+      try {
+        result = JSON.parse(responseText);
+      } catch {
+        throw new Error(`The registration service returned an unexpected response (HTTP ${response.status}). Please try again later.`);
+      }
 
-      if (!response.ok || result.success !== true) {
+      if (!result || typeof result !== 'object') {
+        throw new Error(`The registration service returned an unexpected response (HTTP ${response.status}). Please try again later.`);
+      }
+
+      if (!response.ok || !('success' in result) || result.success !== true) {
         throw new Error(
-          result.message || 'Your registration could not be saved.'
+          'message' in result && typeof result.message === 'string'
+            ? result.message
+            : 'Your registration could not be saved.'
         );
       }
 
@@ -1073,16 +1190,9 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            if (file.size > 10 * 1024 * 1024) {
-                              void Swal.fire({
-                                title: 'File Too Large',
-                                text: 'The selected file exceeds the 10MB limit. Please choose a smaller file.',
-                                icon: 'warning',
-                                background: '#171518',
-                                color: '#fff',
-                                confirmButtonColor: '#d4a642',
-                              });
-                              e.target.value = '';
+                            if (isRegistrationImageTooLarge(file)) {
+                              e.currentTarget.value = '';
+                              showRegistrationImageSizeWarning();
                               return;
                             }
                             setStudentIdFile(file);
@@ -1107,7 +1217,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                       <p className="reg-file-dropzone__text">
                         {studentIdFileName ? 'Change Student ID file' : 'Click or drag & drop to upload Student ID'}
                       </p>
-                      <p className="reg-file-dropzone__subtext">Accepted formats: JPG, PNG, WEBP, or PDF (Max 10MB)</p>
+                      <p className="reg-file-dropzone__subtext">Accepted formats: Images or PDF.</p>
                     </div>
 
                     {studentIdFileName && (
@@ -1347,16 +1457,9 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) {
-                          if (file.size > 10 * 1024 * 1024) {
-                            void Swal.fire({
-                              title: 'File Too Large',
-                              text: 'The selected receipt file exceeds 10MB. Please upload a smaller file.',
-                              icon: 'warning',
-                              background: '#171518',
-                              color: '#fff',
-                              confirmButtonColor: '#d4a642',
-                            });
-                            e.target.value = '';
+                          if (isRegistrationImageTooLarge(file)) {
+                            e.currentTarget.value = '';
+                            showRegistrationImageSizeWarning();
                             return;
                           }
                           setPaymentSlipFile(file);
@@ -1380,7 +1483,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                     <p className="reg-file-dropzone__text">
                       {paymentSlipFileName ? 'Change Payment Slip' : 'Click or drag & drop to upload payment receipt'}
                     </p>
-                    <p className="reg-file-dropzone__subtext">Accepted formats: JPG, PNG, WEBP, or PDF (Max 10MB)</p>
+                    <p className="reg-file-dropzone__subtext">Accepted formats: Images or PDF.</p>
                   </div>
 
                   {paymentSlipFileName && (
@@ -1583,7 +1686,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = ({ onBack }) =>
                   ← Back to Payment
                 </button>
                 <button type="submit" className="reg-btn reg-btn--submit" disabled={isSubmitting}>
-                  {isSubmitting ? 'Registering Team...' : 'Complete Team Registration ★'}
+                  {isSubmitting ? 'Uploading files & registering...' : 'Complete Team Registration ★'}
                 </button>
               </div>
             </div>

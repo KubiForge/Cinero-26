@@ -16,8 +16,16 @@ function doPost(e) {
     return handleGalleryUpload(requestData);
   }
 
+  if (String(requestData.action || "").toLowerCase() === "galleryuploadsession") {
+    return createGalleryUploadSession(requestData);
+  }
+
   if (String(requestData.action || "").toLowerCase() === "galleryreview") {
     return handleGalleryReview(requestData);
+  }
+
+  if (String(requestData.action || "").toLowerCase() === "registrationuploadsession") {
+    return createRegistrationUploadSession(requestData, e);
   }
 
   var registrationOpenTime = new Date("2026-10-27T00:00:00+05:30").getTime();
@@ -145,21 +153,35 @@ function doPost(e) {
 
     var studentIdUrl = isSchool
       ? "N/A (School Category)"
-      : saveFile(
-          data.studentIdBase64,
-          data.studentIdMime,
-          data.studentIdFileName,
-          data.referenceId,
-          "StudentID"
-        );
+      : data.studentIdDriveFileId
+        ? getRegistrationUploadUrl(
+            data.studentIdDriveFileId,
+            data.referenceId,
+            "StudentID",
+            data.studentIdUploadToken
+          )
+        : saveFile(
+            data.studentIdBase64,
+            data.studentIdMime,
+            data.studentIdFileName,
+            data.referenceId,
+            "StudentID"
+          );
 
-    var paymentSlipUrl = saveFile(
-      data.paymentSlipBase64,
-      data.paymentSlipMime,
-      data.paymentSlipFileName,
-      data.referenceId,
-      "PaymentSlip"
-    );
+    var paymentSlipUrl = data.paymentSlipDriveFileId
+      ? getRegistrationUploadUrl(
+          data.paymentSlipDriveFileId,
+          data.referenceId,
+          "PaymentSlip",
+          data.paymentSlipUploadToken
+        )
+      : saveFile(
+          data.paymentSlipBase64,
+          data.paymentSlipMime,
+          data.paymentSlipFileName,
+          data.referenceId,
+          "PaymentSlip"
+        );
 
     var row = isSchool
       ? [
@@ -310,7 +332,157 @@ function saveFile(base64, mimeType, fileName, referenceId, label) {
 // Run this function once manually in the Apps Script editor to grant Drive permissions!
 function authorizeDrive() {
   var root = DriveApp.getRootFolder();
+  var response = UrlFetchApp.fetch(
+    "https://www.googleapis.com/drive/v3/about?fields=user",
+    {
+      headers: {
+        Authorization: "Bearer " + ScriptApp.getOAuthToken()
+      },
+      muteHttpExceptions: true
+    }
+  );
+  if (response.getResponseCode() !== 200) {
+    throw new Error("Drive authorization check failed: " + response.getContentText());
+  }
   Logger.log("Drive authorized: " + root.getName());
+}
+
+function createRegistrationUploadSession(data, event) {
+  var params = event && event.parameter ? event.parameter : {};
+  var expectedReadToken = PropertiesService.getScriptProperties().getProperty("GOOGLE_SHEET_READ_TOKEN");
+  if (!expectedReadToken || String(params.readToken || "") !== expectedReadToken) {
+    return jsonResponse({ status: "error", message: "Unauthorized upload request." });
+  }
+
+  var registrationOpenTime = new Date("2026-10-27T00:00:00+05:30").getTime();
+  var registrationCloseTime = new Date("2026-12-15T00:00:00+05:30").getTime();
+  if (Date.now() < registrationOpenTime || Date.now() >= registrationCloseTime) {
+    return jsonResponse({ status: "error", message: "Registration is not currently open." });
+  }
+
+  var fileName = String(data.fileName || "").trim();
+  var mimeType = String(data.mimeType || "").toLowerCase();
+  var fileSize = Number(data.fileSize);
+  var referenceId = String(data.referenceId || "");
+  var fileLabel = String(data.fileLabel || "");
+  var uploadToken = String(data.uploadToken || "");
+  if (
+    !fileName ||
+    fileName.length > 255 ||
+    !(mimeType === "application/pdf" || /^image\/[a-z0-9.+-]+$/.test(mimeType)) ||
+    !Number.isSafeInteger(fileSize) ||
+    fileSize <= 0 ||
+    fileSize > 5 * 1024 * 1024 * 1024 * 1024 ||
+    !/^CNR26-(SCH|UNI)-\d{4}$/.test(referenceId) ||
+    ["StudentID", "PaymentSlip"].indexOf(fileLabel) === -1 ||
+    !/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(uploadToken)
+  ) {
+    return jsonResponse({ status: "error", message: "The upload details are invalid or unsupported." });
+  }
+
+  var lock = LockService.getScriptLock();
+  var folder;
+  try {
+    lock.waitLock(30000);
+    folder = getRegistrationUploadFolder();
+  } catch (error) {
+    return jsonResponse({ status: "error", message: "Could not prepare secure registration file storage." });
+  } finally {
+    if (lock.hasLock()) lock.releaseLock();
+  }
+
+  var safeName = fileName.replace(/[\\/:*?"<>|]/g, "_").slice(0, 180);
+  var description = ["CINERO26_REGISTRATION", referenceId, fileLabel, uploadToken].join("|");
+  var metadata = {
+    name: referenceId + "_" + fileLabel + "_" + safeName,
+    mimeType: mimeType,
+    description: description,
+    parents: [folder.getId()]
+  };
+  var response;
+  try {
+    response = UrlFetchApp.fetch(
+      "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true&fields=id",
+      {
+        method: "post",
+        contentType: "application/json",
+        payload: JSON.stringify(metadata),
+        headers: {
+          Authorization: "Bearer " + ScriptApp.getOAuthToken(),
+          "X-Upload-Content-Type": mimeType,
+          "X-Upload-Content-Length": String(fileSize)
+        },
+        muteHttpExceptions: true
+      }
+    );
+  } catch (error) {
+    Logger.log("Registration upload session error: " + error.message);
+    return jsonResponse({ status: "error", message: "Could not start the file upload. Please try again." });
+  }
+
+  if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
+    Logger.log("Drive upload session failed: " + response.getResponseCode() + " " + response.getContentText());
+    return jsonResponse({ status: "error", message: "Could not start the file upload. Please try again." });
+  }
+
+  var headers = response.getHeaders();
+  var uploadUrl = "";
+  Object.keys(headers).some(function (key) {
+    if (key.toLowerCase() === "location") {
+      uploadUrl = String(headers[key]);
+      return true;
+    }
+    return false;
+  });
+  if (
+    !/^https:\/\/www\.googleapis\.com\/upload\/drive\/v3\/files\?/.test(uploadUrl) ||
+    !/[?&]uploadType=resumable(?:&|$)/.test(uploadUrl) ||
+    !/[?&]upload_id=[^&]+/.test(uploadUrl)
+  ) {
+    Logger.log("Drive did not return a valid registration upload URL.");
+    return jsonResponse({ status: "error", message: "Could not start the file upload. Please try again." });
+  }
+
+  return jsonResponse({ status: "success", uploadUrl: uploadUrl });
+}
+
+function getRegistrationUploadFolder() {
+  var folderName = "CINERO'26 Registration Uploads";
+  var folders = DriveApp.getFoldersByName(folderName);
+  return folders.hasNext() ? folders.next() : DriveApp.createFolder(folderName);
+}
+
+function getRegistrationUploadUrl(fileId, referenceId, fileLabel, uploadToken) {
+  var token = String(uploadToken || "");
+  var expectedDescription = [
+    "CINERO26_REGISTRATION",
+    referenceId,
+    fileLabel,
+    token
+  ].join("|");
+  if (!/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(token)) {
+    throw new Error("The registration file upload could not be verified.");
+  }
+
+  var folder = getRegistrationUploadFolder();
+  var file = DriveApp.getFileById(String(fileId));
+  if (file.getDescription() !== expectedDescription) {
+    throw new Error("The registration file upload could not be verified.");
+  }
+
+  var parents = file.getParents();
+  var belongsToRegistrationFolder = false;
+  while (parents.hasNext()) {
+    if (parents.next().getId() === folder.getId()) {
+      belongsToRegistrationFolder = true;
+      break;
+    }
+  }
+  if (!belongsToRegistrationFolder) {
+    throw new Error("The registration file upload could not be verified.");
+  }
+
+  return file.getUrl();
 }
 
 function jsonResponse(data) {
@@ -453,7 +625,115 @@ var GALLERY_PHOTOS_HEADERS = [
   "Reviewed_By",
   "Reviewed_At"
 ];
-var GALLERY_MAX_FILE_BYTES = 3 * 1024 * 1024;
+var GALLERY_MAX_FILE_BYTES = 5 * 1024 * 1024;
+
+function createGalleryUploadSession(data) {
+  var expectedToken = PropertiesService.getScriptProperties().getProperty("GALLERY_UPLOAD_TOKEN");
+  var suppliedToken = String(data.galleryUploadToken || "");
+  if (!expectedToken || !suppliedToken || suppliedToken !== expectedToken) {
+    return jsonResponse({ status: "error", message: "Unauthorized photo upload request." });
+  }
+
+  var fileName = String(data.fileName || "").trim();
+  var mimeType = String(data.mimeType || "").toLowerCase();
+  var fileSize = Number(data.fileSize);
+  var uploadedBy = String(data.uploadedBy || "").trim();
+  var fileUploadToken = String(data.fileUploadToken || "");
+  var allowedMimeTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/heic",
+    "image/heif",
+    "image/heic-sequence",
+    "image/heif-sequence"
+  ];
+  if (
+    !fileName ||
+    fileName.length > 180 ||
+    allowedMimeTypes.indexOf(mimeType) === -1 ||
+    !Number.isSafeInteger(fileSize) ||
+    fileSize <= 0 ||
+    fileSize > GALLERY_MAX_FILE_BYTES ||
+    uploadedBy.length > 80 ||
+    !/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(fileUploadToken)
+  ) {
+    return jsonResponse({ status: "error", message: "Photo details are invalid or unsupported." });
+  }
+
+  var readerEmail = PropertiesService.getScriptProperties().getProperty("GALLERY_DRIVE_READER_EMAIL");
+  if (!readerEmail || readerEmail.indexOf("@") === -1) {
+    return jsonResponse({
+      status: "error",
+      message: "The gallery Drive service account is not configured."
+    });
+  }
+
+  var lock = LockService.getScriptLock();
+  var folder;
+  try {
+    lock.waitLock(30000);
+    folder = getGalleryUploadFolder(readerEmail);
+  } catch (error) {
+    Logger.log("Gallery upload folder error: " + error.message);
+    return jsonResponse({ status: "error", message: "Could not prepare photo storage." });
+  } finally {
+    if (lock.hasLock()) lock.releaseLock();
+  }
+
+  var safeName = fileName.replace(/[\\/:*?"<>|]/g, "_").slice(0, 150);
+  var metadata = {
+    name: safeName,
+    mimeType: mimeType,
+    description: ["CINERO26_GALLERY", fileUploadToken].join("|"),
+    parents: [folder.getId()]
+  };
+  var response;
+  try {
+    response = UrlFetchApp.fetch(
+      "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true&fields=id",
+      {
+        method: "post",
+        contentType: "application/json",
+        payload: JSON.stringify(metadata),
+        headers: {
+          Authorization: "Bearer " + ScriptApp.getOAuthToken(),
+          "X-Upload-Content-Type": mimeType,
+          "X-Upload-Content-Length": String(fileSize)
+        },
+        muteHttpExceptions: true
+      }
+    );
+  } catch (error) {
+    Logger.log("Gallery upload session error: " + error.message);
+    return jsonResponse({ status: "error", message: "Could not start the photo upload. Please try again." });
+  }
+
+  if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
+    Logger.log("Gallery upload session failed: " + response.getResponseCode() + " " + response.getContentText());
+    return jsonResponse({ status: "error", message: "Could not start the photo upload. Please try again." });
+  }
+
+  var headers = response.getHeaders();
+  var uploadUrl = "";
+  Object.keys(headers).some(function (key) {
+    if (key.toLowerCase() === "location") {
+      uploadUrl = String(headers[key]);
+      return true;
+    }
+    return false;
+  });
+  if (
+    !/^https:\/\/www\.googleapis\.com\/upload\/drive\/v3\/files\?/.test(uploadUrl) ||
+    !/[?&]uploadType=resumable(?:&|$)/.test(uploadUrl) ||
+    !/[?&]upload_id=[^&]+/.test(uploadUrl)
+  ) {
+    Logger.log("Drive did not return a valid gallery upload URL.");
+    return jsonResponse({ status: "error", message: "Could not start the photo upload. Please try again." });
+  }
+
+  return jsonResponse({ status: "success", uploadUrl: uploadUrl });
+}
 
 function handleGalleryUpload(data) {
   var expectedToken = PropertiesService.getScriptProperties().getProperty("GALLERY_UPLOAD_TOKEN");
@@ -466,6 +746,9 @@ function handleGalleryUpload(data) {
   var mimeType = String(data.mimeType || "").toLowerCase();
   var base64 = String(data.base64 || "");
   var uploadedBy = String(data.uploadedBy || "").trim();
+  var driveFileId = String(data.driveFileId || "").trim();
+  var fileUploadToken = String(data.fileUploadToken || "");
+  var directUpload = Boolean(driveFileId);
   var allowedMimeTypes = [
     "image/jpeg",
     "image/png",
@@ -480,21 +763,24 @@ function handleGalleryUpload(data) {
     !fileName ||
     fileName.length > 180 ||
     allowedMimeTypes.indexOf(mimeType) === -1 ||
-    !base64 ||
+    (!base64 && !directUpload) ||
+    (directUpload && !/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(fileUploadToken)) ||
     uploadedBy.length > 80
   ) {
     return jsonResponse({ status: "error", message: "Photo details are invalid or unsupported." });
   }
 
-  var bytes;
-  try {
-    bytes = Utilities.base64Decode(base64);
-  } catch (error) {
-    return jsonResponse({ status: "error", message: "The photo data is invalid." });
-  }
+  var bytes = null;
+  if (!directUpload) {
+    try {
+      bytes = Utilities.base64Decode(base64);
+    } catch (error) {
+      return jsonResponse({ status: "error", message: "The photo data is invalid." });
+    }
 
-  if (!bytes || bytes.length === 0 || bytes.length > GALLERY_MAX_FILE_BYTES) {
-    return jsonResponse({ status: "error", message: "Each photo must be smaller than or equal to 3 MB." });
+    if (!bytes || bytes.length === 0 || bytes.length > GALLERY_MAX_FILE_BYTES) {
+      return jsonResponse({ status: "error", message: "Each photo must be smaller than or equal to 5 MB." });
+    }
   }
 
   var readerEmail = PropertiesService.getScriptProperties().getProperty("GALLERY_DRIVE_READER_EMAIL");
@@ -517,8 +803,30 @@ function handleGalleryUpload(data) {
     var photoId = Utilities.getUuid();
     var safeName = fileName.replace(/[\\/:*?"<>|]/g, "_").slice(0, 150);
     if (/^[=+\-@]/.test(safeName)) safeName = "'" + safeName;
-    var blob = Utilities.newBlob(bytes, mimeType, photoId + "_" + safeName);
-    createdFile = folder.createFile(blob);
+    if (directUpload) {
+      createdFile = DriveApp.getFileById(driveFileId);
+      var expectedDescription = ["CINERO26_GALLERY", fileUploadToken].join("|");
+      var parents = createdFile.getParents();
+      var belongsToGalleryFolder = false;
+      while (parents.hasNext()) {
+        if (parents.next().getId() === folder.getId()) {
+          belongsToGalleryFolder = true;
+          break;
+        }
+      }
+      if (
+        createdFile.getDescription() !== expectedDescription ||
+        createdFile.getMimeType() !== mimeType ||
+        createdFile.getSize() <= 0 ||
+        createdFile.getSize() > GALLERY_MAX_FILE_BYTES ||
+        !belongsToGalleryFolder
+      ) {
+        throw new Error("The uploaded photo could not be verified.");
+      }
+    } else {
+      var blob = Utilities.newBlob(bytes, mimeType, photoId + "_" + safeName);
+      createdFile = folder.createFile(blob);
+    }
     createdFile.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
 
     var safeUploader = uploadedBy.replace(/[\r\n\t]/g, " ").slice(0, 80);
@@ -529,7 +837,7 @@ function handleGalleryUpload(data) {
       safeName,
       createdFile.getId(),
       mimeType,
-      bytes.length,
+      directUpload ? createdFile.getSize() : bytes.length,
       safeUploader,
       uploadedAt,
       "PENDING",
@@ -815,7 +1123,7 @@ function readApprovedGalleryPhotos() {
     .filter(function (photo) {
       return Boolean(photo.photoId);
     })
-    .slice(-100)
+    .slice(-1000)
     .reverse();
 }
 

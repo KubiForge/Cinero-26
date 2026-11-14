@@ -1,6 +1,6 @@
 import { callGalleryScript } from './_gallery.js';
 
-const MAX_FILE_BYTES = 3 * 1024 * 1024;
+const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_MIME_TYPES = new Set([
   'image/jpeg',
   'image/png',
@@ -47,6 +47,8 @@ function normalizeFileName(fileName, mimeType) {
     'image/webp': 'webp',
     'image/heic': 'heic',
     'image/heif': 'heif',
+    'image/heic-sequence': 'heic',
+    'image/heif-sequence': 'heif',
   };
   const extension = extensions[mimeType];
   const lastDot = fileName.lastIndexOf('.');
@@ -91,14 +93,17 @@ export default async function handler(req, res) {
   const requestedMimeType = typeof body?.mimeType === 'string' ? body.mimeType.toLowerCase() : '';
   const base64 = typeof body?.base64 === 'string' ? body.base64 : '';
   const uploadedBy = typeof body?.uploadedBy === 'string' ? body.uploadedBy.trim() : '';
+  const driveFileId = typeof body?.driveFileId === 'string' ? body.driveFileId.trim() : '';
+  const fileUploadToken = typeof body?.fileUploadToken === 'string' ? body.fileUploadToken : '';
 
   if (
     !fileName
     || fileName.length > 180
     || !ALLOWED_MIME_TYPES.has(requestedMimeType)
-    || !base64
+    || (!base64 && !driveFileId)
     || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(base64)
     || uploadedBy.length > 80
+    || (driveFileId && !/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(fileUploadToken))
   ) {
     return res.status(400).json({
       success: false,
@@ -106,35 +111,50 @@ export default async function handler(req, res) {
     });
   }
 
-  const photoBytes = Buffer.from(base64, 'base64');
-  if (
-    photoBytes.length === 0
-    || photoBytes.length > MAX_FILE_BYTES
-    || photoBytes.toString('base64') !== base64
-  ) {
-    return res.status(413).json({
-      success: false,
-      message: 'Each photo must be smaller than or equal to 3 MB.',
-    });
-  }
+  let uploadData;
+  if (driveFileId) {
+    uploadData = {
+      action: 'galleryUpload',
+      galleryUploadToken: uploadToken,
+      fileName: normalizeFileName(fileName, requestedMimeType),
+      mimeType: requestedMimeType,
+      driveFileId,
+      fileUploadToken,
+      uploadedBy,
+    };
+  } else {
+    const photoBytes = Buffer.from(base64, 'base64');
+    if (
+      photoBytes.length === 0
+      || photoBytes.length > MAX_FILE_BYTES
+      || photoBytes.toString('base64') !== base64
+    ) {
+      return res.status(413).json({
+        success: false,
+        message: 'Each photo must be smaller than or equal to 5 MB.',
+      });
+    }
 
-  const mimeType = detectImageMimeType(photoBytes);
-  if (!mimeType) {
-    return res.status(400).json({
-      success: false,
-      message: 'The selected file is not a supported image.',
-    });
-  }
+    const mimeType = detectImageMimeType(photoBytes);
+    if (!mimeType) {
+      return res.status(400).json({
+        success: false,
+        message: 'The selected file is not a supported image.',
+      });
+    }
 
-  try {
-    const result = await callGalleryScript('galleryUpload', {}, {
+    uploadData = {
       action: 'galleryUpload',
       galleryUploadToken: uploadToken,
       fileName: normalizeFileName(fileName, mimeType),
       mimeType,
       base64,
       uploadedBy,
-    });
+    };
+  }
+
+  try {
+    const result = await callGalleryScript('galleryUpload', {}, uploadData);
 
     if (result.status !== 'success' || !result.photoId || result.reviewStatus !== 'PENDING') {
       const message = typeof result.message === 'string'

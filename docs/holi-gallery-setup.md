@@ -1,6 +1,6 @@
 # Holi photo upload and gallery setup
 
-The upload page sends each photo to the server, which saves it privately in Google Drive and adds a `PENDING` row to the `Gallery_Photos` sheet. The public gallery returns only rows whose `Status` is `APPROVED`; image bytes are served through the server-side Drive proxy.
+The upload page sends each photo to the server, which saves it privately in Google Drive and adds a `PENDING` row to the `Gallery_Photos` sheet. The public gallery returns the 1,000 most recently approved photos; image bytes are served through the server-side Drive proxy.
 
 ## 1. Configure Apps Script
 
@@ -38,4 +38,4 @@ Redeploy after changing Vercel environment variables. Local API routes are avail
 
 Each successful submission adds a private photo and a `PENDING` row to `Gallery_Photos`. Crew members can sign in at `/crew/login`, open **Gallery photo review** from the dashboard, and approve, reject, or delete pending photos. Approved photos appear in the public `/holi-gallery` and can be viewed and downloaded. Rejected photos stay private; deleting moves the Drive file to Trash and records the `DELETED` status in the sheet. Do not approve a photo until it is cleared for public viewing.
 
-The upload page supports up to 10 photos per batch, with a 3 MB maximum per photo to fit the serverless request limit. The “under review” confirmation appears only after the server confirms the photo was saved.
+The upload page supports up to 10 photos per batch, with a 5 MB maximum per photo and a 30 MB combined batch limit. Photos are sent in resumable chunks to stay within the serverless request limit. The “under review” confirmation appears only after the server confirms the photo was saved.
