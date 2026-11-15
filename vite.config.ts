@@ -49,6 +49,9 @@ export default defineConfig(({ mode }) => {
               '/api/gallery-upload': () => import(pathToFileURL(resolve(process.cwd(), 'api/gallery-upload.js')).href),
               '/api/gallery': () => import(pathToFileURL(resolve(process.cwd(), 'api/gallery.js')).href),
               '/api/gallery-image': () => import(pathToFileURL(resolve(process.cwd(), 'api/gallery-image.js')).href),
+              '/api/film-submission': () => import(pathToFileURL(resolve(process.cwd(), 'api/film-submission.js')).href),
+              '/api/film-submission-upload-session': () => import(pathToFileURL(resolve(process.cwd(), 'api/film-submission-upload-session.js')).href),
+              '/api/registration-upload-chunk': () => import(pathToFileURL(resolve(process.cwd(), 'api/registration-upload-chunk.js')).href),
             }
             const loadGalleryHandler = galleryRoutes[requestUrl.pathname]
 
@@ -77,7 +80,7 @@ export default defineConfig(({ mode }) => {
                     apiResponse.setHeader('Content-Type', 'application/json')
                     apiResponse.end(JSON.stringify({
                       success: false,
-                      message: 'Upload request is too large. Photos must be 3 MB or smaller.',
+                      message: 'The request is too large.',
                     }))
                     return
                   }

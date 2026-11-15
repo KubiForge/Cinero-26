@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import AboutPage from './pages/About';
 import GuidlinesPage from './pages/Guidlines';
 import RegistrationPage from './pages/Registration';
+import FilmSubmissionPage, { FilmSubmissionSelectionPage } from './pages/FilmSubmission';
 import GalleryUploadPage from './pages/GalleryUpload';
 import HoliGalleryPage from './pages/HoliGallery';
 import CrewLoginPage from './pages/CrewLogin';
@@ -68,6 +69,9 @@ type PageName =
   | 'about'
   | 'guidelines'
   | 'register'
+  | 'film-submission-selection'
+  | 'film-submission-school'
+  | 'film-submission-university'
   | 'gallery-upload'
   | 'holi-gallery'
   | 'crew-login'
@@ -162,6 +166,18 @@ function App() {
 
     if (path === '/gallery/upload') {
       return 'gallery-upload';
+    }
+
+    if (path === '/submission') {
+      return 'film-submission-selection';
+    }
+
+    if (path === '/submission/school') {
+      return 'film-submission-school';
+    }
+
+    if (path === '/submission/university') {
+      return 'film-submission-university';
     }
 
     if (path === '/holi-gallery') {
@@ -556,6 +572,23 @@ function App() {
         {pageLoader}
         <Navbar onNavigate={handleNavClick} variant="solid" />
         <GalleryUploadPage />
+        <Footer onNavigate={handleNavClick} />
+      </>
+    );
+  }
+
+  if (
+    currentPage === 'film-submission-selection'
+    || currentPage === 'film-submission-school'
+    || currentPage === 'film-submission-university'
+  ) {
+    return (
+      <>
+        {pageLoader}
+        <Navbar onNavigate={handleNavClick} variant="solid" />
+        {currentPage === 'film-submission-selection'
+          ? <FilmSubmissionSelectionPage />
+          : <FilmSubmissionPage category={currentPage === 'film-submission-school' ? 'school' : 'university'} />}
         <Footer onNavigate={handleNavClick} />
       </>
     );

@@ -28,6 +28,18 @@ function doPost(e) {
     return createRegistrationUploadSession(requestData, e);
   }
 
+  if (String(requestData.action || "").toLowerCase() === "filmsubmissionverify") {
+    return verifyFilmSubmissionTeam(requestData, e);
+  }
+
+  if (String(requestData.action || "").toLowerCase() === "filmsubmissionuploadsession") {
+    return createFilmSubmissionUploadSession(requestData, e);
+  }
+
+  if (String(requestData.action || "").toLowerCase() === "filmsubmission") {
+    return handleFilmSubmission(requestData, e);
+  }
+
   var registrationOpenTime = new Date("2026-10-27T00:00:00+05:30").getTime();
   var registrationCloseTime = new Date("2026-12-15T00:00:00+05:30").getTime();
   if (Date.now() < registrationOpenTime) {
@@ -483,6 +495,500 @@ function getRegistrationUploadUrl(fileId, referenceId, fileLabel, uploadToken) {
   }
 
   return file.getUrl();
+}
+
+var FILM_SUBMISSION_ROOT_PROPERTY = "FILM_SUBMISSIONS_DRIVE_FOLDER_ID";
+var FILM_SUBMISSION_HEADERS = [
+  "Timestamp",
+  "Reference ID",
+  "Category",
+  "Team Name",
+  "Leader Email",
+  "Film Title",
+  "Synopsis",
+  "Genre",
+  "Film Language",
+  "Running Time",
+  "Completion Date",
+  "Final Film Link",
+  "Poster Link",
+  "Student Confirmation Letter Link",
+  "Film Script Link",
+  "Team Declaration Link",
+  "Shot and Produced on or after 1 January 2026",
+  "Original Work and Rights",
+  "Technical Requirements Confirmed",
+  "Competition Guidelines Accepted",
+  "Promotional Rights Accepted"
+];
+
+function isFilmSubmissionOpen() {
+  var openTime = new Date("2026-10-27T00:00:00+05:30").getTime();
+  var closeTime = new Date("2026-12-15T00:00:00+05:30").getTime();
+  return Date.now() >= openTime && Date.now() < closeTime;
+}
+
+function normalizeFilmSubmissionIdentity(data) {
+  var category = String(data.category || "").toLowerCase();
+  var referenceId = String(data.referenceId || "").trim().toUpperCase();
+  var leaderEmail = String(data.leaderEmail || "").trim().toLowerCase();
+  var expectedPrefix = category === "school" ? "CNR26-SCH-" : "CNR26-UNI-";
+
+  if (
+    ["school", "university"].indexOf(category) === -1 ||
+    !new RegExp("^" + expectedPrefix + "\\d{4}$").test(referenceId) ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leaderEmail)
+  ) {
+    return null;
+  }
+
+  return { category: category, referenceId: referenceId, leaderEmail: leaderEmail };
+}
+
+function findFilmSubmissionRegistration(identity) {
+  var registrationSheetName = identity.category === "school"
+    ? "School Registrations"
+    : "University Registrations";
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(registrationSheetName);
+  if (!sheet || sheet.getLastRow() < 2) return null;
+
+  var values = sheet.getDataRange().getValues();
+  var headers = values[0].map(function (header) { return String(header || "").trim(); });
+  var referenceColumn = headers.indexOf("Reference ID");
+  var emailColumn = headers.indexOf("Leader Email");
+  var teamColumn = headers.indexOf("Team Name");
+  var leaderColumn = headers.indexOf("Leader Full Name");
+  if (referenceColumn === -1 || emailColumn === -1 || teamColumn === -1) return null;
+
+  for (var rowIndex = 1; rowIndex < values.length; rowIndex++) {
+    var row = values[rowIndex];
+    var registeredReferenceId = String(row[referenceColumn] || "").trim().toUpperCase();
+    var registeredTeamName = String(row[teamColumn] || "").trim();
+    var matchesTeam = identity.referenceId
+      ? registeredReferenceId === identity.referenceId
+      : registeredTeamName.toLowerCase() === String(identity.teamName || "").trim().toLowerCase();
+    if (
+      matchesTeam &&
+      String(row[emailColumn] || "").trim().toLowerCase() === identity.leaderEmail
+    ) {
+      return {
+        referenceId: registeredReferenceId,
+        category: identity.category,
+        leaderEmail: identity.leaderEmail,
+        teamName: registeredTeamName,
+        leaderName: leaderColumn === -1 ? "" : String(row[leaderColumn] || "").trim()
+      };
+    }
+  }
+
+  return null;
+}
+
+function getFilmSubmissionSheet(category, createIfMissing) {
+  var sheetName = category === "school"
+    ? "School Film Submissions"
+    : "University Film Submissions";
+  var spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = spreadsheet.getSheetByName(sheetName);
+  if (!sheet && createIfMissing) sheet = spreadsheet.insertSheet(sheetName);
+  if (sheet && sheet.getLastRow() === 0) {
+    sheet.appendRow(FILM_SUBMISSION_HEADERS);
+    sheet.getRange(1, 1, 1, FILM_SUBMISSION_HEADERS.length)
+      .setFontWeight("bold")
+      .setBackground("#171518")
+      .setFontColor("#f5d77f");
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function hasFilmSubmission(identity) {
+  var sheet = getFilmSubmissionSheet(identity.category, false);
+  if (!sheet || sheet.getLastRow() < 2) return false;
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]
+    .map(function (header) { return String(header || "").trim(); });
+  var referenceColumn = headers.indexOf("Reference ID");
+  var emailColumn = headers.indexOf("Leader Email");
+  if (referenceColumn === -1 || emailColumn === -1) return false;
+  var values = sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).getValues();
+  return values.some(function (row) {
+    return String(row[referenceColumn] || "").trim().toUpperCase() === identity.referenceId &&
+      String(row[emailColumn] || "").trim().toLowerCase() === identity.leaderEmail;
+  });
+}
+
+function verifyFilmSubmissionTeam(data, event) {
+  var expectedReadToken = PropertiesService.getScriptProperties().getProperty("GOOGLE_SHEET_READ_TOKEN");
+  var params = event && event.parameter ? event.parameter : {};
+  if (!expectedReadToken || String(params.readToken || "") !== expectedReadToken) {
+    return jsonResponse({ status: "error", message: "Unauthorized submission request." });
+  }
+  if (!isFilmSubmissionOpen()) {
+    return jsonResponse({ status: "error", message: "Film submissions are not currently open." });
+  }
+
+  var category = String(data.category || "").toLowerCase();
+  var teamName = String(data.teamName || "").trim();
+  var leaderEmail = String(data.leaderEmail || "").trim().toLowerCase();
+  if (
+    ["school", "university"].indexOf(category) === -1 ||
+    !teamName ||
+    teamName.length > 180 ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(leaderEmail)
+  ) {
+    return jsonResponse({ status: "error", message: "The registered team details are invalid." });
+  }
+  var team = findFilmSubmissionRegistration({
+    category: category,
+    teamName: teamName,
+    leaderEmail: leaderEmail
+  });
+  if (!team) {
+    return jsonResponse({
+      status: "error",
+      message: "No registration matched this team name and leader email for the selected category."
+    });
+  }
+  var identity = {
+    category: category,
+    referenceId: team.referenceId,
+    leaderEmail: leaderEmail
+  };
+  if (hasFilmSubmission(identity)) {
+    return jsonResponse({
+      status: "success",
+      submitted: true,
+      message: "A film submission has already been received for this team.",
+      team: team
+    });
+  }
+  return jsonResponse({ status: "success", submitted: false, team: team });
+}
+
+function getFilmSubmissionRootFolder() {
+  var properties = PropertiesService.getScriptProperties();
+  var folderId = properties.getProperty(FILM_SUBMISSION_ROOT_PROPERTY);
+  var folder = folderId ? DriveApp.getFolderById(folderId) : null;
+  if (!folder) {
+    folder = DriveApp.createFolder("CINERO'26 Film Submissions");
+    folder.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
+    properties.setProperty(FILM_SUBMISSION_ROOT_PROPERTY, folder.getId());
+  }
+  return folder;
+}
+
+function getFilmSubmissionTeamFolder(team) {
+  var root = getFilmSubmissionRootFolder();
+  var safeTeamName = String(team.teamName || "Film Team")
+    .replace(/[\\/:*?"<>|]/g, "_")
+    .slice(0, 100);
+  var folderName = team.referenceId + " - " + safeTeamName;
+  var folders = root.getFoldersByName(folderName);
+  if (folders.hasNext()) return folders.next();
+  var folder = root.createFolder(folderName);
+  folder.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
+  return folder;
+}
+
+function createFilmSubmissionUploadSession(data, event) {
+  var expectedReadToken = PropertiesService.getScriptProperties().getProperty("GOOGLE_SHEET_READ_TOKEN");
+  var params = event && event.parameter ? event.parameter : {};
+  if (!expectedReadToken || String(params.readToken || "") !== expectedReadToken) {
+    return jsonResponse({ status: "error", message: "Unauthorized file upload request." });
+  }
+  if (!isFilmSubmissionOpen()) {
+    return jsonResponse({ status: "error", message: "Film submissions are not currently open." });
+  }
+
+  var identity = normalizeFilmSubmissionIdentity(data);
+  var fileLabel = String(data.fileLabel || "");
+  var fileName = String(data.fileName || "").trim();
+  var mimeType = String(data.mimeType || "").toLowerCase();
+  var fileSize = Number(data.fileSize);
+  var uploadToken = String(data.uploadToken || "");
+  var allowedLabels = identity && identity.category === "school"
+    ? ["Poster", "StudentConfirmation"]
+    : ["Poster", "Script", "TeamDeclaration"];
+  var allowedMimeType = fileLabel === "Poster"
+    ? ["image/jpeg", "image/png", "application/pdf"].indexOf(mimeType) !== -1
+    : mimeType === "application/pdf";
+
+  if (
+    !identity ||
+    allowedLabels.indexOf(fileLabel) === -1 ||
+    !fileName ||
+    fileName.length > 255 ||
+    !allowedMimeType ||
+    !Number.isSafeInteger(fileSize) ||
+    fileSize <= 0 ||
+    fileSize > 5 * 1024 * 1024 * 1024 * 1024 ||
+    !/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(uploadToken)
+  ) {
+    return jsonResponse({ status: "error", message: "The upload details are invalid or unsupported." });
+  }
+
+  var team = findFilmSubmissionRegistration(identity);
+  if (!team) {
+    return jsonResponse({ status: "error", message: "This team is not registered for the selected category." });
+  }
+  if (hasFilmSubmission(identity)) {
+    return jsonResponse({ status: "error", statusCode: 409, message: "A film submission has already been received for this team." });
+  }
+
+  var lock = LockService.getScriptLock();
+  var folder;
+  try {
+    lock.waitLock(30000);
+    folder = getFilmSubmissionTeamFolder(team);
+  } catch (error) {
+    Logger.log("Film submission folder error: " + error.message);
+    return jsonResponse({ status: "error", message: "Could not prepare this team's private upload folder." });
+  } finally {
+    if (lock.hasLock()) lock.releaseLock();
+  }
+
+  var safeName = fileName.replace(/[\\/:*?"<>|]/g, "_").slice(0, 180);
+  var description = [
+    "CINERO26_FILM_SUBMISSION",
+    identity.category,
+    identity.referenceId,
+    fileLabel,
+    identity.leaderEmail,
+    uploadToken
+  ].join("|");
+  var metadata = {
+    name: fileLabel + "_" + safeName,
+    mimeType: mimeType,
+    description: description,
+    parents: [folder.getId()]
+  };
+  var response;
+  try {
+    response = UrlFetchApp.fetch(
+      "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true&fields=id",
+      {
+        method: "post",
+        contentType: "application/json",
+        payload: JSON.stringify(metadata),
+        headers: {
+          Authorization: "Bearer " + ScriptApp.getOAuthToken(),
+          "X-Upload-Content-Type": mimeType,
+          "X-Upload-Content-Length": String(fileSize)
+        },
+        muteHttpExceptions: true
+      }
+    );
+  } catch (error) {
+    Logger.log("Film submission upload session error: " + error.message);
+    return jsonResponse({ status: "error", message: "Could not start the file upload. Please try again." });
+  }
+
+  if (response.getResponseCode() < 200 || response.getResponseCode() >= 300) {
+    Logger.log("Film submission Drive upload session failed: " + response.getResponseCode() + " " + response.getContentText());
+    return jsonResponse({ status: "error", message: "Could not start the file upload. Please try again." });
+  }
+
+  var headers = response.getHeaders();
+  var uploadUrl = "";
+  Object.keys(headers).some(function (key) {
+    if (key.toLowerCase() === "location") {
+      uploadUrl = String(headers[key]);
+      return true;
+    }
+    return false;
+  });
+  if (
+    !/^https:\/\/www\.googleapis\.com\/upload\/drive\/v3\/files\?/.test(uploadUrl) ||
+    !/[?&]uploadType=resumable(?:&|$)/.test(uploadUrl) ||
+    !/[?&]upload_id=[^&]+/.test(uploadUrl)
+  ) {
+    Logger.log("Drive did not return a valid film submission upload URL.");
+    return jsonResponse({ status: "error", message: "Could not start the file upload. Please try again." });
+  }
+  return jsonResponse({ status: "success", uploadUrl: uploadUrl });
+}
+
+function getFilmSubmissionFileUrl(fileData, team, fileLabel, folder) {
+  if (!fileData || !fileData.fileId || !fileData.uploadToken) {
+    throw new Error("A required submission file is missing.");
+  }
+  var uploadToken = String(fileData.uploadToken);
+  if (!/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(uploadToken)) {
+    throw new Error("A submission file could not be verified.");
+  }
+
+  var expectedDescription = [
+    "CINERO26_FILM_SUBMISSION",
+    team.category,
+    team.referenceId,
+    fileLabel,
+    team.leaderEmail,
+    uploadToken
+  ].join("|");
+  var file = DriveApp.getFileById(String(fileData.fileId));
+  if (file.getDescription() !== expectedDescription) {
+    throw new Error("A submission file could not be verified.");
+  }
+  var parents = file.getParents();
+  var belongsToTeamFolder = false;
+  while (parents.hasNext()) {
+    if (parents.next().getId() === folder.getId()) {
+      belongsToTeamFolder = true;
+      break;
+    }
+  }
+  if (!belongsToTeamFolder) throw new Error("A submission file could not be verified.");
+  file.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
+  return file.getUrl();
+}
+
+function safeFilmSubmissionCellValue(value) {
+  var text = String(value == null ? "" : value);
+  return /^[\s]*[=+\-@]/.test(text) ? "'" + text : text;
+}
+
+function handleFilmSubmission(data, event) {
+  var expectedReadToken = PropertiesService.getScriptProperties().getProperty("GOOGLE_SHEET_READ_TOKEN");
+  var params = event && event.parameter ? event.parameter : {};
+  if (!expectedReadToken || String(params.readToken || "") !== expectedReadToken) {
+    return jsonResponse({ status: "error", message: "Unauthorized submission request." });
+  }
+  if (!isFilmSubmissionOpen()) {
+    return jsonResponse({ status: "error", message: "Film submissions are not currently open." });
+  }
+
+  var identity = normalizeFilmSubmissionIdentity(data);
+  if (!identity) return jsonResponse({ status: "error", message: "The registration details are invalid." });
+  var team = findFilmSubmissionRegistration(identity);
+  if (!team) {
+    return jsonResponse({ status: "error", message: "This team is not registered for the selected category." });
+  }
+
+  var filmTitle = String(data.filmTitle || "").trim();
+  var synopsis = String(data.synopsis || "").trim();
+  var genre = String(data.genre || "").trim();
+  var language = String(data.language || "").trim();
+  var runningTime = String(data.runningTime || "").trim();
+  var completionDate = String(data.completionDate || "").trim();
+  var runtimeMatch = /^(\d{1,2}):([0-5]\d)$/.exec(runningTime);
+  var durationMinutes = runtimeMatch ? Number(runtimeMatch[1]) : 0;
+  var durationSeconds = runtimeMatch ? Number(runtimeMatch[2]) : 0;
+  var completionDateObject = /^\d{4}-\d{2}-\d{2}$/.test(completionDate)
+    ? new Date(completionDate + "T00:00:00Z")
+    : new Date(NaN);
+  var isValidCompletionDate = !isNaN(completionDateObject.getTime()) &&
+    Utilities.formatDate(completionDateObject, "GMT", "yyyy-MM-dd") === completionDate;
+  var validGenres = ["Drama", "Comedy", "Thriller", "Romance", "Documentary", "Animation", "Action", "Experimental", "Other"];
+  var validLanguages = identity.category === "school"
+    ? ["Sinhala", "Tamil", "English", "Other"]
+    : ["Sinhala", "Tamil", "English"];
+  var declarations = data.declarations;
+
+  if (
+    !filmTitle ||
+    filmTitle.length > 200 ||
+    !synopsis ||
+    synopsis.length > 5000 ||
+    validGenres.indexOf(genre) === -1 ||
+    validLanguages.indexOf(language) === -1 ||
+    !runtimeMatch ||
+    durationMinutes < 2 ||
+    durationMinutes > 15 ||
+    (durationMinutes === 15 && durationSeconds !== 0) ||
+    !isValidCompletionDate ||
+    completionDate < "2026-01-01" ||
+    completionDate > Utilities.formatDate(new Date(), "Asia/Colombo", "yyyy-MM-dd") ||
+    !Array.isArray(declarations) ||
+    declarations.length !== 5 ||
+    declarations.some(function (value) { return value !== true; })
+  ) {
+    return jsonResponse({ status: "error", message: "Complete every required field and accept all declarations before submitting." });
+  }
+
+  var filmLink = String(data.filmLink || "").trim();
+  if (filmLink.length > 2000 || !/^https:\/\/(drive\.google\.com|docs\.google\.com)\//i.test(filmLink)) {
+    return jsonResponse({ status: "error", message: "Enter a valid Google Drive link to the final film." });
+  }
+  data.filmLink = filmLink;
+
+  var files = data.files && typeof data.files === "object" ? data.files : {};
+  var requiredLabels = identity.category === "school"
+    ? ["StudentConfirmation"]
+    : ["Poster", "Script", "TeamDeclaration"];
+  for (var fileIndex = 0; fileIndex < requiredLabels.length; fileIndex++) {
+    if (!files[requiredLabels[fileIndex]]) {
+      return jsonResponse({ status: "error", message: "Upload all required submission materials." });
+    }
+  }
+
+  var lock = LockService.getScriptLock();
+  var locked = false;
+  try {
+    lock.waitLock(30000);
+    locked = true;
+    if (hasFilmSubmission(identity)) {
+      return jsonResponse({
+        status: "error",
+        statusCode: 409,
+        message: "A film submission has already been received for this team."
+      });
+    }
+
+    var folder = getFilmSubmissionTeamFolder(team);
+    var finalFilmUrl = data.filmLink;
+    var posterUrl = files.Poster
+      ? getFilmSubmissionFileUrl(files.Poster, team, "Poster", folder)
+      : "";
+    var confirmationUrl = identity.category === "school"
+      ? getFilmSubmissionFileUrl(files.StudentConfirmation, team, "StudentConfirmation", folder)
+      : "";
+    var scriptUrl = identity.category === "university"
+      ? getFilmSubmissionFileUrl(files.Script, team, "Script", folder)
+      : "";
+    var declarationUrl = identity.category === "university"
+      ? getFilmSubmissionFileUrl(files.TeamDeclaration, team, "TeamDeclaration", folder)
+      : "";
+    var sheet = getFilmSubmissionSheet(identity.category, true);
+
+    sheet.appendRow([
+      new Date(),
+      safeFilmSubmissionCellValue(identity.referenceId),
+      identity.category === "school" ? "Inter-School" : "Inter-University",
+      safeFilmSubmissionCellValue(team.teamName),
+      safeFilmSubmissionCellValue(identity.leaderEmail),
+      safeFilmSubmissionCellValue(filmTitle),
+      safeFilmSubmissionCellValue(synopsis),
+      safeFilmSubmissionCellValue(genre),
+      safeFilmSubmissionCellValue(language),
+      safeFilmSubmissionCellValue(runningTime),
+      safeFilmSubmissionCellValue(completionDate),
+      finalFilmUrl,
+      posterUrl,
+      confirmationUrl,
+      scriptUrl,
+      declarationUrl,
+      "Yes",
+      "Yes",
+      "Yes",
+      "Yes",
+      "Yes"
+    ]);
+    SpreadsheetApp.flush();
+    return jsonResponse({
+      status: "success",
+      message: "Your film submission has been saved successfully.",
+      submitted: true,
+      team: team
+    });
+  } catch (error) {
+    Logger.log("Film submission save error: " + error.message);
+    return jsonResponse({
+      status: "error",
+      message: String(error.message || "The film submission could not be saved.")
+    });
+  } finally {
+    if (locked) lock.releaseLock();
+  }
 }
 
 function jsonResponse(data) {
