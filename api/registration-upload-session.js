@@ -1,4 +1,4 @@
-import { callGalleryScript } from './_gallery.js';
+import { callGalleryScript } from '../lib/server/gallery.js';
 
 const MAX_DRIVE_FILE_SIZE = 5 * 1024 * 1024 * 1024 * 1024;
 const ALLOWED_FILE_LABELS = new Set(['StudentID', 'PaymentSlip']);

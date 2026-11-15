@@ -1,5 +1,5 @@
-import { getCrewAuthStatus } from './_crew-auth.js';
-import { callGalleryScript } from './_gallery.js';
+import { getCrewAuthStatus } from '../lib/server/crew-auth.js';
+import { callGalleryScript } from '../lib/server/gallery.js';
 
 const isPhotoId = (value) => typeof value === 'string' && /^[a-f\d-]{36}$/i.test(value);
 

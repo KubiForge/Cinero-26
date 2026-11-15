@@ -2,6 +2,14 @@
   "framework": "vite",
   "rewrites": [
     {
+      "source": "/api/crew-session",
+      "destination": "/api/crew-login?action=session"
+    },
+    {
+      "source": "/api/film-submission-upload-session",
+      "destination": "/api/film-submission?action=upload-session"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
     }

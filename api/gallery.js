@@ -1,4 +1,4 @@
-import { callGalleryScript } from './_gallery.js';
+import { callGalleryScript } from '../lib/server/gallery.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {

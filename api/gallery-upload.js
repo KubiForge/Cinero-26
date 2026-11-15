@@ -1,4 +1,4 @@
-import { callGalleryScript } from './_gallery.js';
+import { callGalleryScript } from '../lib/server/gallery.js';
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_MIME_TYPES = new Set([

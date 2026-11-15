@@ -1,4 +1,5 @@
-import { callGalleryScript } from './_gallery.js';
+import { callGalleryScript } from '../lib/server/gallery.js';
+import uploadSessionHandler from '../lib/server/film-submission-upload-session.js';
 
 const CATEGORIES = new Set(['school', 'university']);
 
@@ -19,6 +20,10 @@ function isValidReference(category, referenceId) {
 }
 
 export default async function handler(req, res) {
+  if (req.query?.action === 'upload-session') {
+    return uploadSessionHandler(req, res);
+  }
+
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ success: false, message: 'Method not allowed.' });

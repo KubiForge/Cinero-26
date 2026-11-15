@@ -50,7 +50,7 @@ export default defineConfig(({ mode }) => {
               '/api/gallery': () => import(pathToFileURL(resolve(process.cwd(), 'api/gallery.js')).href),
               '/api/gallery-image': () => import(pathToFileURL(resolve(process.cwd(), 'api/gallery-image.js')).href),
               '/api/film-submission': () => import(pathToFileURL(resolve(process.cwd(), 'api/film-submission.js')).href),
-              '/api/film-submission-upload-session': () => import(pathToFileURL(resolve(process.cwd(), 'api/film-submission-upload-session.js')).href),
+              '/api/film-submission-upload-session': () => import(pathToFileURL(resolve(process.cwd(), 'lib/server/film-submission-upload-session.js')).href),
               '/api/registration-upload-chunk': () => import(pathToFileURL(resolve(process.cwd(), 'api/registration-upload-chunk.js')).href),
             }
             const loadGalleryHandler = galleryRoutes[requestUrl.pathname]

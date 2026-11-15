@@ -1,6 +1,11 @@
 import crypto from 'crypto';
+import crewSessionHandler from '../lib/server/crew-session.js';
 
 export default async function handler(req, res) {
+  if (req.query?.action === 'session') {
+    return crewSessionHandler(req, res);
+  }
+
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ success: false, message: 'Method not allowed.' });

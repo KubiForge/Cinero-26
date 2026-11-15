@@ -11,6 +11,10 @@ It displays one card for each category. The category-specific pages remain avail
 
 The selected form starts with Section 01 and does not ask for a registration reference ID. Before creating a submission, the server matches the entered team name and leader email against the registrations for that category.
 
+## Vercel routing and function limit
+
+The React/Vite site is deployed as static files from `dist`; the SPA rewrite in `vercel.json` serves direct routes such as `/submission` from `index.html`. The 12 API entry points under `api/` remain serverless functions. The existing `/api/crew-session` and `/api/film-submission-upload-session` URLs are preserved through rewrites to their shared handlers so they do not require extra functions. Keep shared server modules outside `api/` and check the Hobby plan function limit before adding API entry points.
+
 ## Google Apps Script deployment
 
 1. Copy the updated `GoogleAppsScript.js` into the Apps Script project attached to the existing registration spreadsheet.

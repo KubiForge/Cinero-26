@@ -1,6 +1,6 @@
 import { Readable } from 'node:stream';
-import { getCrewAuthStatus } from './_crew-auth.js';
-import { callGalleryScript, getDriveAccessToken } from './_gallery.js';
+import { getCrewAuthStatus } from '../lib/server/crew-auth.js';
+import { callGalleryScript, getDriveAccessToken } from '../lib/server/gallery.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {

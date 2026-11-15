@@ -1,5 +1,5 @@
 import { Readable } from 'node:stream';
-import { callGalleryScript, getDriveAccessToken } from './_gallery.js';
+import { callGalleryScript, getDriveAccessToken } from '../lib/server/gallery.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
