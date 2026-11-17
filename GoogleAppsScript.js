@@ -20,6 +20,10 @@ function doPost(e) {
     return createGalleryUploadSession(requestData);
   }
 
+  if (action === "galleryuploadlookup") {
+    return handleGalleryUploadLookup(requestData);
+  }
+
   if (String(requestData.action || "").toLowerCase() === "galleryreview") {
     return handleGalleryReview(requestData);
   }
@@ -1129,9 +1133,10 @@ var GALLERY_PHOTOS_HEADERS = [
   "Uploaded_At",
   "Status",
   "Reviewed_By",
-  "Reviewed_At"
+  "Reviewed_At",
+  "Upload_Token"
 ];
-var GALLERY_MAX_FILE_BYTES = 5 * 1024 * 1024;
+var GALLERY_MAX_FILE_BYTES = 10 * 1024 * 1024;
 
 function createGalleryUploadSession(data) {
   var expectedToken = PropertiesService.getScriptProperties().getProperty("GALLERY_UPLOAD_TOKEN");
@@ -1285,7 +1290,7 @@ function handleGalleryUpload(data) {
     }
 
     if (!bytes || bytes.length === 0 || bytes.length > GALLERY_MAX_FILE_BYTES) {
-      return jsonResponse({ status: "error", message: "Each photo must be smaller than or equal to 5 MB." });
+      return jsonResponse({ status: "error", message: "Each photo must be smaller than or equal to 10 MB." });
     }
   }
 
@@ -1297,16 +1302,23 @@ function handleGalleryUpload(data) {
     });
   }
 
-  var lock = LockService.getScriptLock();
-  var locked = false;
   var createdFile = null;
+  var locked = false;
+  var lock = LockService.getScriptLock();
+  var folder;
+  var photoId = Utilities.getUuid();
+  var folderId = PropertiesService.getScriptProperties().getProperty("GALLERY_DRIVE_FOLDER_ID");
   try {
-    lock.waitLock(30000);
-    locked = true;
+    if (folderId) {
+      folder = DriveApp.getFolderById(folderId);
+    } else {
+      lock.waitLock(30000);
+      locked = true;
+      folder = getGalleryUploadFolder(readerEmail);
+      lock.releaseLock();
+      locked = false;
+    }
 
-    var folder = getGalleryUploadFolder(readerEmail);
-    var sheet = getGalleryPhotosSheet();
-    var photoId = Utilities.getUuid();
     var safeName = fileName.replace(/[\\/:*?"<>|]/g, "_").slice(0, 150);
     if (/^[=+\-@]/.test(safeName)) safeName = "'" + safeName;
     if (directUpload) {
@@ -1335,6 +1347,28 @@ function handleGalleryUpload(data) {
     }
     createdFile.setSharing(DriveApp.Access.PRIVATE, DriveApp.Permission.NONE);
 
+    lock.waitLock(30000);
+    locked = true;
+    var sheet = getGalleryPhotosSheet();
+    var existing = findGalleryUploadRow(sheet, fileUploadToken, createdFile.getId());
+    if (existing) {
+      lock.releaseLock();
+      locked = false;
+      if (existing.driveFileId !== createdFile.getId()) {
+        try {
+          createdFile.setTrashed(true);
+        } catch (cleanupError) {
+          Logger.log("Unable to clean up duplicate gallery upload: " + cleanupError.message);
+        }
+      }
+      return jsonResponse({
+        status: "success",
+        photoId: existing.photoId,
+        reviewStatus: existing.reviewStatus,
+        duplicate: true
+      });
+    }
+
     var safeUploader = uploadedBy.replace(/[\r\n\t]/g, " ").slice(0, 80);
     if (/^[=+\-@]/.test(safeUploader)) safeUploader = "'" + safeUploader;
     var uploadedAt = new Date();
@@ -1348,21 +1382,34 @@ function handleGalleryUpload(data) {
       uploadedAt,
       "PENDING",
       "",
-      ""
+      "",
+      fileUploadToken
     ]);
     SpreadsheetApp.flush();
 
     return jsonResponse({
       status: "success",
       photoId: photoId,
-      reviewStatus: "PENDING"
+      reviewStatus: "PENDING",
+      duplicate: false
     });
   } catch (error) {
     if (createdFile) {
-      try {
-        createdFile.setTrashed(true);
-      } catch (cleanupError) {
-        Logger.log("Unable to clean up failed gallery upload: " + cleanupError.message);
+      var isRecorded = false;
+      if (locked) {
+        try {
+          var existingSheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(GALLERY_PHOTOS_SHEET);
+          isRecorded = Boolean(existingSheet && findGalleryUploadRow(existingSheet, fileUploadToken, createdFile.getId()));
+        } catch (lookupError) {
+          Logger.log("Unable to check gallery upload record after error: " + lookupError.message);
+        }
+      }
+      if (!isRecorded) {
+        try {
+          createdFile.setTrashed(true);
+        } catch (cleanupError) {
+          Logger.log("Unable to clean up failed gallery upload: " + cleanupError.message);
+        }
       }
     }
     Logger.log("Gallery upload error: " + error.message);
@@ -1373,6 +1420,91 @@ function handleGalleryUpload(data) {
   } finally {
     if (locked) lock.releaseLock();
   }
+}
+
+function findGalleryUploadRow(sheet, fileUploadToken, driveFileId) {
+  var values = sheet.getDataRange().getValues();
+  if (values.length < 2) return null;
+
+  var columns = {};
+  values[0].forEach(function (header, index) {
+    columns[String(header || "").trim()] = index;
+  });
+  if (columns.Photo_ID === undefined || columns.Status === undefined) {
+    throw new Error("The gallery photo sheet is missing required columns.");
+  }
+  for (var index = values.length - 1; index > 0; index--) {
+    var row = values[index];
+    var tokenMatches = Boolean(fileUploadToken)
+      && columns.Upload_Token !== undefined
+      && String(row[columns.Upload_Token] || "") === fileUploadToken;
+    var fileMatches = columns.Drive_File_ID !== undefined
+      && String(row[columns.Drive_File_ID] || "") === driveFileId;
+    if (tokenMatches || fileMatches) {
+      return {
+        photoId: String(row[columns.Photo_ID] || ""),
+        reviewStatus: String(row[columns.Status] || "PENDING"),
+        driveFileId: columns.Drive_File_ID === undefined
+          ? ""
+          : String(row[columns.Drive_File_ID] || "")
+      };
+    }
+  }
+  return null;
+}
+
+function handleGalleryUploadLookup(data) {
+  var expectedToken = PropertiesService.getScriptProperties().getProperty("GALLERY_UPLOAD_TOKEN");
+  var suppliedToken = String(data.galleryUploadToken || "");
+  var fileUploadToken = String(data.fileUploadToken || "");
+  if (!expectedToken || !suppliedToken || suppliedToken !== expectedToken) {
+    return jsonResponse({ status: "error", message: "Unauthorized photo upload request." });
+  }
+  if (!/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(fileUploadToken)) {
+    return jsonResponse({ status: "error", message: "The upload lookup request is invalid." });
+  }
+
+  var sheet = SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(GALLERY_PHOTOS_SHEET);
+  if (sheet && sheet.getLastRow() > 0) {
+    var values = sheet.getDataRange().getValues();
+    var columns = {};
+    values[0].forEach(function (header, index) {
+      columns[String(header || "").trim()] = index;
+    });
+    if (columns.Upload_Token !== undefined) {
+      for (var index = values.length - 1; index > 0; index--) {
+        if (String(values[index][columns.Upload_Token] || "") === fileUploadToken) {
+          return jsonResponse({
+            status: "success",
+            found: true,
+            driveFileId: String(values[index][columns.Drive_File_ID] || ""),
+            photoId: String(values[index][columns.Photo_ID] || ""),
+            reviewStatus: String(values[index][columns.Status] || "PENDING")
+          });
+        }
+      }
+    }
+  }
+
+  var folderId = PropertiesService.getScriptProperties().getProperty("GALLERY_DRIVE_FOLDER_ID");
+  if (folderId) {
+    var description = ["CINERO26_GALLERY", fileUploadToken].join("|");
+    var files = DriveApp.searchFiles(
+      "'" + folderId + "' in parents and trashed = false and description contains '" + description + "'"
+    );
+    while (files.hasNext()) {
+      var file = files.next();
+      if (file.getDescription() === description) {
+        return jsonResponse({
+          status: "success",
+          found: true,
+          driveFileId: file.getId()
+        });
+      }
+    }
+  }
+
+  return jsonResponse({ status: "success", found: false });
 }
 
 function handleGalleryReview(data) {
@@ -1525,6 +1657,17 @@ function getGalleryPhotosSheet() {
       .setBackground("#171518")
       .setFontColor("#f5d77f");
     sheet.setFrozenRows(1);
+  } else {
+    var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]
+      .map(function (header) { return String(header || "").trim(); });
+    if (headers.indexOf("Upload_Token") === -1) {
+      var tokenColumn = headers.length + 1;
+      sheet.getRange(1, tokenColumn)
+        .setValue("Upload_Token")
+        .setFontWeight("bold")
+        .setBackground("#171518")
+        .setFontColor("#f5d77f");
+    }
   }
 
   return sheet;
@@ -1629,7 +1772,7 @@ function readApprovedGalleryPhotos() {
     .filter(function (photo) {
       return Boolean(photo.photoId);
     })
-    .slice(-1000)
+    .slice(-4000)
     .reverse();
 }
 

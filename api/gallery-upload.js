@@ -89,6 +89,42 @@ export default async function handler(req, res) {
       })()
     : req.body;
 
+  if (body?.action === 'lookup') {
+    const fileUploadToken = typeof body.fileUploadToken === 'string' ? body.fileUploadToken : '';
+    if (!/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(fileUploadToken)) {
+      return res.status(400).json({ success: false, message: 'The upload lookup request is invalid.' });
+    }
+
+    try {
+      const result = await callGalleryScript('galleryUploadLookup', {}, {
+        action: 'galleryUploadLookup',
+        galleryUploadToken: uploadToken,
+        fileUploadToken,
+      });
+      if (result.status !== 'success') {
+        return res.status(502).json({
+          success: false,
+          message: typeof result.message === 'string'
+            ? result.message
+            : 'Could not check the existing photo upload.',
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        found: result.found === true,
+        driveFileId: typeof result.driveFileId === 'string' ? result.driveFileId : undefined,
+        photoId: typeof result.photoId === 'string' ? result.photoId : undefined,
+        reviewStatus: typeof result.reviewStatus === 'string' ? result.reviewStatus : undefined,
+      });
+    } catch (error) {
+      console.error('[gallery-upload] photo lookup failed:', error);
+      return res.status(502).json({
+        success: false,
+        message: 'Could not check the existing photo upload. Please try again.',
+      });
+    }
+  }
+
   const fileName = typeof body?.fileName === 'string' ? body.fileName.trim() : '';
   const requestedMimeType = typeof body?.mimeType === 'string' ? body.mimeType.toLowerCase() : '';
   const base64 = typeof body?.base64 === 'string' ? body.base64 : '';
@@ -103,7 +139,10 @@ export default async function handler(req, res) {
     || (!base64 && !driveFileId)
     || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(base64)
     || uploadedBy.length > 80
-    || (driveFileId && !/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(fileUploadToken))
+    || (driveFileId && (
+      !/^[A-Za-z0-9_-]{10,200}$/.test(driveFileId)
+      || !/^[a-f\d]{8}-([a-f\d]{4}-){3}[a-f\d]{12}$/i.test(fileUploadToken)
+    ))
   ) {
     return res.status(400).json({
       success: false,
@@ -156,7 +195,12 @@ export default async function handler(req, res) {
   try {
     const result = await callGalleryScript('galleryUpload', {}, uploadData);
 
-    if (result.status !== 'success' || !result.photoId || result.reviewStatus !== 'PENDING') {
+    if (
+      result.status !== 'success'
+      || !result.photoId
+      || typeof result.reviewStatus !== 'string'
+      || !result.reviewStatus
+    ) {
       const message = typeof result.message === 'string'
         ? result.message
         : 'Google Sheets did not confirm the photo upload.';
@@ -166,7 +210,8 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       photoId: result.photoId,
-      reviewStatus: 'PENDING',
+      reviewStatus: result.reviewStatus,
+      duplicate: result.duplicate === true,
     });
   } catch (error) {
     console.error('[gallery-upload] photo save failed:', error);

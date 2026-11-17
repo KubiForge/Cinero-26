@@ -47,6 +47,7 @@ export default defineConfig(({ mode }) => {
             const requestUrl = new URL(req.url ?? '/', 'http://localhost')
             const galleryRoutes: Record<string, () => Promise<{ default: (request: GalleryApiRequest, response: GalleryApiResponse) => unknown }>> = {
               '/api/gallery-upload': () => import(pathToFileURL(resolve(process.cwd(), 'api/gallery-upload.js')).href),
+              '/api/gallery-upload-session': () => import(pathToFileURL(resolve(process.cwd(), 'api/gallery-upload-session.js')).href),
               '/api/gallery': () => import(pathToFileURL(resolve(process.cwd(), 'api/gallery.js')).href),
               '/api/gallery-image': () => import(pathToFileURL(resolve(process.cwd(), 'api/gallery-image.js')).href),
               '/api/film-submission': () => import(pathToFileURL(resolve(process.cwd(), 'api/film-submission.js')).href),

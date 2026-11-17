@@ -22,6 +22,18 @@ async function readChunk(req) {
   return Buffer.concat(chunks, totalBytes);
 }
 
+function hasExpectedGallerySignature(bytes, mimeType) {
+  if (mimeType === 'image/jpeg') {
+    return bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+  }
+  if (mimeType === 'image/webp') {
+    return bytes.length >= 12
+      && bytes.toString('ascii', 0, 4) === 'RIFF'
+      && bytes.toString('ascii', 8, 12) === 'WEBP';
+  }
+  return false;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'PUT') {
     res.setHeader('Allow', 'PUT');
@@ -34,6 +46,7 @@ export default async function handler(req, res) {
   const uploadUrlValue = req.headers['x-drive-upload-url'];
   const contentType = req.headers['x-drive-content-type'];
   const contentRange = req.headers['x-drive-content-range'];
+  const isGalleryUpload = req.headers['x-gallery-upload'] === '1';
   if (
     typeof uploadUrlValue !== 'string'
     || typeof contentType !== 'string'
@@ -72,6 +85,12 @@ export default async function handler(req, res) {
       message: 'The upload file type is invalid.',
     });
   }
+  if (isGalleryUpload && !['image/jpeg', 'image/webp'].includes(contentType)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Gallery uploads must be optimized JPEG or WebP images.',
+    });
+  }
 
   const rangeMatch = /^bytes (\d+)-(\d+)\/(\d+)$/.exec(contentRange);
   if (!rangeMatch) {
@@ -93,6 +112,7 @@ export default async function handler(req, res) {
     || endByte < startByte
     || totalFileSize <= endByte
     || totalFileSize > MAX_DRIVE_FILE_SIZE
+    || (isGalleryUpload && totalFileSize > 10 * 1024 * 1024)
     || chunkSize > MAX_CHUNK_BYTES
     || startByte % CHUNK_ALIGNMENT_BYTES !== 0
     || (endByte + 1 < totalFileSize && chunkSize % CHUNK_ALIGNMENT_BYTES !== 0)
@@ -119,6 +139,12 @@ export default async function handler(req, res) {
       message: chunk
         ? 'The upload chunk size does not match its range.'
         : 'The upload chunk is too large.',
+    });
+  }
+  if (isGalleryUpload && startByte === 0 && !hasExpectedGallerySignature(chunk, contentType)) {
+    return res.status(400).json({
+      success: false,
+      message: 'The image content does not match its file type.',
     });
   }
 
