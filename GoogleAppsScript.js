@@ -874,7 +874,7 @@ function handleFilmSubmission(data, event) {
   var language = String(data.language || "").trim();
   var runningTime = String(data.runningTime || "").trim();
   var completionDate = String(data.completionDate || "").trim();
-  var runtimeMatch = /^(\d{1,2}):([0-5]\d)$/.exec(runningTime);
+  var runtimeMatch = /^(\d{1,2})[:.]([0-5]\d)$/.exec(runningTime);
   var durationMinutes = runtimeMatch ? Number(runtimeMatch[1]) : 0;
   var durationSeconds = runtimeMatch ? Number(runtimeMatch[2]) : 0;
   var completionDateObject = /^\d{4}-\d{2}-\d{2}$/.test(completionDate)

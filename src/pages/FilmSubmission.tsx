@@ -415,18 +415,17 @@ export default function FilmSubmissionPage({ category }: FilmSubmissionPageProps
                     </select>
                   </label>
                   <label>
-                    Running time (minutes:seconds)
+                    Running time (MM:SS or MM.SS)
                     <input
                       type="text"
                       required
-                      inputMode="numeric"
-                      placeholder="08:30"
-                      pattern="(0[2-9]|1[0-4]):[0-5][0-9]|15:00"
-                      title="Enter minutes and seconds, for example 08:30."
+                      placeholder="08:30 or 08.30"
+                      pattern="(0[2-9]|1[0-4])[:.][0-5][0-9]|15[:.]00"
+                      title="Enter minutes and seconds, for example 08:30 or 08.30."
                       value={runningTime}
                       onChange={(event) => setRunningTime(event.currentTarget.value)}
                     />
-                    <small>Must be between 02:00 and 15:00, including credits.</small>
+                    <small>Use a colon or full stop; must be between 02:00 and 15:00, including credits.</small>
                   </label>
                   <label>
                     Date of film completion
