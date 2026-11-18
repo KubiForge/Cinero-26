@@ -2,7 +2,7 @@ import { createPortal } from 'react-dom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import './HoliAnnouncementModal.css';
 
-const ANNOUNCEMENT_SESSION_KEY = 'cinero26-holi-announcement-shown';
+const ANNOUNCEMENT_SESSION_KEY = 'cinero26-film-submission-close-announcement-shown';
 const CLOSE_ANIMATION_DURATION = 220;
 
 const isHomepage = () => {
@@ -35,7 +35,7 @@ export default function HoliAnnouncementModal() {
     try {
       if (window.sessionStorage.getItem(ANNOUNCEMENT_SESSION_KEY) === 'shown') return;
     } catch (error) {
-      console.warn('Holi announcement session storage is unavailable:', error);
+      console.warn('Announcement session storage is unavailable:', error);
     }
 
     const showTimer = window.setTimeout(() => {
@@ -45,7 +45,7 @@ export default function HoliAnnouncementModal() {
         if (window.sessionStorage.getItem(ANNOUNCEMENT_SESSION_KEY) === 'shown') return;
         window.sessionStorage.setItem(ANNOUNCEMENT_SESSION_KEY, 'shown');
       } catch (error) {
-        console.warn('Could not save Holi announcement session state:', error);
+        console.warn('Could not save announcement session state:', error);
       }
 
       setIsOpen(true);
@@ -102,7 +102,7 @@ export default function HoliAnnouncementModal() {
         className={`holi-announcement__dialog${isClosing ? ' is-closing' : ''}`}
         role="dialog"
         aria-modal="true"
-        aria-label="CINERO'26 Holi Fest announcement"
+        aria-label="CINERO'26 film submission deadline announcement"
       >
         <button
           ref={closeButtonRef}
@@ -124,10 +124,10 @@ export default function HoliAnnouncementModal() {
         </button>
         <img
           className="holi-announcement__poster"
-          src="/images/holi-fest-poster.png"
-          alt="CINERO'26 Holi Fest promotional poster"
-          width={1080}
-          height={1080}
+          src="/images/Film%20Festival%20Submissions%20Close%20December%204th.png"
+          alt="CINERO'26 film festival submissions close on December 4"
+          width={1254}
+          height={1254}
           decoding="async"
         />
       </div>

@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   }
 
   const registrationOpenTime = new Date('2026-10-27T00:00:00+05:30').getTime();
-  const registrationCloseTime = new Date('2026-12-15T00:00:00+05:30').getTime();
+  const registrationCloseTime = new Date('2026-12-05T00:00:00+05:30').getTime();
   if (Date.now() < registrationOpenTime) {
     return res.status(403).json({
       success: false,
@@ -20,7 +20,7 @@ export default async function handler(req, res) {
   if (Date.now() >= registrationCloseTime) {
     return res.status(403).json({
       success: false,
-      message: 'Registration and film submissions closed on 14 December 2026.',
+      message: 'Registration and film submissions closed on 4 December 2026.',
     });
   }
 

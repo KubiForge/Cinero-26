@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv } from 'vite'
 
 const REGISTRATION_OPEN_TIME = new Date('2026-10-27T00:00:00+05:30').getTime()
-const REGISTRATION_CLOSE_TIME = new Date('2026-12-15T00:00:00+05:30').getTime()
+const REGISTRATION_CLOSE_TIME = new Date('2026-12-05T00:00:00+05:30').getTime()
 const GALLERY_API_BODY_LIMIT = 4.5 * 1024 * 1024
 const GALLERY_SERVER_ENV_KEYS = [
   'GOOGLE_SHEET_WEBHOOK_URL',
@@ -193,7 +193,7 @@ export default defineConfig(({ mode }) => {
                 return res.end(
                   JSON.stringify({
                     success: false,
-                    message: 'Registration and film submissions closed on 14 December 2026.',
+                    message: 'Registration and film submissions closed on 4 December 2026.',
                   })
                 )
               }

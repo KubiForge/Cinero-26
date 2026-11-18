@@ -33,8 +33,8 @@ const TIMELINE_EVENTS: TimelineEvent[] = [
   {
     id: 3,
     stepNumber: '03',
-    dateLabel: '14 DEC 2026',
-    startDate: '2026-12-14',
+    dateLabel: '04 DEC 2026',
+    startDate: '2026-12-04',
     title: 'Registration & Submission Close',
     description: 'Final day to register a team or submit a short film.',
     iconType: 'document',
@@ -42,8 +42,8 @@ const TIMELINE_EVENTS: TimelineEvent[] = [
   {
     id: 4,
     stepNumber: '04',
-    dateLabel: '19 DEC 2026',
-    startDate: '2026-12-19',
+    dateLabel: '13 DEC 2026',
+    startDate: '2026-12-13',
     title: 'Official Short Film Screening',
     description: 'The official CINERO’26 short film screening.',
     iconType: 'screening',
@@ -51,8 +51,8 @@ const TIMELINE_EVENTS: TimelineEvent[] = [
   {
     id: 5,
     stepNumber: '05',
-    dateLabel: '20 DEC 2026',
-    startDate: '2026-12-20',
+    dateLabel: '13 DEC 2026',
+    startDate: '2026-12-13',
     title: 'CINERO’26 Award Ceremony',
     description: 'Celebrate the CINERO’26 filmmakers and award winners.',
     iconType: 'certificate',

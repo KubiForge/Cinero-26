@@ -148,10 +148,10 @@ function getFileRequirements(category: FilmSubmissionCategory): FileRequirement[
       },
       {
         label: 'StudentConfirmation',
-        title: 'Principal-signed student confirmation letter',
+        title: 'Principal-signed student confirmation letter (optional)',
         accept: '.pdf,application/pdf',
-        required: true,
-        hint: 'Upload the completed confirmation letter as a PDF.',
+        required: false,
+        hint: 'Optional: upload the completed confirmation letter as a PDF.',
       },
     ];
   }
@@ -173,10 +173,10 @@ function getFileRequirements(category: FilmSubmissionCategory): FileRequirement[
     },
     {
       label: 'TeamDeclaration',
-      title: 'Completed team declaration and university ID cards',
+      title: 'Completed team declaration and university ID cards (optional)',
       accept: '.pdf,application/pdf',
-      required: true,
-      hint: 'Combine the signed declaration and all team members’ university ID cards into one PDF.',
+      required: false,
+      hint: 'Optional: combine the signed declaration and all team members’ university ID cards into one PDF.',
     },
   ];
 }

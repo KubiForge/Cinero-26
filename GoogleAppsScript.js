@@ -20,7 +20,7 @@ function doPost(e) {
     return createGalleryUploadSession(requestData);
   }
 
-  if (action === "galleryuploadlookup") {
+  if (String(requestData.action || "").toLowerCase() === "galleryuploadlookup") {
     return handleGalleryUploadLookup(requestData);
   }
 
@@ -45,7 +45,7 @@ function doPost(e) {
   }
 
   var registrationOpenTime = new Date("2026-10-27T00:00:00+05:30").getTime();
-  var registrationCloseTime = new Date("2026-12-15T00:00:00+05:30").getTime();
+  var registrationCloseTime = new Date("2026-12-05T00:00:00+05:30").getTime();
   if (Date.now() < registrationOpenTime) {
     return jsonResponse({
       status: "error",
@@ -56,7 +56,7 @@ function doPost(e) {
   if (Date.now() >= registrationCloseTime) {
     return jsonResponse({
       status: "error",
-      message: "Registration and film submissions closed on 14 December 2026."
+      message: "Registration and film submissions closed on 4 December 2026."
     });
   }
 
@@ -371,7 +371,7 @@ function createRegistrationUploadSession(data, event) {
   }
 
   var registrationOpenTime = new Date("2026-10-27T00:00:00+05:30").getTime();
-  var registrationCloseTime = new Date("2026-12-15T00:00:00+05:30").getTime();
+  var registrationCloseTime = new Date("2026-12-05T00:00:00+05:30").getTime();
   if (Date.now() < registrationOpenTime || Date.now() >= registrationCloseTime) {
     return jsonResponse({ status: "error", message: "Registration is not currently open." });
   }
@@ -528,7 +528,7 @@ var FILM_SUBMISSION_HEADERS = [
 
 function isFilmSubmissionOpen() {
   var openTime = new Date("2026-10-27T00:00:00+05:30").getTime();
-  var closeTime = new Date("2026-12-15T00:00:00+05:30").getTime();
+  var closeTime = new Date("2026-12-05T00:00:00+05:30").getTime();
   return Date.now() >= openTime && Date.now() < closeTime;
 }
 
@@ -917,8 +917,8 @@ function handleFilmSubmission(data, event) {
 
   var files = data.files && typeof data.files === "object" ? data.files : {};
   var requiredLabels = identity.category === "school"
-    ? ["StudentConfirmation"]
-    : ["Poster", "Script", "TeamDeclaration"];
+    ? []
+    : ["Poster", "Script"];
   for (var fileIndex = 0; fileIndex < requiredLabels.length; fileIndex++) {
     if (!files[requiredLabels[fileIndex]]) {
       return jsonResponse({ status: "error", message: "Upload all required submission materials." });
@@ -943,13 +943,13 @@ function handleFilmSubmission(data, event) {
     var posterUrl = files.Poster
       ? getFilmSubmissionFileUrl(files.Poster, team, "Poster", folder)
       : "";
-    var confirmationUrl = identity.category === "school"
+    var confirmationUrl = identity.category === "school" && files.StudentConfirmation
       ? getFilmSubmissionFileUrl(files.StudentConfirmation, team, "StudentConfirmation", folder)
       : "";
     var scriptUrl = identity.category === "university"
       ? getFilmSubmissionFileUrl(files.Script, team, "Script", folder)
       : "";
-    var declarationUrl = identity.category === "university"
+    var declarationUrl = identity.category === "university" && files.TeamDeclaration
       ? getFilmSubmissionFileUrl(files.TeamDeclaration, team, "TeamDeclaration", folder)
       : "";
     var sheet = getFilmSubmissionSheet(identity.category, true);

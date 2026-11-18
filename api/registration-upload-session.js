@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   }
 
   const registrationOpenTime = new Date('2026-10-27T00:00:00+05:30').getTime();
-  const registrationCloseTime = new Date('2026-12-15T00:00:00+05:30').getTime();
+  const registrationCloseTime = new Date('2026-12-05T00:00:00+05:30').getTime();
   if (Date.now() < registrationOpenTime || Date.now() >= registrationCloseTime) {
     return res.status(403).json({
       success: false,

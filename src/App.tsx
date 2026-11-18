@@ -22,8 +22,8 @@ import './App.css';
 
 // Registration opens automatically on 27 October 2026 at 00:00 AM (SL Time / UTC+5:30)
 const REGISTRATION_OPEN_TIME = new Date('2026-10-27T00:00:00+05:30').getTime();
-// Registration stays open through the submission deadline on 14 December 2026 (SL Time / UTC+5:30)
-const REGISTRATION_CLOSE_TIME = new Date('2026-12-15T00:00:00+05:30').getTime();
+// Registration stays open through the submission deadline on 4 December 2026 (SL Time / UTC+5:30)
+const REGISTRATION_CLOSE_TIME = new Date('2026-12-05T00:00:00+05:30').getTime();
 const MAX_TIMEOUT_DELAY = 2_147_483_647;
 
 const ENFORCE_REGISTRATION_DATES = true;
@@ -47,7 +47,7 @@ const showRegistrationNotOpenAlert = () => {
 const showRegistrationClosedAlert = () => {
   void Swal.fire({
     title: 'Registration closed',
-    text: 'Registration and film submissions closed on 14 December 2026.',
+    text: 'Registration and film submissions closed on 4 December 2026.',
     icon: 'error',
     confirmButtonText: 'OK',
     confirmButtonColor: '#d4a642',
