@@ -66,7 +66,7 @@
   color: #e8c572;
 }
 
-.film-submission__hero > p:last-child {
+.film-submission__hero>p:last-child {
   max-width: 650px;
   margin: 16px auto 0;
   color: #c9bdae;
@@ -198,7 +198,7 @@
   border-bottom: 1px solid rgba(213, 164, 62, 0.18);
 }
 
-.film-submission__team > span {
+.film-submission__team>span {
   color: #d5a43e;
   font-size: 9px;
   font-weight: 700;
@@ -245,6 +245,26 @@
 .film-submission__declarations {
   display: grid;
   gap: 13px;
+}
+
+.film-submission__declaration-download {
+  margin: -8px 0 20px;
+  color: #c9bdae;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.film-submission__declaration-download a {
+  color: #f0d99c;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.film-submission__declaration-download a:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid #f5d77f;
+  outline-offset: 3px;
 }
 
 .film-submission__declarations label {
@@ -382,7 +402,7 @@
   color: #edc66c;
 }
 
-.film-submission__hero--selection .film-submission__hero-copy > p:not(.film-submission__eyebrow) {
+.film-submission__hero--selection .film-submission__hero-copy>p:not(.film-submission__eyebrow) {
   max-width: 580px;
   margin: 21px auto 0;
   color: #e2d6c9;
@@ -447,7 +467,7 @@
   letter-spacing: 0.24em;
 }
 
-.film-submission__selection-intro > p:last-child {
+.film-submission__selection-intro>p:last-child {
   margin: 11px auto 0;
   color: #b8aba0;
   font-size: 13px;

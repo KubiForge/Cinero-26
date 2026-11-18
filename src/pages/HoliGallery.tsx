@@ -79,12 +79,21 @@ export default function HoliGalleryPage() {
 
         <section className="holi-gallery-page__content" aria-label="Holi Fest gallery">
           <figure className="holi-gallery-page__poster">
-            <img
-              src="/images/holi-fest-poster.png"
-              alt="Official CINERO'26 Holi Fest poster"
-              width={1080}
-              height={1080}
-            />
+            <picture>
+              <source
+                type="image/webp"
+                srcSet="/images/holi-fest-poster-480.webp 480w, /images/holi-fest-poster-960.webp 960w"
+                sizes="(max-width: 768px) 90vw, 420px"
+              />
+              <img
+                src="/images/holi-fest-poster.png"
+                alt="Official CINERO'26 Holi Fest poster"
+                width={1080}
+                height={1080}
+                fetchPriority="high"
+                decoding="async"
+              />
+            </picture>
             <figcaption>Official Holi Fest Poster</figcaption>
           </figure>
 

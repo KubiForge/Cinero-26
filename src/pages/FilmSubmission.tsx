@@ -185,6 +185,20 @@ function getCategoryTitle(category: FilmSubmissionCategory): string {
   return category === 'school' ? 'Inter-School' : 'Inter-University';
 }
 
+function getDeclarationForm(category: FilmSubmissionCategory) {
+  return category === 'school'
+    ? {
+        href: "/PDFs/CINERO%2726%20School%20Declaration%20Form.pdf",
+        filename: "CINERO'26 School Declaration Form.pdf",
+        title: 'School Declaration Form',
+      }
+    : {
+        href: "/PDFs/CINERO%2726%20University%20Declaration%20Form.pdf",
+        filename: "CINERO'26 University Declaration Form.pdf",
+        title: 'University Declaration Form',
+      };
+}
+
 function showSubmissionAlert(
   title: string,
   text: string,
@@ -230,6 +244,7 @@ export default function FilmSubmissionPage({ category }: FilmSubmissionPageProps
 
   const files = getFileRequirements(category);
   const categoryTitle = getCategoryTitle(category);
+  const declarationForm = getDeclarationForm(category);
 
   const handleTeamIdentityChange = (nextTeamName: string, nextLeaderEmail: string) => {
     setTeamName(nextTeamName);
@@ -415,17 +430,17 @@ export default function FilmSubmissionPage({ category }: FilmSubmissionPageProps
                     </select>
                   </label>
                   <label>
-                    Running time (MM:SS or MM.SS)
+                    Running time (MM:SS or M.SS)
                     <input
                       type="text"
                       required
-                      placeholder="08:30 or 08.30"
-                      pattern="(0[2-9]|1[0-4])[:.][0-5][0-9]|15[:.]00"
-                      title="Enter minutes and seconds, for example 08:30 or 08.30."
+                      placeholder="08:30 or 8.30"
+                      pattern="(0?[2-9]|1[0-4])[:.][0-5][0-9]|15[:.]00"
+                      title="Enter minutes and seconds, for example 08:30, 8:30, or 8.30."
                       value={runningTime}
                       onChange={(event) => setRunningTime(event.currentTarget.value)}
                     />
-                    <small>Use a colon or full stop; must be between 02:00 and 15:00, including credits.</small>
+                    <small>Use a colon or full stop; must be between 2:00 and 15:00, including credits.</small>
                   </label>
                   <label>
                     Date of film completion
@@ -475,6 +490,13 @@ export default function FilmSubmissionPage({ category }: FilmSubmissionPageProps
                 </div>
 
                 <h2>Section 03 – Declaration</h2>
+                <p className="film-submission__declaration-download">
+                  Download and complete the{' '}
+                  <a href={declarationForm.href} download={declarationForm.filename}>
+                    {declarationForm.title} (PDF)
+                  </a>
+                  .
+                </p>
                 <div className="film-submission__declarations">
                   {DECLARATIONS.map((declaration, index) => (
                     <label key={declaration}>

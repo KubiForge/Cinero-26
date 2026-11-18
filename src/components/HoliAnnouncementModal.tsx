@@ -122,14 +122,21 @@ export default function HoliAnnouncementModal() {
             <path d="M6 6l12 12M18 6L6 18" />
           </svg>
         </button>
-        <img
-          className="holi-announcement__poster"
-          src="/images/Film%20Festival%20Submissions%20Close%20December%204th.png"
-          alt="CINERO'26 film festival submissions close on December 4"
-          width={1254}
-          height={1254}
-          decoding="async"
-        />
+        <picture>
+          <source
+            type="image/webp"
+            srcSet="/images/film-submission-close-480.webp 480w, /images/film-submission-close-960.webp 960w"
+            sizes="90vw"
+          />
+          <img
+            className="holi-announcement__poster"
+            src="/images/Film%20Festival%20Submissions%20Close%20December%204th.png"
+            alt="CINERO'26 film festival submissions close on December 4"
+            width={1254}
+            height={1254}
+            decoding="async"
+          />
+        </picture>
       </div>
     </div>,
     document.body,
